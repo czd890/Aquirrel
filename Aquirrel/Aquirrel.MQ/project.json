@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0-*",
+  "description": "��rabbitmq�ķ�װ",
+  "authors": [ "calvin" ],
+  "packOptions": {
+    "tags": [ "aquirrel", "aquirrel.rabbitmq" ],
+    "files": [ "mqsettings.json" ],
+    "owners": [ "calvin" ],
+    "summary": "rabbitmq",
+    "releaseNotes": "haha"
+  },
+  "publishOptions": {
+    "include": [ "mqsettings.json" ]
+  },
+  "dependencies": {
+    "Aquirrel": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "RabbitMQ.Client": "4.1.1"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

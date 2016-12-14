@@ -1,0 +1,130 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Aquirrel.Logger.File.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+namespace Aquirrel.Logger.File
+{
+    public class FileLoggerProvider : ILoggerProvider, IDisposable
+    {
+        FileLoggerSettings _configuration;
+        readonly ConcurrentDictionary<string, LoggerOptionsModel> _loggerOptionsCache = new ConcurrentDictionary<string, LoggerOptionsModel>();
+        readonly ConcurrentDictionary<string, FileLogger> _loggers = new ConcurrentDictionary<string, FileLogger>();
+
+        public FileLoggerProvider(FileLoggerSettings configuration)
+        {
+            _configuration = configuration;
+            _configuration.ChangeToken.RegisterChangeCallback(p =>
+            {
+                //update loggers settings form new settings
+                foreach (var item in this._loggers.Values)
+                {
+                    LoggerOptionsModel model = new LoggerOptionsModel();
+                    InitLoggerSettings(item.Name, model);
+                    InitLogger(model, item);
+                }
+
+            }, null);
+        }
+        public ILogger CreateLogger(string categoryName)
+        {
+            var option = this._loggerOptionsCache.GetOrAdd(categoryName, p =>
+             {
+                 LoggerOptionsModel model = new LoggerOptionsModel();
+                 InitLoggerSettings(categoryName, model);
+                 return model;
+             });
+            return this._loggers.GetOrAdd(categoryName, p =>
+            {
+                var logger = new FileLogger(categoryName, option);
+                InitLogger(option, logger);
+                return logger;
+            });
+        }
+
+        private static void InitLogger(LoggerOptionsModel model, FileLogger logger)
+        {
+            logger.Options = model;
+        }
+
+
+        private void InitLoggerSettings(string categoryName, LoggerOptionsModel model)
+        {
+            model.CategoryName = categoryName;
+            model.IncludeScopes = this._configuration.IncludeScopes;
+
+            var keys = this.GetKeys(categoryName);
+
+            model.MinLevel = LogLevel.Debug;
+            foreach (var item in keys)
+            {
+                var switchV = _configuration.GetSwitch(item);
+                if (switchV.Item1)
+                {
+                    model.MinLevel = switchV.Item2;
+                    break;
+                }
+            }
+            model.FileDiretoryPath = this._configuration.DefaultPath;
+            foreach (var item in keys)
+            {
+                var switchV = _configuration.GetDiretoryPath(item);
+                if (switchV.Item1)
+                {
+                    model.FileDiretoryPath = switchV.Item2;
+                    break;
+                }
+            }
+            model.FileNameTemplate = this._configuration.DefaultFileName;
+            foreach (var item in keys)
+            {
+                var switchV = _configuration.GetFileName(item);
+                if (switchV.Item1)
+                {
+                    model.FileNameTemplate = switchV.Item2;
+                    break;
+                }
+            }
+            model.MaxSize_Bytes = this._configuration.DefaultMaxSize;
+            foreach (var item in keys)
+            {
+                var switchV = _configuration.GetMaxSize(item);
+                if (switchV.Item1)
+                {
+                    model.MaxSize_Bytes = switchV.Item2;
+                    break;
+                }
+            }
+            model.MaxSize_Bytes = model.MaxSize_Bytes * 1024 * 1024;
+        }
+
+        IEnumerable<string> GetKeys(string categoryName)
+        {
+            while (!String.IsNullOrEmpty(categoryName))
+            {
+                // a.b.c
+                //--result
+                // a.b.c，a.b，a，Default
+                yield return categoryName;
+                var last = categoryName.LastIndexOf('.');
+                if (last <= 0)
+                {
+                    yield return "Default";
+                    yield break;
+                }
+                categoryName = categoryName.Substring(0, last);
+            }
+            yield break;
+
+        }
+        public void Dispose()
+        {
+            _loggerOptionsCache.Clear();
+            _loggers.Clear();
+        }
+    }
+}
