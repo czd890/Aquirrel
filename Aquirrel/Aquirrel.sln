@@ -24,6 +24,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.MQ", "Aquirrel.MQ\
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Logger.File.Test", "Test\Aquirrel.Logger.File.Test\Aquirrel.Logger.File.Test.xproj", "{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.MQ.Test", "test\Aquirrel.MQ.Test\Aquirrel.MQ.Test.xproj", "{5B790F65-7B28-4199-BEF8-35E4A32E8A71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B790F65-7B28-4199-BEF8-35E4A32E8A71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B790F65-7B28-4199-BEF8-35E4A32E8A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B790F65-7B28-4199-BEF8-35E4A32E8A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B790F65-7B28-4199-BEF8-35E4A32E8A71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 		{C83DDE61-52D7-4049-A45F-E5E43AA77EC8} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{0A64BBF2-D31C-4E02-9F28-95B61C39A29A} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{6310BF0A-0F5D-4871-9FAE-9771C4D027B2} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
+		{5B790F65-7B28-4199-BEF8-35E4A32E8A71} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 	EndGlobalSection
 EndGlobal

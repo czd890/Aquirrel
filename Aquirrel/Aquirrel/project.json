@@ -1,5 +1,13 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-beta1",
+  "packOptions": {
+    "owners": [ "calvin" ],
+    "repository": { "url": "https://github.com/czd890/Aquirrel" },
+    "summary": "aquirrel base lib",
+    "releaseNotes": "",
+    "tags": [ "" ],
+    "files": [ "appsettings.json" ]
+  },
 
   "dependencies": {
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
