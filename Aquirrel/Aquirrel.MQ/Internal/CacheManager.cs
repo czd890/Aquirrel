@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace Aquirrel.MQ.Internal
 {
-    public class CacheManager : IDisposable
+    internal class CacheManager : IDisposable
     {
 
-        public CacheManager(EventBusSettings setting)
+        public CacheManager(EventBusSettings setting, ILogger<IEventBus> logger)
         {
             _settings = setting;
+            _logger = logger;
         }
         Dictionary<string, RabbitMQ.Client.IConnection> rabittmqConn = new Dictionary<string, RabbitMQ.Client.IConnection>();
-        Dictionary<string, IModel> rabittmqChannel = new Dictionary<string, IModel>();
+        Dictionary<string, ChannelModel> rabittmqChannel = new Dictionary<string, ChannelModel>();
         EventBusSettings _settings;
+        ILogger<IEventBus> _logger;
 
         public IConnection GetConnection(string productId)
         {
@@ -46,7 +51,12 @@ namespace Aquirrel.MQ.Internal
             return rabittmqConn[productId];
         }
 
-        public IModel GetChannel(string productId)
+        public struct ChannelModel
+        {
+            public IModel Channel { get; set; }
+            public SpinLock SL { get; set; }
+        }
+        public ChannelModel GetChannel(string productId)
         {
 
             //return GetConnection(productId).CreateModel();
@@ -54,7 +64,16 @@ namespace Aquirrel.MQ.Internal
             if (!rabittmqChannel.ContainsKey(productId))
             {
                 var conn = GetConnection(productId);
-                rabittmqChannel[productId] = conn.CreateModel();
+                rabittmqChannel[productId] = new ChannelModel()
+                {
+                    Channel = conn.CreateModel(),
+                    SL = new SpinLock()
+                };
+                rabittmqChannel[productId].Channel.BasicReturn += (obj, ea) =>
+                {
+                    _logger.LogInformation($"消息不可送达.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
+                };
+
             }
             return rabittmqChannel[productId];
         }
@@ -77,8 +96,8 @@ namespace Aquirrel.MQ.Internal
                         {
                             try
                             {
-                                item.Value.Close();
-                                item.Value.Dispose();
+                                item.Value.Channel.Close();
+                                item.Value.Channel.Dispose();
                             }
                             catch (Exception)
                             {
@@ -105,6 +124,9 @@ namespace Aquirrel.MQ.Internal
 
                         throw;
                     }
+                    rabittmqChannel.Clear();
+                    rabittmqConn.Clear();
+
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。

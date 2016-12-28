@@ -13,15 +13,15 @@
   ],
   "Products": [
     {
-      "Id": "produt",
+      "Id": "p1",
       "Host": "default"
     },
     {
-      "Id": "produtid",
+      "Id": "p2",
       "Host": "default"
     },
     {
-      "Id": "productid"
+      "Id": "p3"
     }
   ],
   "Publish": [

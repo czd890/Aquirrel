@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Aquirrel.Logger.File.Test
+namespace Aquirrel.MQ.Test
 {
     public class Startup
     {

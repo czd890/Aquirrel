@@ -14,7 +14,7 @@ using Aquirrel.MQ.Internal;
 
 namespace Aquirrel.MQ
 {
-    public class EventBus
+    internal class EventBus : IEventBus
     {
         public EventBus(EventBusSettings settings, CacheManager cacheManager, ILogger<EventBus> logger)
         {
@@ -22,7 +22,6 @@ namespace Aquirrel.MQ
             _CacheManager = cacheManager;
             _logger = logger;
         }
-        SpinLock sl = new SpinLock();
         EventBusSettings _settings;
         ILogger _logger;
         CacheManager _CacheManager;
@@ -35,7 +34,7 @@ namespace Aquirrel.MQ
         /// <param name="tag">routingKey</param>
         /// <param name="id"></param>
         /// <param name="message"></param>
-        public ulong Publish<T>(string productId, string topic, string tag, string id, T message)
+        public void Publish<T>(string productId, string topic, string tag, string id, T message)
         {
             var t = typeof(T);
             string msgStr;
@@ -45,14 +44,12 @@ namespace Aquirrel.MQ
                 msgStr = message.ToJson<T>();
 
             var msg = Encoding.UTF8.GetBytes(msgStr);
-            bool reflock = false;
-            sl.Enter(ref reflock);
+            var channel = _CacheManager.GetChannel(productId);
+            bool isLock = false;
+            channel.SL.Enter(ref isLock);
             try
             {
-                var channel = _CacheManager.GetChannel(productId);
-                var pubNo = channel.NextPublishSeqNo;
-                channel.BasicPublish(topic, tag, false, null, msg);
-                return pubNo;
+                channel.Channel.BasicPublish(topic, tag, false, null, msg);
             }
             catch
             {
@@ -60,8 +57,8 @@ namespace Aquirrel.MQ
             }
             finally
             {
-                if (reflock)
-                    sl.Exit();
+                if (isLock)
+                    channel.SL.Exit();
             }
         }
         /// <summary>
@@ -84,17 +81,17 @@ namespace Aquirrel.MQ
                 var ipaddress = await System.Net.Dns.GetHostEntryAsync(hostName).ConfigureAwait(false);
                 var ip = ipaddress.AddressList.FirstOrDefault(p => p.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.ToString() ?? hostName;
                 var fanoutQueueName = ip + "." + productId + "." + topic + "." + DateTime.UtcNow.Ticks;
-                channel.QueueDeclare(queue: fanoutQueueName);
-                channel.QueueBind(fanoutQueueName, topic, "", null);
+                channel.Channel.QueueDeclare(queue: fanoutQueueName);
+                channel.Channel.QueueBind(fanoutQueueName, topic, "", null);
                 queueName = fanoutQueueName;
             }
 
-            var consumer = new EventingBasicConsumer(channel);
+            var consumer = new EventingBasicConsumer(channel.Channel);
             consumer.Shutdown += (obj, ea) =>
             {
                 _logger.LogError("eventbus.consumer.shutdown:" + ea.ToJson());
             };
-            channel.BasicQos(0, 1, false);
+            channel.Channel.BasicQos(0, 1, false);
             var tx = typeof(T) == typeof(string);
             consumer.Received += (obj, ea) =>
             {
@@ -124,7 +121,7 @@ namespace Aquirrel.MQ
                 }
             };
             _logger.LogInformation("eventbus.subscribe." + queueName);
-            channel.BasicConsume(queueName, false, consumer);
+            channel.Channel.BasicConsume(queueName, false, consumer);
         }
 
         public void Exit()

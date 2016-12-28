@@ -14,9 +14,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton(sp => new EventBusSettings(configuration, sp.GetRequiredService<ILogger<EventBus>>()));
+            services.AddSingleton(sp => new EventBusSettings(configuration, sp.GetRequiredService<ILogger<IEventBus>>()));
             services.AddSingleton<CacheManager>();
-            services.AddSingleton<EventBus>();
+            services.AddSingleton<IEventBus,EventBus>();
             return services;
         }
     }
