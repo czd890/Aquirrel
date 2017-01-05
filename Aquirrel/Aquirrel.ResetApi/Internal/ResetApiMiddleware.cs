@@ -35,6 +35,6 @@ namespace Aquirrel.ResetApi.Internal
             var execTime = DateTime.Now - begin;
             this._logger.LogDebug($"  end traceId:{RestApiALS.ALS.Value.TraceId}. parentId:{RestApiALS.ALS.Value.ParentTraceId}. 执行时间:{execTime}. {httpContext.Request.Method}:{httpContext.Request.Path}");
             //TODO 上报执行时间
-        }
+        }                                             
     }
 }

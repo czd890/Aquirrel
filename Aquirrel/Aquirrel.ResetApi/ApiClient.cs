@@ -21,21 +21,29 @@ namespace Aquirrel.ResetApi
             this.Logger = logger;
             this.ApiResolveService = apiResolveService;
         }
-        public async Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request)
+        public Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request)
         {
-            var res = await ExecuteAsync<IResponseBase<T>, T>(request);
+            return this.ExecuteAsync(request, CancellationToken.None);
+        }
+        public async Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request, CancellationToken token)
+        {
+            var res = await ExecuteAsync<IResponseBase<T>, T>(request, token);
             if (res.IsSuccess)
             {
                 return res.data;
             }
             throw new BusinessException($"{res.msg}.errorcode:{res.error}");
         }
-        public async Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request) where IRes : class, IResponseBase<IData>
+        public Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request) where IRes : class, IResponseBase<IData>
+        {
+            return this.ExecuteAsync<IRes, IData>(request, CancellationToken.None);
+        }
+        public async Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request, CancellationToken token) where IRes : class, IResponseBase<IData>
         {
             var resType = typeof(IRes);
             var obj = (IRes)Activator.CreateInstance(resType);
 
-            var read = await ReadAsync(request, obj);
+            var read = await ReadAsync(request, obj, token);
             if (read.Item1)
             {
                 try
@@ -52,10 +60,14 @@ namespace Aquirrel.ResetApi
             return obj;
 
         }
-        public async Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request)
+        public Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request)
+        {
+            return this.ExecuteAsync(request, CancellationToken.None);
+        }
+        public async Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request, CancellationToken token)
         {
             var obj = new ResponseBase();
-            var read = await this.ReadAsync(request, obj);
+            var read = await this.ReadAsync(request, obj, token);
             if (read.Item1)
             {
                 try
@@ -72,11 +84,12 @@ namespace Aquirrel.ResetApi
             return obj;
         }
 
-        async Task<Tuple<bool, string>> ReadAsync(IRequest request, IResponseBase resObj)
+        async Task<Tuple<bool, string>> ReadAsync(IRequest request, IResponseBase resObj, CancellationToken token)
         {
             var r = new Tuple<bool, string>(false, null);
-            var resTask = this.SendAsync(request);
+            var resTask = this.SendAsync(request, token);
             var res = await resTask;
+            token.ThrowIfCancellationRequested();
             if (resTask.IsCanceled)
             {
                 resObj.error = ResponseErrorCode.TaskCancel;
@@ -97,9 +110,10 @@ namespace Aquirrel.ResetApi
                 resObj.msg = res.ReasonPhrase;
                 return r;
             }
-
+            token.ThrowIfCancellationRequested();
             var readTask = res.Content.ReadAsStringAsync();
             var resultStr = await readTask;
+            token.ThrowIfCancellationRequested();
             if (readTask.IsFaulted)
             {
                 resObj.error = ResponseErrorCode.ReadRpcContentError;
@@ -116,7 +130,7 @@ namespace Aquirrel.ResetApi
         }
 
         HttpClient httpClient = new HttpClient();
-        Task<HttpResponseMessage> SendAsync(IRequest request)
+        Task<HttpResponseMessage> SendAsync(IRequest request, CancellationToken token)
         {
             var content = request.ToJson();
             var req = new HttpRequestMessage()
@@ -126,7 +140,7 @@ namespace Aquirrel.ResetApi
                 RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
             };
             req.Headers.Add(RestApiConst.TraceId, request.currentId);
-            return httpClient.SendAsync(req);
+            return httpClient.SendAsync(req, token);
         }
     }
 }
