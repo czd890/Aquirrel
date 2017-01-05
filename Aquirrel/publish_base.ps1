@@ -1,4 +1,6 @@
+
 param($projectDir)
+
 $currDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $nugetdownloadUrl="https://nuget.org/nuget.exe"
 $publishdir=$currDir+"\.publish"

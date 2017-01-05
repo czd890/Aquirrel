@@ -1,5 +1,15 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.1",
+  "description": "aquirrel base lib. autofac service locator",
+  "authors": [ "calvin" ],
+  "packOptions": {
+    "owners": [ "calvin" ],
+    "repository": { "url": "https://github.com/czd890/Aquirrel" },
+    "summary": "aquirrel base lib. autofac service locator",
+    "releaseNotes": "autofac service locator",
+    "tags": [ "" ],
+    "files": [ "appsettings.json" ]
+  },
 
   "dependencies": {
     "Autofac": "4.2.1",

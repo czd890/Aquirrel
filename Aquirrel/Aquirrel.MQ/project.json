@@ -1,19 +1,20 @@
 {
-  "version": "1.0.0-*",
-  "description": "��rabbitmq�ķ�װ",
+  "version": "1.0.1",
+  "description": "aquirrel base lib. rabbitmq",
   "authors": [ "calvin" ],
   "packOptions": {
     "tags": [ "aquirrel", "aquirrel.rabbitmq" ],
+    "repository": { "url": "https://github.com/czd890/Aquirrel" },
     "files": [ "mqsettings.json" ],
     "owners": [ "calvin" ],
-    "summary": "rabbitmq",
-    "releaseNotes": "haha"
+    "summary": "aquirrel base lib. rabbitmq",
+    "releaseNotes": ""
   },
   "publishOptions": {
     "include": [ "mqsettings.json" ]
   },
   "dependencies": {
-    "Aquirrel": "1.0.0-*",
+    "Aquirrel": "1.0.*",
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
     "Microsoft.Extensions.Configuration.Binder": "1.1.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",

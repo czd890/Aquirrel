@@ -1,13 +1,13 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true
   },
 
   "dependencies": {
-    "Aquirrel": "1.0.0-*",
-    "Aquirrel.Logger.File": "1.0.0-*",
-    "Aquirrel.MQ": "1.0.0-*",
+    "Aquirrel": "1.0.*",
+    "Aquirrel.Logger.File": "1.0.*",
+    "Aquirrel.MQ": "1.0.*",
     "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0",
     "Microsoft.Extensions.Configuration": "1.1.0",
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
