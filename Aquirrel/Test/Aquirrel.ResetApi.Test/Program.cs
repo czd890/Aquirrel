@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using System.Text;
 
 namespace Aquirrel.ResetApi.Test
 {
@@ -12,6 +13,9 @@ namespace Aquirrel.ResetApi.Test
     {
         public static void Main(string[] args)
         {
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())

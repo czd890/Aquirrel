@@ -38,6 +38,7 @@ namespace Aquirrel.ResetApi.Test
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+            services.AddRestApi();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -45,6 +46,8 @@ namespace Aquirrel.ResetApi.Test
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseRestApiTrace();
 
             app.UseApplicationInsightsRequestTelemetry();
 

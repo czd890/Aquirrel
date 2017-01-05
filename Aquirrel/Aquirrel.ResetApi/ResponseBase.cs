@@ -8,7 +8,13 @@ namespace Aquirrel.ResetApi
 
     public class ResponseBase : IResponseBase
     {
+        public ResponseBase()
+        {
+            this.error = 200;
+        }
         public int error { get; set; }
+
+        public bool IsSuccess { get { return this.error == 200; } }
 
         public string msg { get; set; }
     }

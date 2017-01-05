@@ -2,9 +2,9 @@
 
 namespace Aquirrel.ResetApi
 {
-    internal interface ITraceRequest
+    public interface ITraceRequest
     {
-        Guid currentId { get; }
-        Guid parentId { get; }
+        string currentId { get; }
+        string parentId { get; }
     }
 }

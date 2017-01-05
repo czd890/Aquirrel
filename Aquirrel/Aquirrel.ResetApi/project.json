@@ -14,7 +14,10 @@
   "dependencies": {
     "NETStandard.Library": "1.6.1",
     "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
-    "Aquirrel": "1.0.*"
+    "Aquirrel": "1.0.*",
+    "System.Net.Http": "4.3.0",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
+    "System.Threading.Thread": "4.3.0",
   },
 
   "frameworks": {
