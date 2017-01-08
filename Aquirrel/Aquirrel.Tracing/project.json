@@ -1,11 +1,11 @@
 {
   "version": "1.0.1-beta1",
-  "description": "aquirrel base lib. resetapi lib",
+  "description": "aquirrel base lib. cat ",
   "authors": [ "calvin" ],
   "packOptions": {
     "owners": [ "calvin" ],
     "repository": { "url": "https://github.com/czd890/Aquirrel" },
-    "summary": "aquirrel base lib. resetapi lib",
+    "summary": "aquirrel base lib. cat",
     "releaseNotes": "",
     "tags": [ "" ],
     "files": [ "appsettings.json" ]
@@ -19,7 +19,8 @@
     "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
     "System.Threading.Thread": "4.3.0",
     "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta8",
-    "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.0",
+    "Aquirrel.ResetApi": "1.0.1-beta1",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
   },
 
   "frameworks": {

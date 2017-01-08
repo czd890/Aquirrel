@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +9,7 @@ namespace Aquirrel.Logger.File.Internal
 {
     public class LoggerOptionsModel
     {
+        static Regex regex = new Regex("\\[.+\\]");
         /// <summary>
         /// 最小记录级别
         /// </summary>
@@ -19,7 +21,17 @@ namespace Aquirrel.Logger.File.Internal
         /// <summary>
         /// 日志文件名称
         /// </summary>
-        public string FileNameTemplate { get; set; }
+        string _FileNameTemplate;
+        public string FileNameTemplate
+        {
+            get { return _FileNameTemplate; }
+            set
+            {
+                _FileNameTemplate = value;
+                FileNameTemplate_Time = regex.Match(_FileNameTemplate).Value;
+            }
+        }
+        public string FileNameTemplate_Time { get; private set; }
         /// <summary>
         /// 单文件最大大小。单位M
         /// </summary>

@@ -43,7 +43,7 @@ namespace Aquirrel.Logger.File
         }
         public string DefaultFileName
         {
-            get { return this._configuration["DefaultFileName"] ?? "yyyyMMdd"; }
+            get { return this._configuration["DefaultFileName"] ?? "[yyyyMMdd]"; }
         }
 
         public Tuple<bool, LogLevel> GetSwitch(string name)

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aquirrel.ResetApi;
 using Aquirrel.ResetApi.Internal;
+using Aquirrel.Tracing;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,7 +13,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddRestApi(this IServiceCollection services)
         {
-            services.AddSingleton<ApiClient>();
+            services.AddSingleton<IApiClient, ApiClient>(sp => new ApiClient(
+                sp.GetRequiredService<ILogger<ApiClient>>(),
+                sp.GetRequiredService<IRestApiResolveApiUrl>(),
+                sp.GetService<ITraceClient>()));
+
             services.AddSingleton<IRestApiResolveApiUrl, RestApiResolveApiUrl>();
             return services;
         }

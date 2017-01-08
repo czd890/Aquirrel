@@ -9,17 +9,20 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Http.Headers;
 using Aquirrel.ResetApi.Internal;
+using Aquirrel.Tracing;
 
 namespace Aquirrel.ResetApi
 {
-    public class ApiClient
+    public class ApiClient : IApiClient
     {
-        ILogger<ApiClient> Logger { get; set; }
-        IRestApiResolveApiUrl ApiResolveService { get; set; }
-        public ApiClient(ILogger<ApiClient> logger, IRestApiResolveApiUrl apiResolveService)
+        ILogger<ApiClient> Logger;
+        IRestApiResolveApiUrl ApiResolveService;
+        ITraceClient TraceClient;
+        public ApiClient(ILogger<ApiClient> logger, IRestApiResolveApiUrl apiResolveService, ITraceClient traceClient)
         {
             this.Logger = logger;
             this.ApiResolveService = apiResolveService;
+            this.TraceClient = traceClient;
         }
         public Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request)
         {
@@ -139,7 +142,17 @@ namespace Aquirrel.ResetApi
                 Content = new StringContent(content, Encoding.UTF8, "application/json"),
                 RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
             };
-            req.Headers.Add(RestApiConst.TraceId, request.currentId);
+            var als = this.TraceClient?.Current;
+            req.Headers.Add(RestApiConst.TraceId, als?.TraceId);
+            var next = 0;
+            if (als != null)
+            {
+                if (!((IDictionary<string, object>)als.ExtendData).ContainsKey("NextRpc"))
+                    als.ExtendData.NextRpc = 0;
+                als.ExtendData.NextRpc += RestApiConst.TraceLevelCurrentIncrement;
+                next = als.TraceLevel + als.ExtendData.NextRpc;
+            }
+            req.Headers.Add(RestApiConst.TraceLevel, next.ToString());
             return httpClient.SendAsync(req, token);
         }
     }

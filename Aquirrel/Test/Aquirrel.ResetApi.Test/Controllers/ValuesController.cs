@@ -5,24 +5,39 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Framework.DependencyInjection;
 
 namespace Aquirrel.ResetApi.Test.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
-        ApiClient ApiClient;
+        IApiClient ApiClient;
         ILogger _logger;
-        public ValuesController(ApiClient apiClient, ILogger<ValuesController> logger)
+        public ValuesController(IApiClient apiClient, ILogger<ValuesController> logger)
         {
             this.ApiClient = apiClient;
             this._logger = logger;
+
+        }
+        public class myreq : RequestBase<ResponseBase>
+        {
+            public myreq() : base(HttpMethod.Post, "http://localhost:5000/", "api/values")
+            {
+
+            }
+            public List<int> heihei { get; set; }
+
+
         }
         // GET api/values
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
-            var req = /*(IRequestBase<IResponseBase>)*/new RequestBase<ResponseBase>(HttpMethod.Post, "http://localhost:5000/", "api/values");
+            //var req = /*(IRequestBase<IResponseBase>)*/new RequestBase<ResponseBase>(HttpMethod.Post, "http://localhost:5000/", "api/values");
+            var req = new myreq() { heihei = new List<int>() { 1, 2, 3 } };
+            await this.ApiClient.ExecuteAsync(req);
+            await this.ApiClient.ExecuteAsync(req);
             await this.ApiClient.ExecuteAsync(req);
             //await Task.Delay(3000);
             return new string[] { "value1", "value2" };
@@ -38,8 +53,12 @@ namespace Aquirrel.ResetApi.Test.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task Post(myreq model)
         {
+            var req = new RequestBase<ResponseBase>(HttpMethod.Put, "http://localhost:5000/", "api/values");
+            await this.ApiClient.ExecuteAsync(req);
+            await this.ApiClient.ExecuteAsync(req);
+            await this.ApiClient.ExecuteAsync(req);
             this._logger.LogDebug("post--------------------");
         }
 

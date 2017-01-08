@@ -34,6 +34,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.ResetApi", "Aquirr
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Test", "test\Aquirrel.Test\Aquirrel.Test.xproj", "{94EE1390-F0D7-40DB-96CF-69FB740B8F88}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Tracing", "Aquirrel.Tracing\Aquirrel.Tracing.xproj", "{8A1B250A-A695-450A-9126-052E9FCF8D3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,10 @@ Global
 		{94EE1390-F0D7-40DB-96CF-69FB740B8F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94EE1390-F0D7-40DB-96CF-69FB740B8F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94EE1390-F0D7-40DB-96CF-69FB740B8F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A1B250A-A695-450A-9126-052E9FCF8D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A1B250A-A695-450A-9126-052E9FCF8D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A1B250A-A695-450A-9126-052E9FCF8D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A1B250A-A695-450A-9126-052E9FCF8D3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,5 +106,6 @@ Global
 		{F5802989-6CB9-4D92-AD35-114E68FAAB44} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{35BE177C-607B-4C59-9270-7D9918AC4020} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{94EE1390-F0D7-40DB-96CF-69FB740B8F88} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
+		{8A1B250A-A695-450A-9126-052E9FCF8D3D} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 	EndGlobalSection
 EndGlobal

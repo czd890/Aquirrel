@@ -127,7 +127,7 @@ namespace Aquirrel.Logger.File.Internal
             if (reNewFile)
                 return true;
             //TODO 使用 RollingType判断是否需要创建文件。提高效率！！！
-            if (_FileName != DateTime.Now.ToString(_options.FileNameTemplate))
+            if (_FileName != DateTime.Now.ToString(_options.FileNameTemplate_Time))
             {
                 return true;
             }
@@ -144,8 +144,9 @@ namespace Aquirrel.Logger.File.Internal
             int i = 0;
             do
             {
-                _FileName = DateTime.Now.ToString(_options.FileNameTemplate);
-                path = Path.Combine(_options.FileDiretoryPath, _FileName + "_" + i + ".log");
+                _FileName = DateTime.Now.ToString(_options.FileNameTemplate_Time);
+                var _fn = _options.FileNameTemplate.Replace(_options.FileNameTemplate_Time, _FileName.TrimStart('[').TrimEnd(']'));
+                path = Path.Combine(_options.FileDiretoryPath, _fn + "_" + i + ".log");
                 i++;
             } while (System.IO.File.Exists(path));
             var oldsw = _sw;

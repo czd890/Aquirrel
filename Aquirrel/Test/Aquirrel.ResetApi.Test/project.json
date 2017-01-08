@@ -18,6 +18,9 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "Aquirrel.ResetApi": "1.0.1-beta1",
     "System.Text.Encoding.CodePages": "4.3.0",
+    "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta8",
+    "Aquirrel.Tracing": "1.0.1-beta1",
+    "Aquirrel.Logger.File": "1.0.1",
   },
 
   "tools": {

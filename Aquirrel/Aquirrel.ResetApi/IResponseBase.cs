@@ -12,7 +12,7 @@ namespace Aquirrel.ResetApi
     {
         TData data { get; set; }
     }
-    public interface IRequest : ITraceRequest
+    public interface IRequest
     {
         HttpMethod Method { get; }
         string App { get; }

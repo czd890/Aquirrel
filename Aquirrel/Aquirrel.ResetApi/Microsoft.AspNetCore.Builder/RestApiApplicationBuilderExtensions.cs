@@ -11,7 +11,7 @@ namespace Microsoft.AspNetCore.Builder
     {
         public static IApplicationBuilder UseRestApiTrace(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ResetApiMiddleware>();
+            app.UseMiddleware<ResetApiMiddleware>(app.ApplicationServices);
             return app;
         }
     }

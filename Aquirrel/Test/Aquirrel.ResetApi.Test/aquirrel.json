@@ -1,0 +1,41 @@
+﻿{
+  "Aquirrel.Tracing": {
+    //上报队列空时，工作线程休眠时间
+    "SendTaskSleep": 10000,
+    "trace_api_App": "http://localhost:5000/",
+    "trace_api_Name": "/api/TraceReport"
+  }, 
+  //写本地log文件
+  //已创建logger的categoryName区分配置。可配置多规则多文件写入
+  "FileLogging": {
+    "IncludeScopes": true, //是否启用scopes。默认启用
+    // 相对路径：log:current path+'\log'
+    // 绝对路径：C://log
+    // linux 绝对路径：/var/log/netcorewebapp
+    //多环境部署，可以使用环境变量配置文件方式。
+    "DefaultPath": "log", //默认文件地址
+    "DefaultMaxSize": 100, //默认最大文件大小.100M
+    //最终生成日志文件名字为20200101_0.log。20200101:当前时间按照[]内的规则格式化。_0:文件序列号，在[]重复的情况下。.log:文件后缀
+    "DefaultFileName": "[yyyyMMdd]", //默认文件名字.文件的Rolling规则当前时间格式化FileName比较.
+    //过滤器最小要记录日志的级别，以.分割，namespace逐层匹配.Trace<Debug<Information<Warning<Error<Critical<None
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information",
+      "NetCoreWebApp": "Debug",
+      //trace上报服务器api错误记录级别为trace
+      "Aquirrel.Tracing.ReportClient": "Trace"
+    },
+    //log需要写入的文件。namespace逐层匹配
+    "Path": {
+      "Aquirrel.Tracing.ReportClient": "log/trace"
+    },
+    //log名字。namespace逐层匹配
+    "FileName": {
+      "Aquirrel.Tracing.ReportClient": "error_[yyyyMMdd]"
+    },
+    "MaxSize": {
+      "Aquirrel.Tracing.ReportClient": 100
+    }
+  }
+}

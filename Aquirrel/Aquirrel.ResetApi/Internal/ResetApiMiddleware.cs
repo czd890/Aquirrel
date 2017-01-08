@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Aquirrel.Tracing;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Framework.DependencyInjection;
 
 namespace Aquirrel.ResetApi.Internal
 {
@@ -12,29 +15,48 @@ namespace Aquirrel.ResetApi.Internal
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-
-        public ResetApiMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+        private readonly IServiceProvider _sp;
+        private readonly ITraceClient _traceClient;
+        private readonly IHostingEnvironment _env;
+        public ResetApiMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IHostingEnvironment env, IServiceProvider sp)
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<ResetApiMiddleware>();
+            _sp = sp;
+            _env = env;
+
+            _traceClient = _sp.GetService<ITraceClient>();
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
             var begin = DateTime.Now;
-            string pid = "unknown";
+            string pid = "";
+            int pLevel = 0;
             if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceId))
                 pid = httpContext.Request.Headers[RestApiConst.TraceId].FirstOrDefault();
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceLevel))
+                pLevel = httpContext.Request.Headers[RestApiConst.TraceLevel].FirstOrDefault().ToInt(0);
+            if (pid.IsNullOrEmpty())
+                pid = RestApiConst.NewTraceId();
+           
+            pLevel += RestApiConst.TraceLevelRPCIncrement;
+            _traceClient?.CreateTransaction(_env.ApplicationName, httpContext.Request.Method + ":" + httpContext.Request.Path, pid, pLevel,
+                httpContext.Connection.RemoteIpAddress.ToString());
 
-            RestApiALS.ALS.Value = new RestApiALS();
-            RestApiALS.ALS.Value.ParentTraceId = pid;
-            RestApiALS.ALS.Value.TraceId = Guid.NewGuid().ToString();
-            this._logger.LogDebug($"begin traceId:{RestApiALS.ALS.Value.TraceId}. parentId:{RestApiALS.ALS.Value.ParentTraceId}. {httpContext.Request.Method}:{httpContext.Request.Path}");
-
-            await _next(httpContext);
-            var execTime = DateTime.Now - begin;
-            this._logger.LogDebug($"  end traceId:{RestApiALS.ALS.Value.TraceId}. parentId:{RestApiALS.ALS.Value.ParentTraceId}. 执行时间:{execTime}. {httpContext.Request.Method}:{httpContext.Request.Path}");
-            //TODO 上报执行时间
-        }                                             
+            try
+            {
+                await _next(httpContext);
+            }
+            catch (Exception ex)
+            {
+                _traceClient?.Exception(ex);
+                throw;
+            }
+            finally
+            {
+                _traceClient?.Complete();
+            }
+        }
     }
 }

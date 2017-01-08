@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Aquirrel.ResetApi.Internal;
+using Aquirrel.Tracing.Internal;
 
 namespace Aquirrel.ResetApi
 {
@@ -12,17 +13,20 @@ namespace Aquirrel.ResetApi
     {
         public RequestBase(HttpMethod method, string app, string apiName)
         {
-            this._currentId = RestApiALS.ALS.Value.TraceId;
-            this._parentId = RestApiALS.ALS.Value.ParentTraceId;
+            //if (TracingALS.ALS.Value != null)
+            //{
+            //    this._currentId = TracingALS.ALS.Value.TraceId;
+            //    this._parentId = TracingALS.ALS.Value.ParentTraceId;
+            //}
             this._method = method;
             this._app = app;
             this.apiName = apiName;
         }
-        string _currentId { get; set; }
-        string _parentId { get; set; }
-        string ITraceRequest.currentId { get { return _currentId; } }
+        //string _currentId { get; set; }
+        //string _parentId { get; set; }
+        //string ITraceRequest.currentId { get { return _currentId; } }
 
-        string ITraceRequest.parentId { get { return _parentId; } }
+        //string ITraceRequest.parentId { get { return _parentId; } }
 
         HttpMethod _method;
         string _app;
