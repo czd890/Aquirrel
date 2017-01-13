@@ -1,28 +1,37 @@
-{
-  "version": "1.0.1",
-  "description": "aquirrel base lib. local file log provider",
-  "authors": [ "calvin" ],
-  "packOptions": {
-    "owners": [ "calvin" ],
-    "repository": { "url": "https://github.com/czd890/Aquirrel" },
-    "summary": "aquirrel base lib. local file log provider",
-    "releaseNotes": "",
-    "tags": [ "" ],
-    "files": [ "appsettings.json" ]
-  },
-
-  "dependencies": {
-    "Aquirrel": "1.0.*",
-    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
-    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
-    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
-    "NETStandard.Library": "1.6.1",
-    "System.Threading.Thread": "4.3.0"
-  },
-
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
-    }
-  }
+﻿{
+    "version":  "1.0.10",
+    "description":  "aquirrel base lib. local file log provider",
+    "authors":  [
+                    "calvin"
+                ],
+    "packOptions":  {
+                        "owners":  [
+                                       "calvin"
+                                   ],
+                        "repository":  {
+                                           "url":  "https://github.com/czd890/Aquirrel"
+                                       },
+                        "summary":  "aquirrel base lib. local file log provider",
+                        "releaseNotes":  "统一版本",
+                        "tags":  [
+                                     "log",
+                                     "file log"
+                                 ],
+                        "files":  [
+                                      "appsettings.json"
+                                  ]
+                    },
+    "dependencies":  {
+                         "Aquirrel":  "1.0.*",
+                         "Microsoft.AspNetCore.Http.Abstractions":  "1.1.0",
+                         "Microsoft.Extensions.Configuration.Abstractions":  "1.1.0",
+                         "Microsoft.Extensions.Logging.Abstractions":  "1.1.0",
+                         "NETStandard.Library":  "1.6.1",
+                         "System.Threading.Thread":  "4.3.0"
+                     },
+    "frameworks":  {
+                       "netstandard1.6":  {
+                                              "imports":  "dnxcore50"
+                                          }
+                   }
 }
