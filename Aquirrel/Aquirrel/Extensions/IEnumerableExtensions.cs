@@ -8,10 +8,12 @@ namespace Aquirrel
 {
     public static class IEnumerableExtensions
     {
-        public static void Add(this List<KeyValuePair<string, string>> source, string key, string value)
+        public static void Add<TKey, TValue>(this IList<KeyValuePair<TKey, TValue>> source, TKey key, TValue value)
         {
-            source.Add(new KeyValuePair<string, string>(key, value));
+            source.Add(new KeyValuePair<TKey, TValue>(key, value));
         }
+
+
         public static string ConcatEx(this IEnumerable<string> source, string delimiter)
         {
             if (source == null || source.Count() == 0)
@@ -43,6 +45,15 @@ namespace Aquirrel
             foreach (var item in source)
             {
                 each(item);
+            }
+        }
+        public static void Each<T>(this IEnumerable<T> source, Action<T, int> each)
+        {
+            int index = 0;
+            foreach (var item in source)
+            {
+                each(item, index);
+                index++;
             }
         }
 
