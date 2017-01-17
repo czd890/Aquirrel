@@ -26,29 +26,28 @@ namespace Aquirrel.Tracing
 
         //TODO 重写组装TraceEventEntry 等model
 
-        public TransactionEntry CreateTransaction(string app, string name, string traceId, int tracelevel, string clientIp = "")
+        public TransactionEntry CreateTransaction(string app, string name, string traceId, string parentId)
         {
             var als = TransactionEntry.ALS.Value = new TransactionEntry();
             als.App = app;
             als.Name = name;
             als.TraceId = traceId.IsNullOrEmpty() ? Guid.NewGuid().ToString() : traceId;
-            als.TraceLevel = tracelevel;
+            als.ParentId = parentId;
             als.LastTime = DateTime.Now;
             als.LocalIp = LocalIp.GetLocalIPV4().ConfigureAwait(false).GetAwaiter().GetResult();
-            als.ClientIp = clientIp;
             als.ExtendData.isFirst = false;
             als.ExtendData.seq = 0;
-            this._reportClient.Report(new TraceEventEntry() { ALS = TransactionEntry.ALS.Value, Event = "BEGIN" });
+            this._reportClient.Report(new TraceEventEntry() { Event = "BEGIN" });
             return als;
         }
         public void Complete()
         {
-            this._reportClient.Report(new TraceEventEntry() {  ALS = TransactionEntry.ALS.Value, Event = "END" });
+            this._reportClient.Report(new TraceEventEntry() { Event = "END" });
         }
 
         public void Event(string eventName)
         {
-            this._reportClient.Report(new TraceEventEntry() { ALS = TransactionEntry.ALS.Value, Event = eventName });
+            this._reportClient.Report(new TraceEventEntry() { Event = eventName });
         }
 
         public void Exception(Exception ex)

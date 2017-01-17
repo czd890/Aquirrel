@@ -5,21 +5,18 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.Tracing.Internal
 {
-    public class EntryBase
-    {
-        public TransactionEntry ALS { get; set; }
-    }
-    public class TraceEventEntry : EntryBase
+
+    public class TraceEventEntry
     {
         public string Event { get; set; }
     }
-    public class TraceExceptionEntry : EntryBase
+    public class TraceExceptionEntry
     {
         public Exception EX { get; set; }
         public string Message { get; set; }
     }
 
-    public class TraceCompleteEntry : EntryBase
+    public class TraceCompleteEntry
     {
         public string Message { get; set; }
     }

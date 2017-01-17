@@ -18,7 +18,7 @@ namespace Aquirrel.Tracing
         /// <param name="app"></param>
         /// <param name="name"></param>
         TransactionEntry CreateTransaction(string app, string name);
-        TransactionEntry CreateTransaction(string app, string name, string traceId, int level, string clientIp = "");
+        TransactionEntry CreateTransaction(string app, string name, string traceId, string parentId);
 
         void Event(string eventName);
 

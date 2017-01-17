@@ -32,18 +32,16 @@ namespace Aquirrel.ResetApi.Internal
         {
             var begin = DateTime.Now;
             string pid = "";
-            int pLevel = 0;
             if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceId))
                 pid = httpContext.Request.Headers[RestApiConst.TraceId].FirstOrDefault();
-            if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceLevel))
-                pLevel = httpContext.Request.Headers[RestApiConst.TraceLevel].FirstOrDefault().ToInt(0);
             if (pid.IsNullOrEmpty())
                 pid = RestApiConst.NewTraceId();
-           
-            pLevel += RestApiConst.TraceLevelRPCIncrement;
-            _traceClient?.CreateTransaction(_env.ApplicationName, httpContext.Request.Method + ":" + httpContext.Request.Path, pid, pLevel,
-                httpContext.Connection.RemoteIpAddress.ToString());
 
+            var entry = _traceClient?.CreateTransaction(_env.ApplicationName, httpContext.Request.Method + ":" + httpContext.Request.Path, RestApiConst.NewTraceId(), pid);
+            entry.ExtendData.clientIp = httpContext.Connection.RemoteIpAddress.ToString();
+            entry.ExtendData.headers = httpContext.Request.Headers;
+            entry.ExtendData.user = httpContext.User?.Identity?.Name;
+            entry.ExtendData.query = httpContext.Request.QueryString;
             try
             {
                 await _next(httpContext);

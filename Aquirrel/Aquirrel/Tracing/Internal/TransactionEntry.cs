@@ -25,9 +25,9 @@ namespace Aquirrel.Tracing.Internal
         public string TraceId { get; set; }
         public int TraceLevel { get; set; }
         public string LocalIp { get; set; }
-        public string ClientIp { get; set; }
         public DateTime LastTime { get; set; }
 
         public dynamic ExtendData { get; set; }
+        public string ParentId { get; set; }
     }
 }
