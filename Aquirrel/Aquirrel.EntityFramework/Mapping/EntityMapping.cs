@@ -28,7 +28,6 @@ namespace Aquirrel.EntityFramework.Mapping
             if (null == modelBuilder.Model.FindEntityType(entityType))
                 modelBuilder.Model.AddEntityType(entityType);
 
-            
             if (entityTypeInfo.GetInterfaces().Any(face => face.GetTypeInfo().IsGenericType && face.GetGenericTypeDefinition() == baseType))
             {
                 if (typeof(TKey) == typeof(Guid))
@@ -40,6 +39,7 @@ namespace Aquirrel.EntityFramework.Mapping
                 {
                     modelBuilder.Entity(entityType).HasKey("Id");
                 }
+                modelBuilder.Entity(entityType).Property("TimeStamp").IsConcurrencyToken(true);
             }
         }
     }
