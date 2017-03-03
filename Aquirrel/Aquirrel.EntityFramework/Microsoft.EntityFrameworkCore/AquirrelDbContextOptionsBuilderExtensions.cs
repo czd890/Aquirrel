@@ -18,7 +18,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="assemblys">需要查找的assembly集合</param>
         /// <returns></returns>
-        public static DbContextOptionsBuilder ConfigureAutoEntityAssemblys(this DbContextOptionsBuilder builder, Assembly[] assemblys)
+        public static DbContextOptionsBuilder ConfigureAutoEntityAssemblys(this DbContextOptionsBuilder builder, params Assembly[] assemblys)
         {
             return SetOption(builder, ops => ops.EntityAssebmlys = assemblys);
         }
@@ -28,7 +28,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="assemblys">需要查找的assembly集合</param>
         /// <returns></returns>
-        public static DbContextOptionsBuilder ConfigureEntityMappings(this DbContextOptionsBuilder builder, Assembly[] assemblys)
+        public static DbContextOptionsBuilder ConfigureEntityMappings(this DbContextOptionsBuilder builder, params Assembly[] assemblys)
         {
 
             return SetOption(builder, ops =>

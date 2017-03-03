@@ -1,20 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Aquirrel.EntityFramework
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
-        DbSet<TEntity> Collection { get; }
-        //AquirrelDbContext DbContext { get; }
+        IQueryable<TEntity> Collection { get; }
+        AquirrelDbContext DbContext { get; }
 
-        void Add(TEntity entity);
+        void Create(TEntity entity);
+        void Create(IEnumerable<TEntity> entity);
+        Task CreateAsync(TEntity entity);
+        Task CreateAsync(IEnumerable<TEntity> entity);
+        void Update(TEntity entity);
+        void Update(IEnumerable<TEntity> entity);
+        Task UpdateAsync(TEntity entity);
+        Task UpdateAsync(IEnumerable<TEntity> entity);
 
-
-
-        TEntity Single(Expression<Func<TEntity, bool>> predicate);
-        TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
-        
     }
 }

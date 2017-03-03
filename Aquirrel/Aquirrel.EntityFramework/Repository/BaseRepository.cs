@@ -17,19 +17,47 @@ namespace Aquirrel.EntityFramework
 
         public DbSet<TEntity> Collection { get { return this.DbContext.Set<TEntity>(); } }
 
-        public void Add(TEntity entity)
+        IQueryable<TEntity> IBaseRepository<TEntity>.Collection { get { return this.Collection.AsQueryable(); } }
+
+        public async Task CreateAsync(TEntity entity)
+        {
+            await this.Collection.AddAsync(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+        public void Create(TEntity entity)
         {
             this.Collection.Add(entity);
             this.DbContext.SaveChanges();
         }
-
-        public TEntity Single(Expression<Func<TEntity, bool>> predicate)
+        public async Task CreateAsync(IEnumerable<TEntity> entity)
         {
-            return this.Collection.Single(predicate);
+            await this.Collection.AddRangeAsync(entity);
+            await this.DbContext.SaveChangesAsync();
         }
-        public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        public void Create(IEnumerable<TEntity> entity)
         {
-            return this.Collection.SingleOrDefault(predicate);
+            this.Collection.AddRange(entity);
+            this.DbContext.SaveChanges();
+        }
+        public void Update(TEntity entity)
+        {
+            this.Collection.Update(entity);
+            this.DbContext.SaveChanges();
+        }
+        public async Task UpdateAsync(TEntity entity)
+        {
+            this.Collection.Update(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+        public void Update(IEnumerable<TEntity> entity)
+        {
+            this.Collection.UpdateRange(entity);
+            this.DbContext.SaveChanges();
+        }
+        public async Task UpdateAsync(IEnumerable<TEntity> entity)
+        {
+            this.Collection.UpdateRange(entity);
+            await this.DbContext.SaveChangesAsync();
         }
     }
 }

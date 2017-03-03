@@ -25,6 +25,5 @@ namespace Aquirrel.EntityFramework
             _builder = optionsBuilder;
             base.OnConfiguring(optionsBuilder);
         }
-
     }
 }

@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
                 .AddDbContext<TDbConext>(optionsAction, contextLifetime);
 
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             return services;
         }
     }
