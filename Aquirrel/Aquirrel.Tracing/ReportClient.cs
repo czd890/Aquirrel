@@ -122,7 +122,7 @@ namespace Aquirrel.Tracing
                                 i--;
                                 var r = /*await apiClient.ExecuteAsync(req);*/
                                     new ResponseBase();
-                                if (r.error == 200)
+                                if (r.resCode == 200)
                                 {
                                     iss = true;
                                     break;

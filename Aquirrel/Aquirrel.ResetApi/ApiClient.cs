@@ -35,7 +35,7 @@ namespace Aquirrel.ResetApi
             {
                 return res.data;
             }
-            throw new BusinessException($"{res.msg}.errorcode:{res.error}");
+            throw new BusinessException($"{res.msg}.errorcode:{res.resCode}");
         }
         public Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request) where IRes : class, IResponseBase<IData>
         {
@@ -55,7 +55,7 @@ namespace Aquirrel.ResetApi
                 }
                 catch (Exception ex)
                 {
-                    obj.error = ResponseErrorCode.ToJsonError;
+                    obj.resCode = ResponseErrorCode.ToJsonError;
                     obj.msg = ex.Message;
                     this.Logger.LogError(0, ex, "rpc content to json error.{0}", read.Item2);
                 }
@@ -79,7 +79,7 @@ namespace Aquirrel.ResetApi
                 }
                 catch (Exception ex)
                 {
-                    obj.error = ResponseErrorCode.ToJsonError;
+                    obj.resCode = ResponseErrorCode.ToJsonError;
                     obj.msg = ex.Message;
                     this.Logger.LogError(0, ex, "rpc content to json error.{0}", read.Item2);
                 }
@@ -95,13 +95,13 @@ namespace Aquirrel.ResetApi
             token.ThrowIfCancellationRequested();
             if (resTask.IsCanceled)
             {
-                resObj.error = ResponseErrorCode.TaskCancel;
+                resObj.resCode = ResponseErrorCode.TaskCancel;
                 resObj.msg = "req rpc task is canceled";
                 return r;
             }
             if (resTask.IsFaulted)
             {
-                resObj.error = ResponseErrorCode.TaskFail;
+                resObj.resCode = ResponseErrorCode.TaskFail;
                 resObj.msg = resTask.Exception.GetBaseException().Message;
                 this.Logger.LogError(0, resTask.Exception, "req rpc api error.{0}", request.ToJson());
                 return r;
@@ -109,7 +109,7 @@ namespace Aquirrel.ResetApi
 
             if (!res.IsSuccessStatusCode)
             {
-                resObj.error = res.StatusCode.ToInt();
+                resObj.resCode = res.StatusCode.ToInt();
                 resObj.msg = res.ReasonPhrase;
                 return r;
             }
@@ -119,13 +119,13 @@ namespace Aquirrel.ResetApi
             token.ThrowIfCancellationRequested();
             if (readTask.IsFaulted)
             {
-                resObj.error = ResponseErrorCode.ReadRpcContentError;
+                resObj.resCode = ResponseErrorCode.ReadRpcContentError;
                 resObj.msg = readTask.Exception.GetBaseException().Message;
                 return r;
             }
             if (readTask.IsCanceled)
             {
-                resObj.error = ResponseErrorCode.TaskCancel;
+                resObj.resCode = ResponseErrorCode.TaskCancel;
                 resObj.msg = "read prc content task is canceled";
                 return r;
             }

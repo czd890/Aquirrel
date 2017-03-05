@@ -1,5 +1,5 @@
 ﻿{
-    "version":  "1.0.9",
+    "version":  "1.0.14",
     "description":  "aquirrel base lib. resetapi lib",
     "authors":  [
                     "calvin"
@@ -27,8 +27,8 @@
                          "System.Net.Http":  "4.3.0",
                          "Microsoft.AspNetCore.Http.Abstractions":  "1.1.0",
                          "System.Threading.Thread":  "4.3.0",
-                         "Microsoft.Framework.DependencyInjection.Abstractions":  "1.0.0-beta8",
-                         "Microsoft.AspNetCore.Hosting.Abstractions":  "1.1.0"
+                         "Microsoft.AspNetCore.Hosting.Abstractions":  "1.1.0",
+                         "Microsoft.Extensions.DependencyInjection":  "1.1.0"
                      },
     "frameworks":  {
                        "netstandard1.6":  {
