@@ -24,15 +24,18 @@
       "Microsoft": "Information",
       "NetCoreWebApp": "Debug",
       //trace上报服务器api错误记录级别为trace
-      "Aquirrel.Tracing.ReportClient": "Trace"
+      "Aquirrel.Tracing.ReportClient": "Trace",
+      "Aquirrel.ResetApi.Test.Service.ReportClient": "Trace"
     },
     //log需要写入的文件。namespace逐层匹配
     "Path": {
-      "Aquirrel.Tracing.ReportClient": "log/trace"
+      "Aquirrel.Tracing.ReportClient": "log/trace",
+      "Aquirrel.ResetApi.Test.Service.ReportClient": "log/trace"
     },
     //log名字。namespace逐层匹配
     "FileName": {
-      "Aquirrel.Tracing.ReportClient": "error_[yyyyMMdd]"
+      "Aquirrel.Tracing.ReportClient": "error_[yyyyMMdd]",
+      "Aquirrel.ResetApi.Test.Service.ReportClient": "trace_[yyyyMMdd]"
     },
     "MaxSize": {
       "Aquirrel.Tracing.ReportClient": 100

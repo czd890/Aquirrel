@@ -12,6 +12,6 @@ namespace Aquirrel.Tracing.Internal
         public ReportRequest(HttpMethod method, string app, string apiName) : base(method, app, apiName)
         {
         }
-        public object input { get; set; }
+        public List<dynamic> input { get; set; }
     }
 }

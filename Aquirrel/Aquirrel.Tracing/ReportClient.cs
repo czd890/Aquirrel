@@ -26,7 +26,6 @@ namespace Aquirrel.Tracing
         System.Collections.Concurrent.ConcurrentQueue<object> workRunning = new System.Collections.Concurrent.ConcurrentQueue<object>();
         public ReportClient(
             ILogger<ReportClient> logger,
-            //IRestApiResolveApiUrl resovleReportApi,
             IServiceProvider sp,
             TracingSetting setting)
         {
@@ -40,60 +39,38 @@ namespace Aquirrel.Tracing
         }
 
         //TODO 消息的格式化独立出来可替换
-        public void Report(TraceCompleteEntry entry)
-        {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message } });
-        }
 
-        public void Report(TraceExceptionEntry entry)
+        void Report(TraceRoot als, IEnumerable<KeyValuePair<string, string>> datas, bool hasRoot = false)
         {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message }, { "ex", entry.EX?.ToString() } });
-        }
-
-        public void Report(TraceEventEntry entry)
-        {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "event", entry.Event } });
-        }
-
-        void Report(TransactionEntry als, IEnumerable<KeyValuePair<string, string>> datas)
-        {
-            if (als == null)
-            {
-                this._logger.LogDebug("trace event als is null.");
-                return;
-            }
-            als.ExtendData.seq++;
-            var now = als.LastTime = DateTime.Now;
-
             dynamic dy = new System.Dynamic.ExpandoObject();
-            if (!als.ExtendData.isFirst)
+            if (hasRoot)
             {
                 dy.app = als.App;
                 dy.name = als.Name;
-                dy.clientip = als.ClientIp;
+                dy.userid = als.UserId;
                 dy.localip = als.LocalIp;
-                dy.level = als.TraceLevel;
+                dy.clientip = als.ClientIp;
+                dy.parentid = als.ParentId;
+                dy.data = als.ExtendData;
             }
-            dy.seq = als.ExtendData.seq;
+            else
+            {
+                dy.data = datas;
+            }
+            dy.seq = als.Seq;
             dy.traceid = als.TraceId;
-            dy.data = datas;
-            dy.time = now;
+            dy.time = DateTime.Now;
             if (this.workAdd.Count > this._conf.MaxQueueWait)
             {
                 object result;
                 this.workAdd.TryDequeue(out result);
             }
             this.workAdd.Enqueue(dy);
-        }
 
+        }
+        static List<object> _curCont = new List<object>();
         async void Work()
         {
-            //TODO 事件批量压缩上报
-            var apiClient = _sp.GetService<IApiClient>();
-            var req = new ReportRequest(HttpMethod.Post, this._conf.ApiApp, this._conf.ApiName);
             while (true)
             {
                 if (this.workAdd.IsEmpty)
@@ -108,41 +85,78 @@ namespace Aquirrel.Tracing
 
                 while (!this.workRunning.IsEmpty)
                 {
-                    object obj;
-                    if (this.workRunning.TryDequeue(out obj))
+                    _curCont.Clear();
+                    var _i = 0;
+                    while (!this.workRunning.IsEmpty && _i < this._conf.MaxBatchSubmitSize)
                     {
-                        req.input = obj;
-                        int i = 2;
-                        bool iss = false;
-                        string error = "";
-                        while (i > 0)
+                        object obj;
+                        if (this.workRunning.TryDequeue(out obj))
                         {
-                            try
-                            {
-                                i--;
-                                var r = /*await apiClient.ExecuteAsync(req);*/
-                                    new ResponseBase();
-                                if (r.resCode == 200)
-                                {
-                                    iss = true;
-                                    break;
-                                }
-                                error = r.msg;
-                                Thread.Sleep(1000);
-                            }
-                            catch (Exception ex)
-                            {
-                                error = ex.Message;
-                                Thread.Sleep(this._conf.SendTaskSleep);
-                            }
+                            _curCont.Add(obj);
+                            _i++;
                         }
-                        if (iss)
+
+                    }
+
+
+                    int i = 2;
+                    while (i > 0)
+                    {
+                        try
                         {
-                            this._logger.LogTrace("trace log report error. {0}.", error);
+                            i--;
+
+                            if (!await this.Report(_curCont))
+                                Thread.Sleep(1000);
+                            else
+                                break;
+                        }
+                        catch (Exception ex)
+                        {
+                            this._logger.LogTrace("trace log report error. {0}.", ex.Message);
+                            Thread.Sleep(this._conf.SendTaskSleep);
                         }
                     }
                 }
             }
+        }
+        protected virtual async Task<bool> Report(List<dynamic> datas)
+        {
+            var req = new ReportRequest(HttpMethod.Post, this._conf.ApiApp, this._conf.ApiName);
+            req.input = datas;
+            var apiClient = _sp.GetService<IApiClient>();
+            var r = await apiClient.ExecuteAsync(req);
+
+            if (r.resCode == 200)
+            {
+                return true;
+            }
+            else
+            {
+                this._logger.LogTrace("trace log report work error. {0}.", r?.msg);
+            }
+
+            return false;
+        }
+
+        public void Report(TraceRoot root)
+        {
+            this.Report(root, null, true);
+        }
+
+        public void Report(TraceRoot root, string message)
+        {
+            this.Report(root, new List<KeyValuePair<string, string>>() { { "message", message } });
+        }
+
+        public void Report(TraceRoot root, string message, Exception exception)
+        {
+            this.Report(root, new List<KeyValuePair<string, string>>() { { "message", message }, { "exception", exception.ToString() } });
+        }
+
+        public void Report(TraceRoot root, Exception exception)
+        {
+            this.Report(root, exception.Message, exception);
         }
     }
 }

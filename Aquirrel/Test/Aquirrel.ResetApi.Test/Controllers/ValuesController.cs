@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Aquirrel.Tracing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Framework.DependencyInjection;
@@ -45,8 +46,9 @@ namespace Aquirrel.ResetApi.Test.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<string> Get(int id)
+        public async Task<string> Get(int id, [FromServices]ITraceClient trace)
         {
+            trace.Event("aabbcc");
             await Task.Delay(3000);
             return "value";
         }

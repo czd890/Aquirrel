@@ -20,10 +20,10 @@ namespace Aquirrel.ResetApi.Test
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-           var builder2 = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("aquirrel.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"aquirrel.{env.EnvironmentName}.json", optional: true);
+            var builder2 = new ConfigurationBuilder()
+                 .SetBasePath(env.ContentRootPath)
+                 .AddJsonFile("aquirrel.json", optional: true, reloadOnChange: true)
+                 .AddJsonFile($"aquirrel.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsEnvironment("Development"))
             {
@@ -46,8 +46,13 @@ namespace Aquirrel.ResetApi.Test
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
-            services.AddRestApi();
             services.AddAquirrelTrace(AquirrelConf.GetSection("Aquirrel.Tracing"));
+            services.AddRestApi();
+            services.AddSingleton<Aquirrel.Tracing.IReportClient>(
+                sp => new Service.ReportClient(
+                    sp.GetService<ILogger<Service.ReportClient>>(),
+                    sp,
+                    new Tracing.Internal.TracingSetting(AquirrelConf.GetSection("Aquirrel.Tracing"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -64,7 +69,7 @@ namespace Aquirrel.ResetApi.Test
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMvc();
-            
+
         }
     }
 }

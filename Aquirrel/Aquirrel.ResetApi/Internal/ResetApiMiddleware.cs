@@ -29,18 +29,36 @@ namespace Aquirrel.ResetApi.Internal
 
         public async Task Invoke(HttpContext httpContext)
         {
-            var begin = DateTime.Now;
-            string pid = "";
-            if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceId))
-                pid = httpContext.Request.Headers[RestApiConst.TraceId].FirstOrDefault();
-            if (pid.IsNullOrEmpty())
-                pid = RestApiConst.NewTraceId();
+            if (_traceClient != null)
+            {
+                string traceId = null;
+                if (traceId == null && httpContext.Request.Headers.ContainsKey(RestApiConst.TraceId))
+                    traceId = httpContext.Request.Headers[RestApiConst.TraceId].FirstOrDefault();
+                if (traceId == null && httpContext.Request.Query.ContainsKey(RestApiConst.TraceId))
+                    traceId = httpContext.Request.Query[RestApiConst.TraceId].FirstOrDefault();
+                if (traceId == null && httpContext.Request.HasFormContentType && httpContext.Request.Form.ContainsKey(RestApiConst.TraceId))
+                    traceId = httpContext.Request.Form[RestApiConst.TraceId];
+                if (traceId == null && httpContext.Request.Cookies.ContainsKey(RestApiConst.TraceId))
+                    traceId = httpContext.Request.Cookies[RestApiConst.TraceId];
 
-            var entry = _traceClient?.CreateTransaction(_env.ApplicationName, httpContext.Request.Method + ":" + httpContext.Request.Path, RestApiConst.NewTraceId(), pid);
-            entry.ExtendData.clientIp = httpContext.Connection.RemoteIpAddress.ToString();
-            entry.ExtendData.headers = httpContext.Request.Headers;
-            entry.ExtendData.user = httpContext.User?.Identity?.Name;
-            entry.ExtendData.query = httpContext.Request.QueryString;
+                if (traceId.IsNullOrEmpty())
+                    traceId = RestApiConst.NewTraceId();
+
+                httpContext.Response.Cookies.Append(RestApiConst.TraceId, traceId);
+                httpContext.Response.Headers.Add(RestApiConst.TraceId, new Microsoft.Extensions.Primitives.StringValues(traceId));
+
+                var traceRoot = await _traceClient.CreateTransaction(_env.ApplicationName, httpContext.Request.Path, RestApiConst.NewTraceId(), traceId ?? "");
+                traceRoot.UserId = httpContext.User?.Identity?.Name;
+                traceRoot.ClientIp = httpContext.Connection.RemoteIpAddress.ToString();
+                traceRoot.ExtendData.contentType = httpContext.Request.ContentType;
+                traceRoot.ExtendData.headers = httpContext.Request.Headers.ToArray();
+                if (httpContext.Request.HasFormContentType)
+                    traceRoot.ExtendData.form = httpContext.Request.Form.ToArray();
+                traceRoot.ExtendData.query = httpContext.Request.QueryString;
+                traceRoot.ExtendData.method = httpContext.Request.Method;
+
+                _traceClient.Begin(traceRoot);
+            }
             try
             {
                 await _next(httpContext);

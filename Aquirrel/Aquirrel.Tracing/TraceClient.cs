@@ -18,54 +18,58 @@ namespace Aquirrel.Tracing
             this._reportClient = reportClient;
         }
 
-        public TransactionEntry Current { get { return TransactionEntry.ALS.Value; } }
-        public TransactionEntry CreateTransaction(string app, string name)
+        public TraceRoot Current { get { return TraceRoot.ALS.Value; } }
+        public Task<TraceRoot> CreateTransaction(string app, string name)
         {
-            return this.CreateTransaction(app, name, "", 0);
+            return this.CreateTransaction(app, name, "", "");
         }
 
         //TODO 重写组装TraceEventEntry 等model
 
-        public TransactionEntry CreateTransaction(string app, string name, string traceId, string parentId)
+        public async Task<TraceRoot> CreateTransaction(string app, string name, string traceId, string parentId)
         {
-            var als = TransactionEntry.ALS.Value = new TransactionEntry();
+            var als = new TraceRoot();
             als.App = app;
             als.Name = name;
             als.TraceId = traceId.IsNullOrEmpty() ? Guid.NewGuid().ToString() : traceId;
             als.ParentId = parentId;
             als.LastTime = DateTime.Now;
-            als.LocalIp = LocalIp.GetLocalIPV4().ConfigureAwait(false).GetAwaiter().GetResult();
-            als.ExtendData.isFirst = false;
-            als.ExtendData.seq = 0;
-            this._reportClient.Report(new TraceEventEntry() { Event = "BEGIN" });
+            als.LocalIp = await LocalIp.GetLocalIPV4();
+
             return als;
+        }
+        public void Begin(TraceRoot root)
+        {
+            TraceRoot.ALS.Value = root;
+            if (this._reportClient == null)
+                return;
+            this._reportClient.Report(TraceRoot.ALS.Value);
         }
         public void Complete()
         {
-            this._reportClient.Report(new TraceEventEntry() { Event = "END" });
+            if (this._reportClient == null)
+                return;
+            this._reportClient.Report(TraceRoot.ALS.Value);
         }
 
         public void Event(string eventName)
         {
-            this._reportClient.Report(new TraceEventEntry() { Event = eventName });
+            if (this._reportClient == null)
+                return;
+            this._reportClient.Report(TraceRoot.ALS.Value, eventName);
         }
 
         public void Exception(Exception ex)
         {
-            this.Exception("", ex);
-        }
-        public void Exception(string message)
-        {
-            this.Exception(message, null);
+            this.Exception(ex.Message, ex);
         }
 
         public void Exception(string message, Exception ex)
         {
-            this._reportClient.Report(new TraceExceptionEntry() { ALS = TransactionEntry.ALS.Value, Message = message, EX = ex });
+            if (this._reportClient == null)
+                return;
+            this._reportClient.Report(TraceRoot.ALS.Value, message, ex);
         }
-
-
-
 
 
     }

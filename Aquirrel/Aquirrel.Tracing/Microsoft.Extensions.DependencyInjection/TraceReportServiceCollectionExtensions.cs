@@ -15,11 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddAquirrelTrace(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<ITraceClient, TraceClient>();
-            services.AddSingleton<IReportClient, ReportClient>(sp => new ReportClient(
-                sp.GetRequiredService<ILogger<ReportClient>>(),
-                //sp.GetRequiredService<IRestApiResolveApiUrl>(),
-                sp, new Aquirrel.Tracing.Internal.TracingSetting(configuration)));
+            AddAquirrelTrace(services, new Aquirrel.Tracing.Internal.TracingSetting(configuration));
             return services;
         }
         public static IServiceCollection AddAquirrelTrace(this IServiceCollection services, TracingSetting conf)
@@ -27,7 +23,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITraceClient, TraceClient>();
             services.AddSingleton<IReportClient, ReportClient>(sp => new ReportClient(
                 sp.GetRequiredService<ILogger<ReportClient>>(),
-                //sp.GetRequiredService<IRestApiResolveApiUrl>(),
                 sp, conf));
             return services;
         }

@@ -13,6 +13,14 @@ namespace Aquirrel
             source.Add(new KeyValuePair<TKey, TValue>(key, value));
         }
 
+        public static void Add<TKey, TValue>(this IList<KeyValuePair<TKey, TValue>> source, params KeyValuePair<TKey, TValue>[] datas)
+        {
+            foreach (var item in datas)
+            {
+                source.Add(item);
+            }
+        }
+
 
         public static string ConcatEx(this IEnumerable<string> source, string delimiter)
         {

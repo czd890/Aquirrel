@@ -142,17 +142,10 @@ namespace Aquirrel.ResetApi
                 Content = new StringContent(content, Encoding.UTF8, "application/json"),
                 RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
             };
-            var als = this.TraceClient?.Current;
-            req.Headers.Add(RestApiConst.TraceId, als?.TraceId);
-            var next = 0;
-            if (als != null)
+            if (this.TraceClient != null&& this.TraceClient.Current!=null)
             {
-                if (!((IDictionary<string, object>)als.ExtendData).ContainsKey("NextRpc"))
-                    als.ExtendData.NextRpc = 0;
-                als.ExtendData.NextRpc += RestApiConst.TraceLevelCurrentIncrement;
-                next = als.TraceLevel + als.ExtendData.NextRpc;
+                req.Headers.Add(RestApiConst.TraceId, this.TraceClient.Current.TraceId);
             }
-            req.Headers.Add(RestApiConst.TraceLevel, next.ToString());
             return httpClient.SendAsync(req, token);
         }
     }

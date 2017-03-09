@@ -1,4 +1,5 @@
-﻿using Aquirrel.Tracing.Internal;
+﻿using System;
+using Aquirrel.Tracing.Internal;
 
 namespace Aquirrel.Tracing
 {
@@ -9,8 +10,9 @@ namespace Aquirrel.Tracing
     public interface IReportClient
     {
 
-        void Report(TraceEventEntry entry);
-        void Report(TraceExceptionEntry entry);
-        void Report(TraceCompleteEntry entry);
+        void Report(TraceRoot root);
+        void Report(TraceRoot root, string message);
+        void Report(TraceRoot root, string message, Exception exception);
+        void Report(TraceRoot root, Exception exception);
     }
 }
