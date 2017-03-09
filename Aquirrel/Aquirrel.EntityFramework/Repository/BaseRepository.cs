@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.EntityFramework
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+
+
+
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity>
+        where TEntity : class
     {
-        public BaseRepository(DbContext dbContext)
+        public BaseRepository(AquirrelDbContext dbContext)
         {
             this.DbContext = dbContext;
         }
@@ -57,6 +61,30 @@ namespace Aquirrel.EntityFramework
         public async Task UpdateAsync(IEnumerable<TEntity> entity)
         {
             this.Collections.UpdateRange(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+
+        public void Delete(TEntity entity)
+        {
+            this.Collections.Remove(entity);
+            this.DbContext.SaveChanges();
+        }
+
+        public void Delete(IEnumerable<TEntity> entity)
+        {
+            this.Collections.RemoveRange(entity);
+            this.DbContext.SaveChanges();
+        }
+
+        public async Task DeleteAsync(TEntity entity)
+        {
+            this.Collections.Remove(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(IEnumerable<TEntity> entity)
+        {
+            this.Collections.RemoveRange(entity);
             await this.DbContext.SaveChangesAsync();
         }
     }
