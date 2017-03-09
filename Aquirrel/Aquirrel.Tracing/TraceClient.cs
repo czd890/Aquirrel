@@ -55,7 +55,7 @@ namespace Aquirrel.Tracing
         public void Event(string eventName)
         {
             if (this._reportClient == null)
-                return;
+                return; TraceRoot.ALS.Value.SeqIncremental();
             this._reportClient.Report(TraceRoot.ALS.Value, eventName);
         }
 
@@ -68,6 +68,7 @@ namespace Aquirrel.Tracing
         {
             if (this._reportClient == null)
                 return;
+            TraceRoot.ALS.Value.SeqIncremental();
             this._reportClient.Report(TraceRoot.ALS.Value, message, ex);
         }
 
