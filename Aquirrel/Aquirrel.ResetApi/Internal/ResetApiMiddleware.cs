@@ -7,8 +7,7 @@ using Aquirrel.Tracing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Framework.DependencyInjection;
-
+using Microsoft.Extensions.DependencyInjection;
 namespace Aquirrel.ResetApi.Internal
 {
     public class ResetApiMiddleware

@@ -9,27 +9,55 @@ namespace Aquirrel.EntityFramework
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
-        public BaseRepository(AquirrelDbContext dbContext)
+        public BaseRepository(DbContext dbContext)
         {
             this.DbContext = dbContext;
         }
-        public AquirrelDbContext DbContext { get; private set; }
+        protected DbContext DbContext { get; private set; }
 
-        public DbSet<TEntity> Collection { get { return this.DbContext.Set<TEntity>(); } }
+        protected DbSet<TEntity> Collections { get { return this.DbContext.Set<TEntity>(); } }
 
-        public void Add(TEntity entity)
+        public IQueryable<TEntity> Collection { get { return this.Collections.AsQueryable(); } }
+
+        public async Task CreateAsync(TEntity entity)
         {
-            this.Collection.Add(entity);
+            await this.Collections.AddAsync(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+        public void Create(TEntity entity)
+        {
+            this.Collections.Add(entity);
             this.DbContext.SaveChanges();
         }
-
-        public TEntity Single(Expression<Func<TEntity, bool>> predicate)
+        public async Task CreateAsync(IEnumerable<TEntity> entity)
         {
-            return this.Collection.Single(predicate);
+            await this.Collections.AddRangeAsync(entity);
+            await this.DbContext.SaveChangesAsync();
         }
-        public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        public void Create(IEnumerable<TEntity> entity)
         {
-            return this.Collection.SingleOrDefault(predicate);
+            this.Collections.AddRange(entity);
+            this.DbContext.SaveChanges();
+        }
+        public void Update(TEntity entity)
+        {
+            this.Collections.Update(entity);
+            this.DbContext.SaveChanges();
+        }
+        public async Task UpdateAsync(TEntity entity)
+        {
+            this.Collections.Update(entity);
+            await this.DbContext.SaveChangesAsync();
+        }
+        public void Update(IEnumerable<TEntity> entity)
+        {
+            this.Collections.UpdateRange(entity);
+            this.DbContext.SaveChanges();
+        }
+        public async Task UpdateAsync(IEnumerable<TEntity> entity)
+        {
+            this.Collections.UpdateRange(entity);
+            await this.DbContext.SaveChangesAsync();
         }
     }
 }

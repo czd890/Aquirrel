@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class AquirrelDbCollectionExtensions
     {
         public static IServiceCollection AddAquirrelDb<TDbConext>(this IServiceCollection services,
-            Action<DbContextOptionsBuilder> optionsAction = null,
+            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null,
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
             where TDbConext : AquirrelDbContext
         {
@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
                 .AddDbContext<TDbConext>(optionsAction, contextLifetime);
 
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             return services;
         }
     }

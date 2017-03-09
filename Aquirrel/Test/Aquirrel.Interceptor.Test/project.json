@@ -5,10 +5,10 @@
 
   "dependencies": {
     "Aquirrel": "1.0.*",
-    "Aquirrel.Interceptor": "1.0.0-beta",
-    "Aquirrel.Interceptor.Castle": "1.0.0-beta",
-    "Aquirrel.Logger.File": "1.0.1",
-    "Aquirrel.ResetApi": "1.0.1-beta1",
+    "Aquirrel.Interceptor": "1.0.*",
+    "Aquirrel.Interceptor.Castle": "1.0.*",
+    "Aquirrel.Logger.File": "1.0.*",
+    "Aquirrel.ResetApi": "1.0.*",
     "Castle.Core": "4.0.0-beta002",
     "CoreCompat.Microsoft.Practices.ServiceLocation": "1.3.0-r2",
     "dotnet-test-mstest": "1.1.2-preview",

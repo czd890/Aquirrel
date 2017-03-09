@@ -9,7 +9,7 @@ namespace Aquirrel.Internal
 {
     public class LocalIp
     {
-        static string ipv4;
+        static string ipv4=null;
         public static async Task<string> GetLocalIPV4()
         {
             if (ipv4 != null)
