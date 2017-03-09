@@ -10,7 +10,7 @@ namespace Aquirrel.EntityFramework
     public interface IBaseRepository<TEntity> where TEntity : class
     {
         IQueryable<TEntity> Collection { get; }
-        AquirrelDbContext DbContext { get; }
+        //AquirrelDbContext DbContext { get; }
 
         void Create(TEntity entity);
         void Create(IEnumerable<TEntity> entity);
