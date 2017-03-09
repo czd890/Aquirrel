@@ -1,41 +1,41 @@
 ﻿{
-    "version":  "1.0.10",
-    "description":  "aquirrel base lib. aop",
-    "authors":  [
-                    "calvin"
-                ],
-    "packOptions":  {
-                        "owners":  [
-                                       "calvin"
-                                   ],
-                        "repository":  {
-                                           "url":  "https://github.com/czd890/Aquirrel"
-                                       },
-                        "summary":  "aquirrel base lib. aop",
-                        "releaseNotes":  "统一版本",
-                        "tags":  [
-                                     "aop",
-                                     "interceptor"
-                                 ],
-                        "files":  [
-                                      "appsettings.json"
-                                  ]
-                    },
-    "dependencies":  {
-                         "Aquirrel":  "1.0.*",
-                         "Microsoft.AspNetCore.Http.Abstractions":  "1.1.0",
-                         "Microsoft.Extensions.Configuration.Abstractions":  "1.1.0",
-                         "Microsoft.Extensions.Configuration.Binder":  "1.1.0",
-                         "Microsoft.Extensions.DependencyInjection":  "1.1.0",
-                         "Microsoft.Extensions.DependencyInjection.Abstractions":  "1.1.0",
-                         "NETStandard.Library":  "1.6.1",
-                         "Newtonsoft.Json":  "9.0.1",
-                         "System.Net.NameResolution":  "4.3.0",
-                         "System.Xml.XmlSerializer":  "4.3.0"
-                     },
-    "frameworks":  {
-                       "netstandard1.6":  {
-                                              "imports":  "dnxcore50"
-                                          }
-                   }
+  "version": "1.0.10",
+  "description": "aquirrel base lib. aop",
+  "authors": [
+    "calvin"
+  ],
+  "packOptions": {
+    "owners": [
+      "calvin"
+    ],
+    "repository": {
+      "url": "https://github.com/czd890/Aquirrel"
+    },
+    "summary": "aquirrel base lib. aop",
+    "releaseNotes": "统一版本",
+    "tags": [
+      "aop",
+      "interceptor"
+    ],
+    "files": [
+      "appsettings.json"
+    ]
+  },
+  "dependencies": {
+    "Aquirrel": "1.0.*",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "Newtonsoft.Json": "9.0.1",
+    "System.Net.NameResolution": "4.3.0",
+    "System.Xml.XmlSerializer": "4.3.0"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
 }
