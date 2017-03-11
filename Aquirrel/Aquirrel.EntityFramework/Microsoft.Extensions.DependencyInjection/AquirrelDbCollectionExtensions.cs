@@ -18,10 +18,16 @@ namespace Microsoft.Extensions.DependencyInjection
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
             where TDbConext : AquirrelDbContext
         {
+            Console.WriteLine("AquirrelDbCollectionExtensions AddAquirrelDb");
             services.AddEntityFramework()
                 .AddEntityFrameworkSqlServer()
                 .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
-                .AddDbContext<TDbConext>(optionsAction, contextLifetime);
+                .AddDbContext<TDbConext>((sp, options) =>
+                {
+                    Console.WriteLine("UseInternalServiceProvider");
+                    optionsAction?.Invoke(sp, options);
+                    options.UseInternalServiceProvider(sp);
+                }, contextLifetime);
 
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             return services;

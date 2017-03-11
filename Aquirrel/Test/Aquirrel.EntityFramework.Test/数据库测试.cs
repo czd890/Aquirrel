@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aquirrel.EntityFramework.Test
 {
-    [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
+    [TestClass]
+
     public class 数据库测试
     {
         [TestMethod]
@@ -16,7 +15,10 @@ namespace Aquirrel.EntityFramework.Test
         {
             var sp = new Startup(null).ConfigureServices(new ServiceCollection());
             var _db = sp.GetService<TestDbContext>();
-            var iscreated = _db.Set<ModelA>().ToList().ToJson();
+
+            var obj = sp.GetService<Microsoft.EntityFrameworkCore.Infrastructure.Internal.SqlServerModelSource>();
+            Console.WriteLine(obj.GetType().FullName);
+            var iscreated = _db.ModelA.ToList().ToJson();
             Console.WriteLine(iscreated);
 
         }
