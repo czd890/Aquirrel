@@ -21,7 +21,7 @@ namespace Aquirrel.EntityFramework
         /// <summary>
         /// 表id
         /// </summary>
-        public TKey Id { get; set; }
+        public virtual TKey Id { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
@@ -48,9 +48,24 @@ namespace Aquirrel.EntityFramework
     {
         public EntityBase()
         {
-            this.Id = IdBuilder.NextStringId(this.GetType());
+            //this.Id = IdBuilder.NextStringId(this.GetType());
             this.CreatedDate = DateTime.Now;
             this.LastModfiyDate = DateTime.Now;
+        }
+        string _id;
+        public override string Id
+        {
+            get
+            {
+                if (_id == null)
+                    _id = IdBuilder.NextStringId(this.GetType());
+                return _id;
+            }
+
+            set
+            {
+                _id = value;
+            }
         }
     }
 }
