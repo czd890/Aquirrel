@@ -1,43 +1,43 @@
 ﻿{
-    "version":  "1.0.9",
-    "description":  "aquirrel base lib. rabbitmq",
-    "authors":  [
-                    "calvin"
-                ],
-    "packOptions":  {
-                        "tags":  [
-                                     "aquirrel",
-                                     "rabbitmq"
-                                 ],
-                        "repository":  {
-                                           "url":  "https://github.com/czd890/Aquirrel"
-                                       },
-                        "files":  [
-                                      "mqsettings.json"
-                                  ],
-                        "owners":  [
-                                       "calvin"
-                                   ],
-                        "summary":  "aquirrel base lib. rabbitmq",
-                        "releaseNotes":  "统一版本"
-                    },
-    "publishOptions":  {
-                           "include":  [
-                                           "mqsettings.json"
-                                       ]
-                       },
-    "dependencies":  {
-                         "Aquirrel":  "1.0.*",
-                         "Microsoft.Extensions.Configuration.Abstractions":  "1.1.0",
-                         "Microsoft.Extensions.Configuration.Binder":  "1.1.0",
-                         "Microsoft.Extensions.DependencyInjection.Abstractions":  "1.1.0",
-                         "Microsoft.Extensions.Logging.Abstractions":  "1.1.0",
-                         "NETStandard.Library":  "1.6.1",
-                         "RabbitMQ.Client":  "4.1.1"
-                     },
-    "frameworks":  {
-                       "netstandard1.6":  {
-                                              "imports":  "dnxcore50"
-                                          }
-                   }
+  "version": "1.0.9",
+  "description": "aquirrel base lib. rabbitmq",
+  "authors": [
+    "calvin"
+  ],
+  "packOptions": {
+    "tags": [
+      "aquirrel",
+      "rabbitmq"
+    ],
+    "repository": {
+      "url": "https://github.com/czd890/Aquirrel"
+    },
+    "files": [
+      "mqsettings.json"
+    ],
+    "owners": [
+      "calvin"
+    ],
+    "summary": "aquirrel base lib. rabbitmq",
+    "releaseNotes": "统一版本"
+  },
+  "publishOptions": {
+    "include": [
+      "mqsettings.json"
+    ]
+  },
+  "dependencies": {
+    "Aquirrel": "1.0.*",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "RabbitMQ.Client": "4.1.1"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
 }
