@@ -25,8 +25,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDbContext<TDbConext>((sp, options) =>
                 {
                     Console.WriteLine("UseInternalServiceProvider");
-                    optionsAction?.Invoke(sp, options);
                     options.UseInternalServiceProvider(sp);
+
+                    optionsAction?.Invoke(sp, options);
                 }, contextLifetime);
 
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));

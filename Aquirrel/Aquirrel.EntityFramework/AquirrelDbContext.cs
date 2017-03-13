@@ -27,6 +27,7 @@ namespace Aquirrel.EntityFramework
             Console.WriteLine("AquirrelDbContext.OnConfiguring");
             _builder = optionsBuilder;
             base.OnConfiguring(optionsBuilder);
+            //Console.WriteLine("AquirrelDbContext.OnConfiguring ReplaceService");
             //optionsBuilder.ReplaceService<Microsoft.EntityFrameworkCore.Infrastructure.Internal.SqlServerModelSource, AquirrelDbModelSource>();
         }
     }

@@ -31,5 +31,8 @@ namespace Aquirrel.EntityFramework
         Task DeleteAsync(TEntity entity);
         Task DeleteAsync(IEnumerable<TEntity> entity);
 
+        TEntity FindById( params object[] id);
+        Task<TEntity> FindByIdAsync(params object[] id);
+
     }
 }

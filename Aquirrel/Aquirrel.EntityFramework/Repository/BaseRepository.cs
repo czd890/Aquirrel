@@ -87,5 +87,15 @@ namespace Aquirrel.EntityFramework
             this.Collections.RemoveRange(entity);
             await this.DbContext.SaveChangesAsync();
         }
+
+        public TEntity FindById(params object[] id)
+        {
+            return this.Collections.Find(id);
+        }
+
+        public Task<TEntity> FindByIdAsync(params object[] id)
+        {
+            return this.Collections.FindAsync(id);
+        }
     }
 }
