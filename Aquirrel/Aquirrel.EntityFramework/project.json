@@ -1,35 +1,35 @@
 ﻿{
-    "version":  "1.0.13",
-    "description":  "aquirrel base lib. entityframework",
-    "authors":  [
-                    "calvin"
-                ],
-    "packOptions":  {
-                        "owners":  [
-                                       "calvin"
-                                   ],
-                        "repository":  {
-                                           "url":  "https://github.com/czd890/Aquirrel"
-                                       },
-                        "summary":  "aquirrel base lib. entityframework",
-                        "releaseNotes":  "",
-                        "tags":  [
-                                     "entityframework core",
-                                     "entityframework"
-                                 ],
-                        "files":  [
-                                      "appsettings.json"
-                                  ]
-                    },
-    "dependencies":  {
-                         "Aquirrel":  "1.0.*",
-                         "Microsoft.EntityFrameworkCore":  "1.1.0",
-                         "Microsoft.EntityFrameworkCore.SqlServer":  "1.1.0",
-                         "NETStandard.Library":  "1.6.1"
-                     },
-    "frameworks":  {
-                       "netstandard1.6":  {
-                                              "imports":  "dnxcore50"
-                                          }
-                   }
+  "version": "1.0.14",
+  "description": "aquirrel base lib. entityframework",
+  "authors": [
+    "calvin"
+  ],
+  "packOptions": {
+    "owners": [
+      "calvin"
+    ],
+    "repository": {
+      "url": "https://github.com/czd890/Aquirrel"
+    },
+    "summary": "aquirrel base lib. entityframework",
+    "releaseNotes": "",
+    "tags": [
+      "entityframework core",
+      "entityframework"
+    ],
+    "files": [
+      "appsettings.json"
+    ]
+  },
+  "dependencies": {
+    "Aquirrel": "1.0.*",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "NETStandard.Library": "1.6.1"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
 }
