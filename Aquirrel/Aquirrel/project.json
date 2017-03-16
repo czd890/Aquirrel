@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "aquirrel base lib.",
   "authors": [
     "calvin"
@@ -36,6 +36,7 @@
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
     "NETStandard.Library": "1.6.1",
     "Newtonsoft.Json": "9.0.1",
+    "System.ComponentModel.Annotations": "4.3.0",
     "System.Net.NameResolution": "4.3.0",
     "System.Xml.XmlSerializer": "4.3.0"
   },
