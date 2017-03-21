@@ -39,7 +39,7 @@ namespace Aquirrel.EntityFramework.Mapping
                 {
                     modelBuilder.Entity(entityType).HasKey("Id");
                 }
-                modelBuilder.Entity(entityType).Property("TimeStamp").IsConcurrencyToken(true);
+                modelBuilder.Entity(entityType).Property("TimeStamp").IsConcurrencyToken(true).ValueGeneratedOnAddOrUpdate();
             }
         }
     }
