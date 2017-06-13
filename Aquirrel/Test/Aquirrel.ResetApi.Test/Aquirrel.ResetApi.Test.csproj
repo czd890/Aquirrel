@@ -6,8 +6,6 @@
     <AssemblyName>Aquirrel.ResetApi.Test</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Aquirrel.ResetApi.Test</PackageId>
-    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>

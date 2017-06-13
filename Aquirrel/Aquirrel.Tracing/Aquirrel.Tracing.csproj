@@ -10,11 +10,6 @@
     <PackageTags>tracing;trace</PackageTags>
     <PackageReleaseNotes>统一版本</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
+    <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />
     <ProjectReference Include="..\Aquirrel.ResetApi\Aquirrel.ResetApi.csproj" />
   </ItemGroup>
 

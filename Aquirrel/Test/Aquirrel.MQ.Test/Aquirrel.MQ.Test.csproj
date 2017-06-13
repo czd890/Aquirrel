@@ -5,15 +5,10 @@
     <AssemblyName>Aquirrel.MQ.Test</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Aquirrel.MQ.Test</PackageId>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Aquirrel\Aquirrel.csproj" />
+    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
     <ProjectReference Include="..\..\Aquirrel.Logger.File\Aquirrel.Logger.File.csproj" />
     <ProjectReference Include="..\..\Aquirrel.MQ\Aquirrel.MQ.csproj" />
   </ItemGroup>
