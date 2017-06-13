@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>aquirrel base lib. entityframework</Description>
+    <VersionPrefix>1.0.14</VersionPrefix>
+    <Authors>calvin</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Aquirrel.EntityFramework</AssemblyName>
+    <PackageId>Aquirrel.EntityFramework</PackageId>
+    <PackageTags>entityframework core;entityframework</PackageTags>
+    <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

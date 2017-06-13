@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>aquirrel base lib. rabbitmq</Description>
+    <VersionPrefix>1.0.9</VersionPrefix>
+    <Authors>calvin</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Aquirrel.MQ</AssemblyName>
+    <PackageId>Aquirrel.MQ</PackageId>
+    <PackageTags>aquirrel;rabbitmq</PackageTags>
+    <PackageReleaseNotes>统一版本</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="mqsettings.json">
+      <Pack>true</Pack>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="4.1.1" />
+  </ItemGroup>
+
+</Project>

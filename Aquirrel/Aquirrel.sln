@@ -1,46 +1,45 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26606.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{442D3EA6-5833-42DA-8C96-9D7904EAAD9C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A13196B-CDBB-4748-802C-5B3763C1BAA3}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel", "Aquirrel\Aquirrel.xproj", "{1C2A5098-64E5-4F16-B6E2-9B2C291ACBBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel", "Aquirrel\Aquirrel.csproj", "{1C2A5098-64E5-4F16-B6E2-9B2C291ACBBA}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.EntityFramework", "Aquirrel.EntityFramework\Aquirrel.EntityFramework.xproj", "{936CC7DA-EC5B-48FF-A717-5C909F8D5C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.EntityFramework", "Aquirrel.EntityFramework\Aquirrel.EntityFramework.csproj", "{936CC7DA-EC5B-48FF-A717-5C909F8D5C3A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Logger.File", "Aquirrel.Logger.File\Aquirrel.Logger.File.xproj", "{C83DDE61-52D7-4049-A45F-E5E43AA77EC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Logger.File", "Aquirrel.Logger.File\Aquirrel.Logger.File.csproj", "{C83DDE61-52D7-4049-A45F-E5E43AA77EC8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.MQ", "Aquirrel.MQ\Aquirrel.MQ.xproj", "{0A64BBF2-D31C-4E02-9F28-95B61C39A29A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.MQ", "Aquirrel.MQ\Aquirrel.MQ.csproj", "{0A64BBF2-D31C-4E02-9F28-95B61C39A29A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Logger.File.Test", "Test\Aquirrel.Logger.File.Test\Aquirrel.Logger.File.Test.xproj", "{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Logger.File.Test", "Test\Aquirrel.Logger.File.Test\Aquirrel.Logger.File.Test.csproj", "{6310BF0A-0F5D-4871-9FAE-9771C4D027B2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.MQ.Test", "test\Aquirrel.MQ.Test\Aquirrel.MQ.Test.xproj", "{5B790F65-7B28-4199-BEF8-35E4A32E8A71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.MQ.Test", "test\Aquirrel.MQ.Test\Aquirrel.MQ.Test.csproj", "{5B790F65-7B28-4199-BEF8-35E4A32E8A71}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.EntityFramework.Test", "test\Aquirrel.EntityFramework.Test\Aquirrel.EntityFramework.Test.xproj", "{674BF3C8-3EB3-4174-94E5-A46634AB092E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.EntityFramework.Test", "test\Aquirrel.EntityFramework.Test\Aquirrel.EntityFramework.Test.csproj", "{674BF3C8-3EB3-4174-94E5-A46634AB092E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Autofac", "Aquirrel.Autofac\Aquirrel.Autofac.xproj", "{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Autofac", "Aquirrel.Autofac\Aquirrel.Autofac.csproj", "{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.ResetApi.Test", "test\Aquirrel.ResetApi.Test\Aquirrel.ResetApi.Test.xproj", "{F5802989-6CB9-4D92-AD35-114E68FAAB44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.ResetApi.Test", "test\Aquirrel.ResetApi.Test\Aquirrel.ResetApi.Test.csproj", "{F5802989-6CB9-4D92-AD35-114E68FAAB44}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.ResetApi", "Aquirrel.ResetApi\Aquirrel.ResetApi.xproj", "{35BE177C-607B-4C59-9270-7D9918AC4020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.ResetApi", "Aquirrel.ResetApi\Aquirrel.ResetApi.csproj", "{35BE177C-607B-4C59-9270-7D9918AC4020}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Test", "test\Aquirrel.Test\Aquirrel.Test.xproj", "{94EE1390-F0D7-40DB-96CF-69FB740B8F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Test", "test\Aquirrel.Test\Aquirrel.Test.csproj", "{94EE1390-F0D7-40DB-96CF-69FB740B8F88}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Tracing", "Aquirrel.Tracing\Aquirrel.Tracing.xproj", "{8A1B250A-A695-450A-9126-052E9FCF8D3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Tracing", "Aquirrel.Tracing\Aquirrel.Tracing.csproj", "{8A1B250A-A695-450A-9126-052E9FCF8D3D}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Interceptor", "Aquirrel.Interceptor\Aquirrel.Interceptor.xproj", "{43D6F92D-D2F2-4AC9-AE62-25A8C75948EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor", "Aquirrel.Interceptor\Aquirrel.Interceptor.csproj", "{43D6F92D-D2F2-4AC9-AE62-25A8C75948EB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Interceptor.Castle", "Aquirrel.Interceptor.Castle\Aquirrel.Interceptor.Castle.xproj", "{192CADBC-B392-4455-ADBF-8AAD8E4590C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor.Castle", "Aquirrel.Interceptor.Castle\Aquirrel.Interceptor.Castle.csproj", "{192CADBC-B392-4455-ADBF-8AAD8E4590C8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Aquirrel.Interceptor.Test", "Test\Aquirrel.Interceptor.Test\Aquirrel.Interceptor.Test.xproj", "{20E2488E-92FA-4585-AFF3-71651D366D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor.Test", "Test\Aquirrel.Interceptor.Test\Aquirrel.Interceptor.Test.csproj", "{20E2488E-92FA-4585-AFF3-71651D366D0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{3914E30E-CF88-418F-AB9A-3346C94F9D3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +107,10 @@ Global
 		{20E2488E-92FA-4585-AFF3-71651D366D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20E2488E-92FA-4585-AFF3-71651D366D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20E2488E-92FA-4585-AFF3-71651D366D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3914E30E-CF88-418F-AB9A-3346C94F9D3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3914E30E-CF88-418F-AB9A-3346C94F9D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3914E30E-CF88-418F-AB9A-3346C94F9D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3914E30E-CF88-418F-AB9A-3346C94F9D3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,5 +131,6 @@ Global
 		{43D6F92D-D2F2-4AC9-AE62-25A8C75948EB} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{192CADBC-B392-4455-ADBF-8AAD8E4590C8} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{20E2488E-92FA-4585-AFF3-71651D366D0F} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
+		{3914E30E-CF88-418F-AB9A-3346C94F9D3A} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 	EndGlobalSection
 EndGlobal
