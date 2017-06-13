@@ -89,7 +89,7 @@ namespace Aquirrel.Tracing
             this.workAdd.Enqueue(dy);
         }
 
-        async void Work()
+        void Work()
         {
             //TODO 事件批量压缩上报
             var apiClient = _sp.GetService<IApiClient>();
