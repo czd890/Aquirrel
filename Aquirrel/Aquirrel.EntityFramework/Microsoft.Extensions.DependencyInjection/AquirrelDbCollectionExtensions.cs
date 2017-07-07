@@ -13,24 +13,24 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class AquirrelDbCollectionExtensions
     {
-        public static IServiceCollection AddAquirrelDb<TDbConext>(this IServiceCollection services,
-            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null,
-            ServiceLifetime contextLifetime = ServiceLifetime.Scoped)
+        public static IServiceCollection AddAquirrelDb<TDbConext>(this IServiceCollection services, Action<IServiceCollection> optionsAction)
             where TDbConext : AquirrelDbContext
         {
             Console.WriteLine("AquirrelDbCollectionExtensions AddAquirrelDb");
-            services.AddEntityFramework()
-                .AddEntityFrameworkSqlServer()
-                .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
-                .AddDbContext<TDbConext>((sp, options) =>
-                {
-                    Console.WriteLine("UseInternalServiceProvider");
-                    options.UseInternalServiceProvider(sp);
+            //services.AddEntityFramework()
+            //    .AddEntityFrameworkSqlServer()
+            //    .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
+            //    .AddDbContext<TDbConext>((sp, options) =>
+            //    {
+            //        Console.WriteLine("UseInternalServiceProvider");
+            //        options.UseInternalServiceProvider(sp);
 
-                    optionsAction?.Invoke(sp, options);
-                }, contextLifetime);
+            //        optionsAction?.Invoke(sp, options);
+            //    }, contextLifetime);
 
-            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            optionsAction(services);
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             return services;
         }
     }

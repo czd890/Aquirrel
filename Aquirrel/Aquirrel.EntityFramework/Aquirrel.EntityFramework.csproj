@@ -11,13 +11,17 @@
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Repository\BaseRepository.cs" />
+    <Compile Remove="Repository\IBaseRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="appsettings.json">
       <Pack>true</Pack>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0-preview2-final" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />

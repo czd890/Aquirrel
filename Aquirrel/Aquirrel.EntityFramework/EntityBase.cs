@@ -11,7 +11,10 @@ namespace Aquirrel.EntityFramework
         TKey Id { get; set; }
         DateTime CreatedDate { get; set; }
         DateTime LastModfiyDate { get; set; }
-        byte[] TimeStamp { get; set; }
+        /// <summary>
+        /// 数据版本。修改自增
+        /// </summary>
+        int Version { get; }
     }
     public interface IEntityBase : IEntityBase<string>
     {
@@ -32,9 +35,9 @@ namespace Aquirrel.EntityFramework
         /// </summary>
         public DateTime LastModfiyDate { get; set; }
         /// <summary>
-        /// 时间戳
+        /// 数据版本。修改自增
         /// </summary>
-        public virtual byte[] TimeStamp { get; set; }
+        public int Version { get; set; }
 
         public string StringId
         {

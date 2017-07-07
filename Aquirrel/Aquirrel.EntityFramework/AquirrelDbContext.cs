@@ -21,6 +21,11 @@ namespace Aquirrel.EntityFramework
             _builder = null;
             
             base.OnModelCreating(modelBuilder);
+
+            //Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.StringLengthAttributeConvention
+            //Microsoft.EntityFrameworkCore.Metadata.Conventions
+           
+            
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

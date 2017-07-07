@@ -16,8 +16,8 @@ namespace Aquirrel.EntityFramework.Test
             var sp = new Startup(null).ConfigureServices(new ServiceCollection());
             var _db = sp.GetService<TestDbContext>();
 
-            var obj = sp.GetService<Microsoft.EntityFrameworkCore.Infrastructure.Internal.SqlServerModelSource>();
-            Console.WriteLine(obj.GetType().FullName);
+            //var obj = sp.GetService<Microsoft.EntityFrameworkCore.Infrastructure.Internal.SqlServerModelSource>();
+            //Console.WriteLine(obj.GetType().FullName);
             var iscreated = _db.ModelA.ToList().ToJson();
             Console.WriteLine(iscreated);
 

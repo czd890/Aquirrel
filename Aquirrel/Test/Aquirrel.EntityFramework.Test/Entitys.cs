@@ -27,5 +27,8 @@ namespace Aquirrel.EntityFramework.Test
         public string HH { get; set; }
 
         public DateTime Date { get; set; }
+
+        [MaxLength]
+        public string MaxLen { get; set; }
     }
 }

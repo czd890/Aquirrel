@@ -23,19 +23,5 @@
     {
       "Id": "productid"
     }
-  ],
-  "Publish": [
-    {
-      "Desc": "发送消息。消息发送到topic，路由到tag",
-      "Topic": "exchange",
-      "Tag": "routekey"
-    }
-  ],
-  "Subscribe": [
-    {
-      "Name": "订阅消息，接收topic队列的消息",
-      "Topic": "queueName"
-    }
   ]
-
 }

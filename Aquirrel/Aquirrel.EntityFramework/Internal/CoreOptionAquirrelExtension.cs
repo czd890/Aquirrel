@@ -21,9 +21,22 @@ namespace Aquirrel.EntityFramework.Internal
         public Assembly[] EntityMappingsAssebmlys { get; set; }
 
 
-        public void ApplyServices(IServiceCollection services)
+
+        IServiceCollection services;
+
+        public bool ApplyServices(IServiceCollection services)
         {
+            this.services = services;
+            return true;
         }
 
+        public long GetServiceProviderHashCode()
+        {
+            return this.services.GetHashCode();
+        }
+
+        public void Validate(IDbContextOptions options)
+        {
+        }
     }
 }
