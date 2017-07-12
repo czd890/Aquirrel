@@ -25,7 +25,7 @@ namespace Aquirrel.EntityFramework.Internal
 
         public bool EnableStringDefault32Length { get; set; } = true;
 
-
+        public string LogFragment => "Aquirrel Core Db Options";
 
         IServiceCollection services;
 
