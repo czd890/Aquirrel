@@ -18,14 +18,11 @@ namespace Aquirrel.EntityFramework
         {
             Console.WriteLine("AquirrelDbContext.OnModelCreating");
             ConfigureDbContextEntityService.ConfigureMapping(modelBuilder, _builder, this);
-            _builder = null;
-            
-            base.OnModelCreating(modelBuilder);
 
-            //Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.StringLengthAttributeConvention
-            //Microsoft.EntityFrameworkCore.Metadata.Conventions
-           
             
+            
+
+            _builder = null;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

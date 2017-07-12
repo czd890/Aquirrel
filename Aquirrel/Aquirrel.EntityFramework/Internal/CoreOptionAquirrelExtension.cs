@@ -19,6 +19,11 @@ namespace Aquirrel.EntityFramework.Internal
         /// 自动mapping的
         /// </summary>
         public Assembly[] EntityMappingsAssebmlys { get; set; }
+        /// <summary>
+        /// string默认长度32位
+        /// </summary>
+
+        public bool EnableStringDefault32Length { get; set; } = true;
 
 
 

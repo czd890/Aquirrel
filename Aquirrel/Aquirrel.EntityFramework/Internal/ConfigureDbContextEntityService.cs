@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Aquirrel.EntityFramework.Mapping;
 using System.Reflection;
 using Aquirrel;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace Aquirrel.EntityFramework.Internal
 {
     public class ConfigureDbContextEntityService
@@ -47,6 +49,26 @@ namespace Aquirrel.EntityFramework.Internal
                     var entityKeyType = type.GetTypeInfo().GetInterfaces().Single(extendInterface => extendInterface.GetTypeInfo().IsGenericType && extendInterface.GetGenericTypeDefinition() == IEntityBase__type).GetTypeInfo().GenericTypeArguments[0];
                     (Activator.CreateInstance(typeof(EntityMapping<,>).MakeGenericType(type, entityKeyType)) as IEntityMapping).Mapping(modelBuilder);
                 });
+            }
+        }
+
+        public static void ConfigureDefaultAnnotation(ModelBuilder modelBuilder, DbContextOptionsBuilder optionsBuilder, AquirrelDbContext aquirrelDbContext)
+        {
+            var coreOption = optionsBuilder.Options.FindExtension<CoreOptionAquirrelExtension>();
+            if (coreOption == null)
+                return;
+
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entity.GetProperties())
+                {
+                    var isMaxLengthAnnotation = property.FindAnnotation(PropertyBuilderOfTExtensions.IsMaxLengthAnnotationName);
+                    if ((isMaxLengthAnnotation==null||!((bool)isMaxLengthAnnotation.Value))
+                        &&  true                      )
+                    {
+
+                    }
+                }
             }
         }
     }

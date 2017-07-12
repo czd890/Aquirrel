@@ -36,6 +36,11 @@ namespace Microsoft.EntityFrameworkCore
                 ops.EntityMappingsAssebmlys = assemblys;
             });
         }
+
+        public static DbContextOptionsBuilder EnableStringDefault32Length(this DbContextOptionsBuilder builder, bool hasEnable)
+        {
+            return SetOption(builder, ops => { ops.EnableStringDefault32Length = hasEnable; });
+        }
         private static DbContextOptionsBuilder SetOption(DbContextOptionsBuilder builder, Action<CoreOptionAquirrelExtension> optionsetup)
         {
             var ext = builder.Options.FindExtension<CoreOptionAquirrelExtension>();
@@ -44,5 +49,7 @@ namespace Microsoft.EntityFrameworkCore
             ((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(ext);
             return builder;
         }
+
+
     }
 }

@@ -2,30 +2,28 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>Aquirrel.Interceptor.Test</AssemblyName>
-    <PackageId>Aquirrel.Interceptor.Test</PackageId>
+    <AssemblyName>Aquirrel.EntityFramework.Test</AssemblyName>
+    <PackageId>Aquirrel.EntityFramework.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="appsettings.json;mqsettings.json">
+    <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
-    <ProjectReference Include="..\..\Aquirrel.Interceptor\Aquirrel.Interceptor.csproj" />
-    <ProjectReference Include="..\..\Aquirrel.Interceptor.Castle\Aquirrel.Interceptor.Castle.csproj" />
-    <ProjectReference Include="..\..\Aquirrel.Logger.File\Aquirrel.Logger.File.csproj" />
-    <ProjectReference Include="..\..\Aquirrel.ResetApi\Aquirrel.ResetApi.csproj" />
+    <ProjectReference Include="..\..\Aquirrel.Autofac\Aquirrel.Autofac.csproj" />
+    <ProjectReference Include="..\..\Aquirrel.EntityFramework\Aquirrel.EntityFramework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.0.0-preview2-final" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0-beta" />
-    <PackageReference Include="Castle.Core" Version="4.1.0" />
+    <PackageReference Include="Autofac" Version="4.6.0" />
     <PackageReference Include="CoreCompat.Microsoft.Practices.ServiceLocation" Version="1.3.0-r2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0-rtm-t004c081b4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0-rtm-t004c081b4" />
@@ -36,14 +34,15 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0-preview2-final" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0-preview2-final" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0-preview2-final" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0-beta" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0-preview2-25405-01" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

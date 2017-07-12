@@ -38,30 +38,14 @@ namespace Aquirrel.EntityFramework.Test
             {
                 foreach (var item2 in item.GetProperties())
                 {
-                    var ss = $"table:{item.Name}; propertyName:{item2.Name}; properyType:{item2.ClrType.ToString()}";
-                    Console.WriteLine(ss);
-
-                    foreach (var item3 in item2.GetAnnotations())
-                    {
-                        Console.WriteLine($"{item3.Name}---{item3.Value}");
-                    }
-                    //扩展自定义方法，maxlenght
-                    var IsMaxLength = item2.FindAnnotation(Extend.AnnotationName);
-                    if ((IsMaxLength == null || !(bool)IsMaxLength.Value)&& item2.FindAnnotation("MaxLength") ==null&&item2.ClrType==typeof(string)) item2.AddAnnotation("MaxLength", 32);
+                    var IsMaxLength = item2.FindAnnotation(PropertyBuilderOfTExtensions.IsMaxLengthAnnotationName);
+                    if ((IsMaxLength == null || !(bool)IsMaxLength.Value) && item2.FindAnnotation("MaxLength") == null && item2.ClrType == typeof(string))
+                        item2.AddAnnotation("MaxLength", 32);
                 }
             }
             //Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.CoreConventionSetBuilder s;s.CreateConventionSet().PropertyAddedConventions.Add()
-            
-            base.OnModelCreating(modelBuilder);
-        }
-    }
-    public class DefaultStringLength : IPropertyAddedConvention
-    {
-        public InternalPropertyBuilder Apply(InternalPropertyBuilder propertyBuilder)
-        {
-            //propertyBuilder.
 
-            return propertyBuilder;
+            base.OnModelCreating(modelBuilder);
         }
     }
 
@@ -73,14 +57,6 @@ namespace Aquirrel.EntityFramework.Test
             DbContextOptionsBuilder<TestDbContext> s = new DbContextOptionsBuilder<TestDbContext>();
             s.UseSqlServer("server=172.16.100.172;database=efcoretest;uid=sa_test;pwd=123456;");
             return new TestDbContext(s.Options);
-        }
-    }
-    public static class Extend
-    {
-        public static string AnnotationName = "IsMaxLength";
-        public static void IsMaxLength<TProperty>(this PropertyBuilder<TProperty> propertyBuilder, bool? ismaxLen = true)
-        {
-            propertyBuilder.HasAnnotation(AnnotationName, ismaxLen);
         }
     }
 }

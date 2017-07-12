@@ -12,11 +12,20 @@ namespace Aquirrel.EntityFramework.Test
         [TestMethod]
         public void Test()
         {
-            var sp = new Startup(null).ConfigureServices(null);
+            var serviceCollection = new ServiceCollection();
+            var sp = new Startup(null).ConfigureServices(serviceCollection);
+
+            serviceCollection.AsQueryable()
+                .Where(p => p.ServiceType.ToString().StartsWith("Microsoft.EntityFrameworkCore"))
+                .Each(sd =>
+            {
+                Console.WriteLine($"{sd.Lifetime.ToString().PadRight(15, ' ')}{sd.ServiceType.FullName}");
+            });
+
 
             var db = sp.GetService<TestDbContext>();
 
-            var ms = db.ModelA.ToArray();
+            //var ms = db.ModelA.ToArray();
         }
     }
 }

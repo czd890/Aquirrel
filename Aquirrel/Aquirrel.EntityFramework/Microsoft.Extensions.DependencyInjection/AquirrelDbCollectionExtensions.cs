@@ -17,18 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TDbConext : AquirrelDbContext
         {
             Console.WriteLine("AquirrelDbCollectionExtensions AddAquirrelDb");
-            //services.AddEntityFramework()
-            //    .AddEntityFrameworkSqlServer()
-            //    .AddSingleton<SqlServerModelSource, AquirrelDbModelSource>()
-            //    .AddDbContext<TDbConext>((sp, options) =>
-            //    {
-            //        Console.WriteLine("UseInternalServiceProvider");
-            //        options.UseInternalServiceProvider(sp);
 
-            //        optionsAction?.Invoke(sp, options);
-            //    }, contextLifetime);
-
-            optionsAction(services);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             return services;
