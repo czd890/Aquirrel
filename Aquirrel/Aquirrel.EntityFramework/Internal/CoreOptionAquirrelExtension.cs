@@ -20,10 +20,11 @@ namespace Aquirrel.EntityFramework.Internal
         /// </summary>
         public Assembly[] EntityMappingsAssebmlys { get; set; }
         /// <summary>
-        /// string默认长度32位
+        /// string默认长度位
         /// </summary>
 
-        public bool EnableStringDefault32Length { get; set; } = true;
+        //public bool EnableStringDefaultLength { get; set; } = true;
+        //public int StringDefaultLength { get; set; } = 32;
 
         public string LogFragment => "Aquirrel Core Db Options";
 
@@ -31,13 +32,14 @@ namespace Aquirrel.EntityFramework.Internal
 
         public bool ApplyServices(IServiceCollection services)
         {
+            Console.WriteLine("CoreOptionAquirrelExtension   ApplyServices");
             this.services = services;
             return true;
         }
 
         public long GetServiceProviderHashCode()
         {
-            return this.services.GetHashCode();
+            return this.services?.GetHashCode() ?? 0;
         }
 
         public void Validate(IDbContextOptions options)

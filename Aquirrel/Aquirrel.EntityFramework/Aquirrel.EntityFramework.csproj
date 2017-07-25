@@ -9,10 +9,13 @@
     <PackageTags>entityframework core;entityframework</PackageTags>
     <PackageReleaseNotes>更新到.net core 2.0</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
+    <RootNamespace />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Microsoft.EntityFrameworkCore\Metadata\Conventions\Internal\IsMaxLengthAttributeConvention.cs" />
     <Compile Remove="Repository\BaseRepository.cs" />
     <Compile Remove="Repository\IBaseRepository.cs" />
+    <Compile Remove="System.ComponentModel.DataAnnotations\IsMaxLengthAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

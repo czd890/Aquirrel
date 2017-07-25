@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         /// <summary>
-        /// 装载<see cref="EntityMapping{TEntity, TKey}"/>所关联的实体
+        /// 装载<see cref="Assembly"/>里面所有继承自<see cref="EntityMapping{TEntity, TKey}"/>所关联的实体
         /// </summary>
         /// <param name="assemblys">需要查找的assembly集合</param>
         /// <returns></returns>
@@ -37,10 +37,14 @@ namespace Microsoft.EntityFrameworkCore
             });
         }
 
-        public static DbContextOptionsBuilder EnableStringDefault32Length(this DbContextOptionsBuilder builder, bool hasEnable)
-        {
-            return SetOption(builder, ops => { ops.EnableStringDefault32Length = hasEnable; });
-        }
+        //public static DbContextOptionsBuilder EnableStringDefaultLength(this DbContextOptionsBuilder builder, bool hasEnable, int defaultLength = 32)
+        //{
+        //    return SetOption(builder, ops =>
+        //    {
+        //        ops.EnableStringDefaultLength = hasEnable;
+        //        ops.StringDefaultLength = defaultLength;
+        //    });
+        //}
         private static DbContextOptionsBuilder SetOption(DbContextOptionsBuilder builder, Action<CoreOptionAquirrelExtension> optionsetup)
         {
             var ext = builder.Options.FindExtension<CoreOptionAquirrelExtension>();

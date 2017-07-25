@@ -9,26 +9,26 @@ namespace Aquirrel.EntityFramework.Test
 {
     public class ModelA : EntityBase
     {
-        public string Name { get; set; }
-    }
-    public class ModelB : EntityBase
-    {
-        [StringLength(22)]
-        public string Desc { get; set; }
-        public string AId { get; set; }
-
-        [ForeignKey("AId")]
-        public List<ModelA> ModelA { get; set; }
-    }
-
-    public class ModelC : EntityBase
-    {
-
-        public string HH { get; set; }
-
-        public DateTime Date { get; set; }
+        public string StringDefault { get; set; }
 
         [MaxLength]
-        public string MaxLen { get; set; }
+        public string StringMax { get; set; }
+
+        [StringLength(640)]
+        public string StringSetLength { get; set; }
+
+        public int intDefault { get; set; }
+
+        public decimal decimalDefault { get; set; }
+
+        [DecimalPrecision]
+        public decimal decimalSetSacle { get; set; }
+
+    }
+
+    [Table("Table_attr_name")]
+    public class AutoEntryTable : EntityBase
+    {
+        public string name { get; set; }
     }
 }

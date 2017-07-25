@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 
 namespace Aquirrel.EntityFramework.Test
 {
@@ -23,9 +24,17 @@ namespace Aquirrel.EntityFramework.Test
             });
 
 
+            var xx = sp.GetService<IModelCustomizer>();
+
+            var xx2 = sp.GetService<ICoreConventionSetBuilder>();
+
             var db = sp.GetService<TestDbContext>();
 
-            //var ms = db.ModelA.ToArray();
+            var ms = db.ModelASet.ToArray();
+            
+            var ms2 = db.Set<AutoEntryTable>().ToArray();
+            Console.WriteLine("finish");
+
         }
     }
 }

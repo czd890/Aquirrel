@@ -11,26 +11,15 @@ namespace Aquirrel.EntityFramework
     {
         public AquirrelDbContext(DbContextOptions options) : base(options)
         {
-
         }
-        DbContextOptionsBuilder _builder;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             Console.WriteLine("AquirrelDbContext.OnModelCreating");
-            ConfigureDbContextEntityService.ConfigureMapping(modelBuilder, _builder, this);
-
-            
-            
-
-            _builder = null;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             Console.WriteLine("AquirrelDbContext.OnConfiguring");
-            _builder = optionsBuilder;
             base.OnConfiguring(optionsBuilder);
-            //Console.WriteLine("AquirrelDbContext.OnConfiguring ReplaceService");
-            //optionsBuilder.ReplaceService<Microsoft.EntityFrameworkCore.Infrastructure.Internal.SqlServerModelSource, AquirrelDbModelSource>();
         }
     }
 }

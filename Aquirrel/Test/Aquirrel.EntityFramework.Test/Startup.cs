@@ -15,6 +15,7 @@ namespace Aquirrel.EntityFramework.Test
 {
     public class Startup
     {
+        public static string SqlConnectionString = "server=.;database=test_ef_core;uid=sa;pwd=sasa;";
         IConfiguration appsettings;
         public Startup(IHostingEnvironment env)
         {
@@ -23,38 +24,30 @@ namespace Aquirrel.EntityFramework.Test
                 .AddJsonFile("appsettings.json")
                 .Build();
         }
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection serviceCollection)
         {
             Console.WriteLine("Startup   ConfigureServices");
 
-            //    .AddAquirrelDb<TestDbContext>((_sp, op) =>
-            //{
-            //    op.ConfigureEntityMappings(this.GetType().GetTypeInfo().Assembly);
-            //    op.ConfigureAutoEntityAssemblys(this.GetType().GetTypeInfo().Assembly);
-            //    var sqlConnStr = appsettings.GetConnectionString("jiangzhi");
-            //    Console.WriteLine(sqlConnStr);
-            //    op.UseSqlServer(sqlConnStr, sqlop =>
-            //    {
-            //        //sqlop.EnableRetryOnFailure(3);
-            //    });
+            serviceCollection.AddEntityFrameworkSqlServer()
+               .AddDbContext<TestDbContext>((sp, opt) =>
+               {
+                   opt.UseInternalServiceProvider(sp);
 
-            //}, ServiceLifetime.Scoped)
+                   opt.UseSqlServer(Startup.SqlConnectionString, sqlOpt =>
+                   {
+                       sqlOpt.CommandTimeout(10);
+                       sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
+                       sqlOpt.UseRowNumberForPaging(true);
+                       sqlOpt.UseRelationalNulls(false);
+                   });
 
-            services
-                .AddEntityFrameworkSqlServer()
-                .AddDbContext<TestDbContext>((sp3, optionBuilder) =>
-                {
-                    optionBuilder.UseSqlServer("server=172.16.100.172;database=efcoretest;uid=sa_test;pwd=123456;");
-                }, ServiceLifetime.Scoped);
+                   opt.ConfigureAutoEntityAssemblys(this.GetType().Assembly);
+
+               })
+               .AddAquirrelDb<TestDbContext>();
 
 
-            services.AddAquirrelDb<TestDbContext>(sp2 =>
-            {
-
-            });
-
-
-            return services.BuildServiceProvider();
+            return serviceCollection.BuildServiceProvider();
         }
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {

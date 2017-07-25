@@ -7,18 +7,32 @@ using Aquirrel.EntityFramework.Mapping;
 using System.Reflection;
 using Aquirrel;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Aquirrel.EntityFramework.Internal
 {
+
+
     public class ConfigureDbContextEntityService
     {
-
-
-        public static void ConfigureMapping(ModelBuilder modelBuilder, DbContextOptionsBuilder optionsBuilder, AquirrelDbContext aquirrelDbContext)
+        public static bool CanConfigure(DbContextOptions dbContextOptions)
         {
-            var coreOption = optionsBuilder.Options.FindExtension<CoreOptionAquirrelExtension>();
-            if (coreOption == null)
-                return;
+            return dbContextOptions.FindExtension<CoreOptionAquirrelExtension>() != null;
+        }
+
+        public static void Configure(ModelBuilder modelBuilder, DbContextOptions dbContextOptions, DbContext dbContext)
+        {
+            if (!CanConfigure(dbContextOptions)) return;
+
+            Configure_Mapping(modelBuilder, dbContextOptions, dbContext);
+
+        }
+        public static void Configure_Mapping(ModelBuilder modelBuilder, DbContextOptions dbContextOptions, DbContext dbContext)
+        {
+            if (!CanConfigure(dbContextOptions)) return;
+
+            var coreOption = dbContextOptions.FindExtension<CoreOptionAquirrelExtension>();
+
             var EntityMapping__type = typeof(EntityMapping<,>);
             var IEntityMapping_typeInfo = typeof(IEntityMapping).GetTypeInfo();
             var IEntityBase__type = typeof(IEntityBase<>);
@@ -27,6 +41,7 @@ namespace Aquirrel.EntityFramework.Internal
             //装载显示mapping的entites
             if (coreOption.EntityMappingsAssebmlys != null && coreOption.EntityMappingsAssebmlys.Any())
             {
+                Console.WriteLine("auto mapping impl IEntityMapping，EntityMapping<,> entity。assebmlys:" + coreOption.EntityMappingsAssebmlys.Select(ass=>ass.FullName).ConcatEx("，"));
                 //所有mapping所在assebmly的type
                 var allMappingTypes = coreOption.EntityMappingsAssebmlys.SelectMany(ass => ass.GetTypes()).ToArray();
                 //所有显示mapping的mappings
@@ -40,6 +55,7 @@ namespace Aquirrel.EntityFramework.Internal
             //自动装载实现了IEntityBase的entites
             if (coreOption.EntityAssebmlys != null && coreOption.EntityAssebmlys.Any())
             {
+                Console.WriteLine("auto add entity type with impl IEntityBase。assebmlys:" + coreOption.EntityAssebmlys.Select(ass => ass.FullName).ConcatEx("，"));
                 var allEntityTypes = coreOption.EntityAssebmlys.SelectMany(ass => ass.GetTypes()).Select(type => new { type = type, typeInfo = type.GetTypeInfo() })
                     .Where(type => type.typeInfo.IsClass && !type.typeInfo.IsAbstract && type.typeInfo.GetInterfaces().Any(interFace => interFace.GetTypeInfo().IsGenericType && interFace.GetGenericTypeDefinition() == IEntityBase__type) && type.type != EntityBase_type)
                     .Select(type => type.type).ToArray();
@@ -52,24 +68,6 @@ namespace Aquirrel.EntityFramework.Internal
             }
         }
 
-        public static void ConfigureDefaultAnnotation(ModelBuilder modelBuilder, DbContextOptionsBuilder optionsBuilder, AquirrelDbContext aquirrelDbContext)
-        {
-            var coreOption = optionsBuilder.Options.FindExtension<CoreOptionAquirrelExtension>();
-            if (coreOption == null)
-                return;
 
-            foreach (var entity in modelBuilder.Model.GetEntityTypes())
-            {
-                foreach (var property in entity.GetProperties())
-                {
-                    var isMaxLengthAnnotation = property.FindAnnotation(PropertyBuilderOfTExtensions.IsMaxLengthAnnotationName);
-                    if ((isMaxLengthAnnotation==null||!((bool)isMaxLengthAnnotation.Value))
-                        &&  true                      )
-                    {
-
-                    }
-                }
-            }
-        }
     }
 }
