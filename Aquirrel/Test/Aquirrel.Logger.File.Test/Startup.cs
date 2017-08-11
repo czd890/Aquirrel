@@ -32,17 +32,23 @@ namespace Aquirrel.Logger.File.Test
 
             var sc = new ServiceCollection();
 
-            sc.AddLogging();
+            sc.AddLogging(loggerBuilder =>
+            {
+                loggerBuilder.AddConfiguration(appsettings.GetSection("FileLogging"));
+                loggerBuilder.AddDebug();
+                loggerBuilder.AddConsole(consoleOptions => { consoleOptions.IncludeScopes = true; });
+                loggerBuilder.AddFile(appsettings.GetSection("FileLogging"));
+            });
             sc.AddEventBus(mqsettings);
             sc.AddSingleton<TestService>();
             sc.AddSingleton<TestService2>();
 
             var sp = sc.BuildServiceProvider();
 
-            sp.GetService<ILoggerFactory>()
-                //.AddDebug()
-                //.AddConsole(appsettings.GetSection("FileLogging"))
-                .AddFile(appsettings.GetSection("FileLogging"));
+            //sp.GetService<ILoggerFactory>()
+            //    .AddDebug()
+            //    .AddConsole(appsettings.GetSection("FileLogging"))
+            //    .AddFile(appsettings.GetSection("FileLogging"));
 
             return sp;
         }

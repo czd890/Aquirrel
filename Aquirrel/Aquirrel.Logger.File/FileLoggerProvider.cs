@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Aquirrel.Logger.File.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
 namespace Aquirrel.Logger.File
 {
+    [ProviderAlias("File")]
     public class FileLoggerProvider : ILoggerProvider, IDisposable
     {
+        //Microsoft.Extensions.Logging.ILoggerProvider
         FileLoggerSettings _configuration;
         readonly ConcurrentDictionary<string, LoggerOptionsModel> _loggerOptionsCache = new ConcurrentDictionary<string, LoggerOptionsModel>();
         readonly ConcurrentDictionary<string, FileLogger> _loggers = new ConcurrentDictionary<string, FileLogger>();
@@ -62,7 +63,7 @@ namespace Aquirrel.Logger.File
             model.MinLevel = LogLevel.Debug;
             foreach (var item in keys)
             {
-                var switchV = _configuration.GetSwitch(item);
+                var switchV = _configuration.GetMinLevel(item);
                 if (switchV.Item1)
                 {
                     model.MinLevel = switchV.Item2;

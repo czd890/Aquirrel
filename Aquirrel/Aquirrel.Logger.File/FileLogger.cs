@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading;
 using Aquirrel.Logger.File.Internal;
 using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 
 namespace Aquirrel.Logger.File
 {

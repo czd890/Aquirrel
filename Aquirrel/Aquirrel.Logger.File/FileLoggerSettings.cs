@@ -46,8 +46,20 @@ namespace Aquirrel.Logger.File
             get { return this._configuration["DefaultFileName"] ?? "[yyyyMMdd]"; }
         }
 
-        public Tuple<bool, LogLevel> GetSwitch(string name)
+        public Tuple<bool, LogLevel> GetMinLevel(string name)
         {
+            var fileSection = this._configuration.GetSection("File");
+            if (fileSection != null)
+            {
+                var logLevelSection = fileSection.GetSection("LogLevel");
+                if (logLevelSection != null)
+                {
+                    var level = logLevelSection[name];
+                    if (level.IsNotNullOrEmpty() && Enum.TryParse(level, true, out LogLevel lev))
+                        return new Tuple<bool, LogLevel>(true, lev);
+                }
+            }
+
             var section = this._configuration.GetSection("LogLevel");
             if (section != null)
             {
@@ -55,10 +67,19 @@ namespace Aquirrel.Logger.File
                 if (Enum.TryParse(section[name], true, out level))
                     return new Tuple<bool, LogLevel>(true, level);
             }
+
             return new Tuple<bool, LogLevel>(false, LogLevel.Debug);
         }
         public Tuple<bool, string> GetDiretoryPath(string name)
         {
+            var config = this._configuration.GetSection("Config");
+            if (config != null)
+            {
+                var sec = config.GetSection(name);
+                if (sec != null && sec["Path"].IsNotNullOrEmpty())
+                    return new Tuple<bool, string>(true, sec["Path"]);
+            }
+
             var section = this._configuration.GetSection("Path");
             if (section != null)
             {
@@ -72,6 +93,14 @@ namespace Aquirrel.Logger.File
         }
         public Tuple<bool, string> GetFileName(string name)
         {
+            var config = this._configuration.GetSection("Config");
+            if (config != null)
+            {
+                var sec = config.GetSection(name);
+                if (sec != null && sec["FileName"].IsNotNullOrEmpty())
+                    return new Tuple<bool, string>(true, sec["FileName"]);
+            }
+
             var section = this._configuration.GetSection("FileName");
             if (section != null)
             {
@@ -85,6 +114,15 @@ namespace Aquirrel.Logger.File
         }
         public Tuple<bool, int> GetMaxSize(string name)
         {
+            var config = this._configuration.GetSection("Config");
+            if (config != null)
+            {
+                var sec = config.GetSection(name);
+                if (sec != null && sec["MaxSize"].IsNotNullOrEmpty())
+                    return new Tuple<bool, int>(true, sec["MaxSize"].ToInt(this.DefaultMaxSize));
+            }
+
+
             var section = this._configuration.GetSection("MaxSize");
             if (section != null)
             {
