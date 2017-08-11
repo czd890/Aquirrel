@@ -33,7 +33,7 @@ namespace Aquirrel.EntityFramework.Internal
 
             var coreOption = dbContextOptions.FindExtension<CoreOptionAquirrelExtension>();
 
-            var EntityMapping__type = typeof(EntityMapping<,>);
+            var EntityMapping__type = typeof(EntityMapping<>);
             var IEntityMapping_typeInfo = typeof(IEntityMapping).GetTypeInfo();
             var IEntityBase__type = typeof(IEntityBase<>);
             var EntityBase_type = typeof(EntityBase);
@@ -41,13 +41,20 @@ namespace Aquirrel.EntityFramework.Internal
             //装载显示mapping的entites
             if (coreOption.EntityMappingsAssebmlys != null && coreOption.EntityMappingsAssebmlys.Any())
             {
-                Console.WriteLine("auto mapping impl IEntityMapping，EntityMapping<,> entity。assebmlys:" + coreOption.EntityMappingsAssebmlys.Select(ass=>ass.FullName).ConcatEx("，"));
-                //所有mapping所在assebmly的type
-                var allMappingTypes = coreOption.EntityMappingsAssebmlys.SelectMany(ass => ass.GetTypes()).ToArray();
+                Console.WriteLine("auto mapping impl IEntityMapping，EntityMapping<,> entity。assebmlys:" + coreOption.EntityMappingsAssebmlys.Select(ass => ass.FullName).ConcatEx("，"));
+                //所有ass的types
+                var allAssebmlysTypes = coreOption.EntityMappingsAssebmlys.SelectMany(ass => ass.GetTypes()).ToArray();
+
                 //所有显示mapping的mappings
-                var allMappings = allMappingTypes.Where(type => type.GetTypeInfo().IsClass && type != EntityMapping__type && IEntityMapping_typeInfo.IsAssignableFrom(type)).ToArray();
+                var allMappings = allAssebmlysTypes
+                    .Where(type => type.GetTypeInfo().IsClass)//当前类型是class
+                    .Where(type => type != EntityMapping__type)//当前类型不是EntityMapping<>本身
+                    .Where(type => IEntityMapping_typeInfo.IsAssignableFrom(type))//当前类型是IEntityMapping接口的实现
+                    .ToArray();
+
                 //所有显示mapping的实体
                 allMappingEntityTypes = allMappings.Select(type => type.GetTypeInfo().BaseType.GetTypeInfo().GetGenericArguments()[0]).ToArray();
+
                 //装载显示实现了mapping的实体
                 allMappings.Each(type => (Activator.CreateInstance(type) as IEntityMapping).Mapping(modelBuilder));
             }
@@ -56,15 +63,24 @@ namespace Aquirrel.EntityFramework.Internal
             if (coreOption.EntityAssebmlys != null && coreOption.EntityAssebmlys.Any())
             {
                 Console.WriteLine("auto add entity type with impl IEntityBase。assebmlys:" + coreOption.EntityAssebmlys.Select(ass => ass.FullName).ConcatEx("，"));
-                var allEntityTypes = coreOption.EntityAssebmlys.SelectMany(ass => ass.GetTypes()).Select(type => new { type = type, typeInfo = type.GetTypeInfo() })
-                    .Where(type => type.typeInfo.IsClass && !type.typeInfo.IsAbstract && type.typeInfo.GetInterfaces().Any(interFace => interFace.GetTypeInfo().IsGenericType && interFace.GetGenericTypeDefinition() == IEntityBase__type) && type.type != EntityBase_type)
-                    .Select(type => type.type).ToArray();
+                var allEntityTypes = coreOption.EntityAssebmlys
+                    .SelectMany(ass => ass.GetTypes())//所有要自动发现entity的assebmly
+                    .Select(type => new { type = type, typeInfo = type.GetTypeInfo() })//投影
+                    .Where(type => type.typeInfo.IsClass)//当前类型是class
+                    .Where(type => !type.typeInfo.IsAbstract)//当前类型不是抽象类
+                    .Where(type => type.type != EntityBase_type)//不是entity基类本身
+                                                                //当前类型所实现的接口中存在IEntityBase<>
+                    .Where(type => type.typeInfo.GetInterfaces().Any(i => i.GetTypeInfo().IsGenericType && i.GetGenericTypeDefinition() == IEntityBase__type))
+                    .Select(type => type.type)
+                    .ToArray();
 
-                allEntityTypes.Except(allMappingEntityTypes).Each(type =>
-                {
-                    var entityKeyType = type.GetTypeInfo().GetInterfaces().Single(extendInterface => extendInterface.GetTypeInfo().IsGenericType && extendInterface.GetGenericTypeDefinition() == IEntityBase__type).GetTypeInfo().GenericTypeArguments[0];
-                    (Activator.CreateInstance(typeof(EntityMapping<,>).MakeGenericType(type, entityKeyType)) as IEntityMapping).Mapping(modelBuilder);
-                });
+                allEntityTypes
+                    .Except(allMappingEntityTypes)
+                    .Each(type =>
+                    {
+                        //var entityKeyType = type.GetTypeInfo().GetInterfaces().Single(extendInterface => extendInterface.GetTypeInfo().IsGenericType && extendInterface.GetGenericTypeDefinition() == IEntityBase__type).GetTypeInfo().GenericTypeArguments[0];
+                        (Activator.CreateInstance(typeof(EntityMapping<>).MakeGenericType(type)) as IEntityMapping).Mapping(modelBuilder);
+                    });
             }
         }
 

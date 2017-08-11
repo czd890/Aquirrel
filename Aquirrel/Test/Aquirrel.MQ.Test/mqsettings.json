@@ -1,10 +1,10 @@
 ﻿{
   "Hosts": [
     {
-      "Name": "default",
-      "UserName": "user",
-      "UserPassword": "user",
-      "Address": "192.168.50.2",
+      "Name": "test",
+      "UserName": "admin",
+      "UserPassword": "admin",
+      "Address": "192.168.1.86",
       "Port": 5672,
       "VHost": "/",
       "Heartbeat": 60,
@@ -13,15 +13,8 @@
   ],
   "Products": [
     {
-      "Id": "p1",
-      "Host": "default"
-    },
-    {
-      "Id": "p2",
-      "Host": "default"
-    },
-    {
-      "Id": "p3"
+      "Id": "defualt",
+      "Host": "test"
     }
   ],
   "Publish": [

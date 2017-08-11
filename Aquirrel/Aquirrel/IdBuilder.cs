@@ -29,9 +29,18 @@ namespace Aquirrel
         /// </summary>
         int _FCount;
         /// <summary>
-        /// 生成id时间精确到秒小数后几位
+        /// 生成id时间精确到秒小数后几位,最多6位
         /// </summary>
-        public int FCount { get { return _FCount; } set { _FCount = value; FCountMultiple = Math.Max(1, (int)Math.Pow(10, value - 1)); } }
+        public int FCount
+        {
+            get { return _FCount; }
+            set
+            {
+                value = Math.Min(value, 6);
+                _FCount = value;
+                FCountMultiple = Math.Max(1, (int)Math.Pow(10, value - 1));
+            }
+        }
         int FCountMultiple;
         long _ticks;
         SpinLock spinglock = new SpinLock();
@@ -39,17 +48,25 @@ namespace Aquirrel
         {
             bool islock = false;
             spinglock.Enter(ref islock);
-            if (!islock)
-            {
-                return this.Next();
-            }
+            if (!islock) return this.Next();
 
-            //6361701144(秒),510(毫秒),856(微妙),00(100纳秒)
+            //每个计时周期表示一百纳秒，即一千万分之一秒。 1 毫秒内有 10,000 个计时周期。
+            //此属性的值表示自 0001 年 1 月 1 日午夜 12:00:00（表示 DateTime.MinValue）以来经过的以 100 纳秒为间隔的间隔数。 它不包括归因于闰秒的嘀嗒数。
+
+            //63636666581 194 153 7     ticks
+            //63636666581 194 153 7 00  纳秒
+            //63636666581 190 000       微妙
+            //63636666581 190           毫秒
+            //63636666581               秒
             DateTime now = DateTime.Now;
-            if ((_ticks / FCountMultiple) < now.Ticks / FCountMultiple)
+            if (_ticks < now.Ticks)
                 _ticks = now.Ticks;
             else
+            {
+                if (_ticks - now.Ticks >= 10000000)
+                    Thread.SpinWait(1000);//累加差超过了1秒,则暂停一下.
                 _ticks += FCountMultiple;
+            }
 
             spinglock.Exit();
             return _ticks;

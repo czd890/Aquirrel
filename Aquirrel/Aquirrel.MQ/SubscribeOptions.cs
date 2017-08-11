@@ -7,12 +7,11 @@ namespace Aquirrel.MQ
 {
     public class SubscribeOptions
     {
-        public MessageModel Model { get; set; }
+        public MessageModel Model { get; set; } = MessageModel.Clustering;
 
-        public static SubscribeOptions Default { get; } = new SubscribeOptions()
-        {
-            Model = MessageModel.Clustering
-        };
+        public int BasicQos { get; set; } = 1;
+
+        public static SubscribeOptions Default { get; } = new SubscribeOptions() { };
     }
     /// <summary>
     /// 消息消费方式

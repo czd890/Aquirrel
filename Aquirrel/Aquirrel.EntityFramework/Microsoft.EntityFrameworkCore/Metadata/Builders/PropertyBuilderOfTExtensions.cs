@@ -20,7 +20,21 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
 
             return propertyBuilder;
         }
+
+        public static PropertyBuilder<TProperty> HasMaxLength<TProperty>(this PropertyBuilder<TProperty> propertyBuilder, bool? hasMaxLength)
+        {
+            if (hasMaxLength.HasValue && hasMaxLength.Value == true)
+            {
+                Console.WriteLine($"HasMaxLength(true) remove MaxLength Annotation.entity:{propertyBuilder.Metadata.DeclaringType.Name};property:{propertyBuilder.Metadata.Name}");
+                (propertyBuilder as IInfrastructure<InternalPropertyBuilder>).Instance.HasAnnotation(CoreAnnotationNames.MaxLengthAnnotation, null, ConfigurationSource.Explicit);
+            }
+            return propertyBuilder;
+        }
+
+
+       
     }
+   
 
     public static class InternalPropertyBuilderExtensions
     {

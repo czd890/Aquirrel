@@ -4,9 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel;
 
 namespace Aquirrel.EntityFramework.Mapping
 {
+
     interface IEntityMapping
     {
         void Mapping(ModelBuilder modelBuilder);
@@ -17,30 +20,35 @@ namespace Aquirrel.EntityFramework.Mapping
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public class EntityMapping<TEntity, TKey> : IEntityMapping where TEntity : class/*, IEntityBase<TKey>*/
+    public class EntityMapping<TEntity> : IEntityMapping where TEntity : class
     {
-        public virtual void Mapping(ModelBuilder modelBuilder)
+        public Type EntityType { get; set; } = typeof(TEntity);
+
+        public virtual void Mapping(EntityTypeBuilder<TEntity> entityTypeBuilder)
         {
-            var entityType = typeof(TEntity);
-            var entityTypeInfo = entityType.GetTypeInfo();
+            var entityTypeInfo = this.EntityType.GetTypeInfo();
             var baseType = typeof(IEntityBase<>);
-
-            if (null == modelBuilder.Model.FindEntityType(entityType))
-                modelBuilder.Model.AddEntityType(entityType);
-
+            //当前类实现了IEntityBase<>,自然一定有id,CreatedDate,Version 等字段
             if (entityTypeInfo.GetInterfaces().Any(face => face.GetTypeInfo().IsGenericType && face.GetGenericTypeDefinition() == baseType))
             {
-                if (typeof(TKey) == typeof(Guid))
+                var keyBuilder = entityTypeBuilder.HasKey("Id");
+                if (keyBuilder.Metadata.DeclaringEntityType.ClrType == typeof(Guid))
                 {
-                    modelBuilder.Entity(entityType).HasKey("Id").ForSqlServerIsClustered(false);
-                    modelBuilder.Entity(entityType).HasIndex("CreatedDate").IsUnique(false).ForSqlServerIsClustered(true);
+                    keyBuilder.ForSqlServerIsClustered(false);
+                    entityTypeBuilder.HasIndex("CreatedDate").IsUnique(false).ForSqlServerIsClustered(true);
                 }
-                else
-                {
-                    modelBuilder.Entity(entityType).HasKey("Id");
-                }
-                modelBuilder.Entity(entityType).Property("Version").IsConcurrencyToken(true).ValueGeneratedOnAddOrUpdate();
+                entityTypeBuilder.Property("Version").IsConcurrencyToken(true).ValueGeneratedOnAddOrUpdate();
             }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Mapping(ModelBuilder modelBuilder)
+        {
+            var entityTypeBuilder = modelBuilder.Model.FindEntityType(this.EntityType);
+            if (entityTypeBuilder == null)
+                entityTypeBuilder = modelBuilder.Model.AddEntityType(this.EntityType);
+
+            this.Mapping(modelBuilder.Entity<TEntity>());
         }
     }
 }

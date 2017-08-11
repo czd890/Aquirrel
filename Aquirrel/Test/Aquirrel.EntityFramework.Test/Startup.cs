@@ -41,7 +41,7 @@ namespace Aquirrel.EntityFramework.Test
                        sqlOpt.UseRelationalNulls(false);
                    });
 
-                   opt.ConfigureAutoEntityAssemblys(this.GetType().Assembly);
+                   opt.ConfigureEntityMappings(this.GetType().Assembly);
 
                })
                .AddAquirrelDb<TestDbContext>();

@@ -18,11 +18,12 @@ namespace Aquirrel.EntityFramework
 
         public UnitOfWork(TContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            //_context = context ?? throw new ArgumentNullException(nameof(context));
 
             //var connection = _context.Database.GetDbConnection();
             //if (_context.Model.Relational() is RelationalModelAnnotations relational)
             //{
+               
             //    relational.DatabaseName = connection.Database;
             //}
 
@@ -85,7 +86,6 @@ namespace Aquirrel.EntityFramework
 
         public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false, params IUnitOfWork[] unitOfWorks)
         {
-            // TransactionScope will be included in .NET Core v2.0
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try

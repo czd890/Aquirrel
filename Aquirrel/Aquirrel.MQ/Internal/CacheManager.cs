@@ -24,6 +24,8 @@ namespace Aquirrel.MQ.Internal
 
         public IConnection GetConnection(string productId)
         {
+            if (this.disposedValue)
+                throw new ObjectDisposedException(nameof(CacheManager));
             if (!rabittmqConn.ContainsKey(productId))
             {
                 if (!_settings.Products.ContainsKey(productId))
@@ -59,6 +61,8 @@ namespace Aquirrel.MQ.Internal
         public ChannelModel GetChannel(string productId)
         {
 
+            if (this.disposedValue)
+                throw new ObjectDisposedException(nameof(CacheManager));
             //return GetConnection(productId).CreateModel();
 
             if (!rabittmqChannel.ContainsKey(productId))

@@ -38,8 +38,12 @@ namespace Aquirrel.MQ
         {
             var t = typeof(T);
             string msgStr;
+            var isJson = false;
             if (t == typeof(string))
+            {
+                isJson = true;
                 msgStr = message.ToString();
+            }
             else
                 msgStr = message.ToJson<T>();
 
@@ -49,10 +53,15 @@ namespace Aquirrel.MQ
             channel.SL.Enter(ref isLock);
             try
             {
-                channel.Channel.BasicPublish(topic, tag, false, null, msg);
+                IBasicProperties props = channel.Channel.CreateBasicProperties();
+                props.ContentType = isJson ? "application/json" : "text/plain";
+                props.DeliveryMode = 2;
+
+                channel.Channel.BasicPublish(topic, tag, false, props, msg);
             }
             catch
             {
+
                 throw;
             }
             finally
@@ -83,6 +92,7 @@ namespace Aquirrel.MQ
                 var fanoutQueueName = ip + "." + productId + "." + topic + "." + DateTime.UtcNow.Ticks;
                 channel.Channel.QueueDeclare(queue: fanoutQueueName);
                 channel.Channel.QueueBind(fanoutQueueName, topic, "", null);
+
                 queueName = fanoutQueueName;
             }
 
@@ -91,7 +101,7 @@ namespace Aquirrel.MQ
             {
                 _logger.LogError("eventbus.consumer.shutdown:" + ea.ToJson());
             };
-            channel.Channel.BasicQos(0, 1, false);
+            channel.Channel.BasicQos(0, (ushort)options.BasicQos, false);
             var tx = typeof(T) == typeof(string);
             consumer.Received += (obj, ea) =>
             {

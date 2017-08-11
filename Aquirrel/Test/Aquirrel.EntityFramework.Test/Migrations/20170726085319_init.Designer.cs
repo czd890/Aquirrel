@@ -11,7 +11,7 @@ using System;
 namespace Aquirrel.EntityFramework.Test.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20170725064822_init")]
+    [Migration("20170726085319_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,28 +20,6 @@ namespace Aquirrel.EntityFramework.Test.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.0-preview2-25794")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Aquirrel.EntityFramework.Test.AutoEntryTable", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(32);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<DateTime>("LastModfiyDate");
-
-                    b.Property<int>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<string>("name")
-                        .HasMaxLength(32);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Table_attr_name");
-                });
 
             modelBuilder.Entity("Aquirrel.EntityFramework.Test.ModelA", b =>
                 {
@@ -62,9 +40,7 @@ namespace Aquirrel.EntityFramework.Test.Migrations
                     b.Property<string>("StringSetLength")
                         .HasMaxLength(640);
 
-                    b.Property<int>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<int>("Version");
 
                     b.Property<decimal>("decimalDefault");
 
@@ -76,6 +52,34 @@ namespace Aquirrel.EntityFramework.Test.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ModelASet");
+                });
+
+            modelBuilder.Entity("Aquirrel.EntityFramework.Test.ShardTable", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(32);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("DefaultName")
+                        .HasMaxLength(32);
+
+                    b.Property<DateTime>("LastModfiyDate");
+
+                    b.Property<string>("MaxName");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<byte[]>("ts")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShardTable");
                 });
 #pragma warning restore 612, 618
         }

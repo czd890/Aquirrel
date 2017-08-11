@@ -29,18 +29,20 @@ namespace Aquirrel.EntityFramework.Test.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Table_attr_name",
+                name: "ShardTable",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DefaultName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
                     LastModfiyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MaxName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Version = table.Column<int>(type: "int", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
+                    ts = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Table_attr_name", x => x.Id);
+                    table.PrimaryKey("PK_ShardTable", x => x.Id);
                 });
         }
 
@@ -50,7 +52,7 @@ namespace Aquirrel.EntityFramework.Test.Migrations
                 name: "ModelASet");
 
             migrationBuilder.DropTable(
-                name: "Table_attr_name");
+                name: "ShardTable");
         }
     }
 }
