@@ -46,7 +46,7 @@ namespace Aquirrel.Logger.File
             get { return this._configuration["DefaultFileName"] ?? "[yyyyMMdd]"; }
         }
 
-        public Tuple<bool, LogLevel> GetMinLevel(string name)
+        public (bool isMatch, LogLevel logLevel) GetMinLevel(string name)
         {
             var fileSection = this._configuration.GetSection("File");
             if (fileSection != null)
@@ -56,7 +56,9 @@ namespace Aquirrel.Logger.File
                 {
                     var level = logLevelSection[name];
                     if (level.IsNotNullOrEmpty() && Enum.TryParse(level, true, out LogLevel lev))
-                        return new Tuple<bool, LogLevel>(true, lev);
+                        return (true, lev);
+                    else if ((level = logLevelSection["Default"]).IsNotNullOrEmpty() && Enum.TryParse(level, true, out LogLevel lev2))
+                        return (true, lev2);
                 }
             }
 
@@ -65,19 +67,19 @@ namespace Aquirrel.Logger.File
             {
                 LogLevel level;
                 if (Enum.TryParse(section[name], true, out level))
-                    return new Tuple<bool, LogLevel>(true, level);
+                    return (true, level);
             }
 
-            return new Tuple<bool, LogLevel>(false, LogLevel.Debug);
+            return (false, LogLevel.Information);
         }
-        public Tuple<bool, string> GetDiretoryPath(string name)
+        public (bool isMatch, string path) GetDiretoryPath(string name)
         {
             var config = this._configuration.GetSection("Config");
             if (config != null)
             {
                 var sec = config.GetSection(name);
                 if (sec != null && sec["Path"].IsNotNullOrEmpty())
-                    return new Tuple<bool, string>(true, sec["Path"]);
+                    return (true, sec["Path"]);
             }
 
             var section = this._configuration.GetSection("Path");
@@ -86,19 +88,19 @@ namespace Aquirrel.Logger.File
                 var path = section[name];
                 if (!String.IsNullOrEmpty(path))
                 {
-                    return new Tuple<bool, string>(true, path);
+                    return (true, path);
                 }
             }
-            return new Tuple<bool, string>(false, this.DefaultPath);
+            return (false, this.DefaultPath);
         }
-        public Tuple<bool, string> GetFileName(string name)
+        public (bool isMatch,string fileName) GetFileName(string name)
         {
             var config = this._configuration.GetSection("Config");
             if (config != null)
             {
                 var sec = config.GetSection(name);
                 if (sec != null && sec["FileName"].IsNotNullOrEmpty())
-                    return new Tuple<bool, string>(true, sec["FileName"]);
+                    return (true, sec["FileName"]);
             }
 
             var section = this._configuration.GetSection("FileName");
@@ -107,19 +109,19 @@ namespace Aquirrel.Logger.File
                 var path = section[name];
                 if (!String.IsNullOrEmpty(path))
                 {
-                    return new Tuple<bool, string>(true, path);
+                    return (true, path);
                 }
             }
-            return new Tuple<bool, string>(false, this.DefaultFileName);
+            return (false, this.DefaultFileName);
         }
-        public Tuple<bool, int> GetMaxSize(string name)
+        public (bool isMatch,int maxSize) GetMaxSize(string name)
         {
             var config = this._configuration.GetSection("Config");
             if (config != null)
             {
                 var sec = config.GetSection(name);
                 if (sec != null && sec["MaxSize"].IsNotNullOrEmpty())
-                    return new Tuple<bool, int>(true, sec["MaxSize"].ToInt(this.DefaultMaxSize));
+                    return (true, sec["MaxSize"].ToInt(this.DefaultMaxSize));
             }
 
 
@@ -129,10 +131,10 @@ namespace Aquirrel.Logger.File
                 var path = section[name];
                 if (!String.IsNullOrEmpty(path))
                 {
-                    return new Tuple<bool, int>(true, section[name].ToInt(this.DefaultMaxSize));
+                    return (true, section[name].ToInt(this.DefaultMaxSize));
                 }
             }
-            return new Tuple<bool, int>(false, this.DefaultMaxSize);
+            return (false, this.DefaultMaxSize);
         }
     }
 }

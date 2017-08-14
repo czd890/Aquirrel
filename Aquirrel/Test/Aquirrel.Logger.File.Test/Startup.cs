@@ -35,6 +35,7 @@ namespace Aquirrel.Logger.File.Test
             sc.AddLogging(loggerBuilder =>
             {
                 loggerBuilder.AddConfiguration(appsettings.GetSection("FileLogging"));
+
                 loggerBuilder.AddDebug();
                 loggerBuilder.AddConsole(consoleOptions => { consoleOptions.IncludeScopes = true; });
                 loggerBuilder.AddFile(appsettings.GetSection("FileLogging"));

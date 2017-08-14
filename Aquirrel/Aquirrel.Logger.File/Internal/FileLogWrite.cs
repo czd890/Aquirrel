@@ -65,7 +65,6 @@ namespace Aquirrel.Logger.File.Internal
         }
         void SaveToFile()
         {
-
             while (true)
             {
                 lock (workAsync)
@@ -92,21 +91,18 @@ namespace Aquirrel.Logger.File.Internal
             {
                 EnsureInitFile();
 
-                foreach (var item in workRunning)
+                foreach (var item in this.workRunning)
                 {
-                    var msg = item + Environment.NewLine;
                     var _s = Encoding.UTF8.GetByteCount(item);
                     _size += _s;
                     if (_size > this._options.MaxSize_Bytes)
                     {
                         _size = _s;
-                        reNewFile = true;
-                        EnsureInitFile();
-                        reNewFile = false;
+                        EnsureInitFile(true);
                     }
-                    this._sw.Write(item);
+                    this._sw.WriteLine(item);
                 }
-                workRunning.Clear();
+                this.workRunning.Clear();
             }
             catch
             {
@@ -115,23 +111,18 @@ namespace Aquirrel.Logger.File.Internal
 
         string _FileName;
         int _size = 0;
-        bool reNewFile = false;
         protected StreamWriter _sw;
-        void EnsureInitFile()
+        void EnsureInitFile(bool isNeed = false)
         {
-            if (CheckNeedCreateNewFile())
+            if (CheckNeedCreateNewFile(isNeed))
                 InitFile();
         }
-        bool CheckNeedCreateNewFile()
+        bool CheckNeedCreateNewFile(bool isNeed)
         {
-            if (reNewFile)
+            if (isNeed)
                 return true;
-            //TODO 使用 RollingType判断是否需要创建文件。提高效率！！！
             if (_FileName != DateTime.Now.ToString(_options.FileNameTemplate_Time))
-            {
                 return true;
-            }
-
             return false;
         }
         void InitFile()
@@ -159,8 +150,9 @@ namespace Aquirrel.Logger.File.Internal
                     oldsw.Flush();
                     oldsw.Dispose();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.Error?.WriteLine("file log write. " + ex.ToString());
                 }
             }
         }

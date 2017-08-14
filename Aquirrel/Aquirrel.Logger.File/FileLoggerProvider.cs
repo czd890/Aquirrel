@@ -60,13 +60,13 @@ namespace Aquirrel.Logger.File
 
             var keys = this.GetKeys(categoryName);
 
-            model.MinLevel = LogLevel.Debug;
+            model.MinLevel = LogLevel.Information;
             foreach (var item in keys)
             {
                 var switchV = _configuration.GetMinLevel(item);
-                if (switchV.Item1)
+                if (switchV.isMatch)
                 {
-                    model.MinLevel = switchV.Item2;
+                    model.MinLevel = switchV.logLevel;
                     break;
                 }
             }
@@ -74,9 +74,9 @@ namespace Aquirrel.Logger.File
             foreach (var item in keys)
             {
                 var switchV = _configuration.GetDiretoryPath(item);
-                if (switchV.Item1)
+                if (switchV.isMatch)
                 {
-                    model.FileDiretoryPath = switchV.Item2;
+                    model.FileDiretoryPath = switchV.path;
                     break;
                 }
             }
@@ -84,9 +84,9 @@ namespace Aquirrel.Logger.File
             foreach (var item in keys)
             {
                 var switchV = _configuration.GetFileName(item);
-                if (switchV.Item1)
+                if (switchV.isMatch)
                 {
-                    model.FileNameTemplate = switchV.Item2;
+                    model.FileNameTemplate = switchV.fileName;
                     break;
                 }
             }
@@ -94,9 +94,9 @@ namespace Aquirrel.Logger.File
             foreach (var item in keys)
             {
                 var switchV = _configuration.GetMaxSize(item);
-                if (switchV.Item1)
+                if (switchV.isMatch)
                 {
-                    model.MaxSize_Bytes = switchV.Item2;
+                    model.MaxSize_Bytes = switchV.maxSize;
                     break;
                 }
             }

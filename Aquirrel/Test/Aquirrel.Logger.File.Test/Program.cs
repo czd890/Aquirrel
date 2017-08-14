@@ -37,11 +37,15 @@ namespace Aquirrel.Logger.File.Test
             var t2 = Task.Run(() => { sp.GetService<TestService2>().Do(); });
             Task.WaitAll(t1, t2);
             Console.WriteLine("任务完成！！！！！！" + (DateTime.Now - now));
-            using (logger.BeginScope("begin scope"))
+            using (logger.BeginScope("begin scope:Id:221"))
             {
                 sp.GetService<TestService>().Do();
-                sp.GetService<TestService2>().Do();
-                logger.LogError(99, new Exception("this is exception"), "message");
+                var ct = Task.Factory.StartNew(sp.GetService<TestService2>().Do).ContinueWith(p =>
+                  {
+                      logger.LogError(99, new Exception("this is exception"), "message");
+                  });
+
+                Task.WaitAll(ct);
             }
 
             sp.GetService<TestService>().Do();
