@@ -37,7 +37,7 @@ namespace Aquirrel.EntityFramework.Mapping
                     keyBuilder.ForSqlServerIsClustered(false);
                     entityTypeBuilder.HasIndex("CreatedDate").IsUnique(false).ForSqlServerIsClustered(true);
                 }
-                entityTypeBuilder.Property("Version").IsConcurrencyToken(true).ValueGeneratedOnAddOrUpdate();
+                entityTypeBuilder.Property("Version").IsRowVersion();
             }
         }
 

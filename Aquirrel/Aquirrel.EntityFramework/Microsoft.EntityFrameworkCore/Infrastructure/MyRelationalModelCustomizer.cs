@@ -24,14 +24,23 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         {
             Console.WriteLine("MyRelationalModelCustomizer.Customize");
             base.Customize(modelBuilder, dbContext);
-            var sp = (IInfrastructure<IServiceProvider>)dbContext;
-            var dbOptions = sp.Instance.GetServices<DbContextOptions>();
-            foreach (var item in dbOptions)
+            //var sp = (IInfrastructure<IServiceProvider>)dbContext;
+            //var dbOptions = sp.Instance.GetServices<DbContextOptions>();
+            //foreach (var item in dbOptions)
+            //{
+            //    Console.WriteLine($"test=====================ss=={item}.context:{item.ContextType}");
+            //    if (item.ContextType == dbContext.GetType())
+            //        ConfigureDbContextEntityService.Configure(modelBuilder, item, dbContext);
+            //}
+            var dbcontextType = dbContext.GetType();
+            while (true)
             {
-                Console.WriteLine($"test=====================ss=={item}.context:{item.ContextType}");
-                if (item.ContextType == dbContext.GetType())
-                    ConfigureDbContextEntityService.Configure(modelBuilder, item, dbContext);
+                if (dbcontextType == typeof(DbContext))
+                    break;
+                dbcontextType = dbcontextType.BaseType;
             }
+            var dbOptions = (DbContextOptions)dbcontextType.GetField("_options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.GetField | System.Reflection.BindingFlags.Instance).GetValue(dbContext);
+            ConfigureDbContextEntityService.Configure(modelBuilder, dbOptions, dbContext);
         }
     }
 }

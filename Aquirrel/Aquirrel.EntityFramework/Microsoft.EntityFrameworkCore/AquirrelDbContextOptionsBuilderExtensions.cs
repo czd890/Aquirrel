@@ -48,7 +48,7 @@ namespace Microsoft.EntityFrameworkCore
         private static DbContextOptionsBuilder SetOption(DbContextOptionsBuilder builder, Action<CoreOptionAquirrelExtension> optionsetup)
         {
             var ext = builder.Options.FindExtension<CoreOptionAquirrelExtension>();
-            ext = ext != null ? ext : new CoreOptionAquirrelExtension();
+            ext = ext != null ? ext.Clone() : new CoreOptionAquirrelExtension();
             optionsetup(ext);
             ((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(ext);
             return builder;

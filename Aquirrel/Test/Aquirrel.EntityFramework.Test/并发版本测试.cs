@@ -4,6 +4,9 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
+using Aquirrel.EntityFramework.Sharding;
+using Microsoft.EntityFrameworkCore;
+using Aquirrel.EntityFramework.Internal;
 
 namespace Aquirrel.EntityFramework.Test
 {
@@ -34,7 +37,7 @@ namespace Aquirrel.EntityFramework.Test
 
             var ms2 = db.Set<ShardTable>().ToArray();
 
-           
+
 
             Console.WriteLine("finish");
 
@@ -50,6 +53,7 @@ namespace Aquirrel.EntityFramework.Test
             {
                 DefaultName = "hahahah",
             };
+
             db.Set<ShardTable>().Add(m);
             db.SaveChanges();
 
@@ -81,12 +85,76 @@ namespace Aquirrel.EntityFramework.Test
         }
 
         [TestMethod]
+        public void orgGetRepo()
+        {
+            var sp = new Startup(null).ConfigureServices(new ServiceCollection());
+
+            sp.GetRequiredService<Repository<LogDbContext, LogEntity.Log>>();
+
+            sp.GetRequiredService<Repository<TestDbContext, ShardTable>>();
+        }
+
+
+        [TestMethod]
+        public void TestShardingDb()
+        {
+
+
+            var sp = new Startup(null).ConfigureServices(new ServiceCollection());
+
+            //var shardingDbContextOptions = sp.GetService<Sharding.ShardingDbContextOptions<TestDbContext>>();
+            //shardingDbContextOptions.ShardingValue = "2017";
+
+            var shardingFactory = sp.GetService<ShardingDbFactory>();
+
+            //只分库
+            var shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, LogEntity.Log>(new ShardingOptions()
+            {
+                ShardingDbValue = "2017",
+                ShardingTableValue = "03"
+            });
+            var xx = shardingRepo.Query().FirstOrDefault();
+            Assert.AreEqual(xx.msg, "分库主表");
+            
+
+            //分库又分表
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            {
+                ShardingDbValue = "2017",
+                ShardingTableValue = "03"
+            });
+            xx = shardingRepo.Query().FirstOrDefault();
+            Assert.AreEqual(xx.msg, "分库分表");
+
+
+            //只分表
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            {
+                ShardingTableValue = "03"
+            });
+            xx = shardingRepo.Query().FirstOrDefault();
+            Assert.AreEqual(xx.msg, "主库分表");
+
+
+            //不分库分表
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, LogEntity.Log>(null);
+            xx = shardingRepo.Query().FirstOrDefault();
+            Assert.AreEqual(xx.msg, "主库主表");
+        }
+
+        [TestMethod]
         public void TaskLast()
         {
 
             var r = new String("abc".TakeLast(2).ToArray());
 
             Assert.AreEqual(r, "bc");
+        }
+
+
+        [TestMethod]
+        public void conv()
+        {
         }
     }
 }

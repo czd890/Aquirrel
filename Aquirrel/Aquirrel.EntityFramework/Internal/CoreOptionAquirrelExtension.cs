@@ -10,6 +10,16 @@ namespace Aquirrel.EntityFramework.Internal
 {
     public class CoreOptionAquirrelExtension : IDbContextOptionsExtension
     {
+        public CoreOptionAquirrelExtension()
+        {
+
+        }
+        public CoreOptionAquirrelExtension(CoreOptionAquirrelExtension copyFrom)
+        {
+            this.EntityAssebmlys = copyFrom.EntityAssebmlys?.ToArray();
+            this.EntityMappingsAssebmlys = copyFrom.EntityMappingsAssebmlys?.ToArray();
+        }
+
         /// <summary>
         /// 自动加载的entity
         /// </summary>
@@ -19,31 +29,13 @@ namespace Aquirrel.EntityFramework.Internal
         /// 自动mapping的
         /// </summary>
         public Assembly[] EntityMappingsAssebmlys { get; set; }
-        /// <summary>
-        /// string默认长度位
-        /// </summary>
 
-        //public bool EnableStringDefaultLength { get; set; } = true;
-        //public int StringDefaultLength { get; set; } = 32;
+        public bool ApplyServices(IServiceCollection services) => true;
 
-        public string LogFragment => "Aquirrel Core Db Options";
+        public long GetServiceProviderHashCode() => 0;
 
-        IServiceCollection services;
+        public void Validate(IDbContextOptions options) { }
 
-        public bool ApplyServices(IServiceCollection services)
-        {
-            Console.WriteLine("CoreOptionAquirrelExtension   ApplyServices");
-            this.services = services;
-            return true;
-        }
-
-        public long GetServiceProviderHashCode()
-        {
-            return this.services?.GetHashCode() ?? 0;
-        }
-
-        public void Validate(IDbContextOptions options)
-        {
-        }
+        public CoreOptionAquirrelExtension Clone() => new CoreOptionAquirrelExtension(this);
     }
 }

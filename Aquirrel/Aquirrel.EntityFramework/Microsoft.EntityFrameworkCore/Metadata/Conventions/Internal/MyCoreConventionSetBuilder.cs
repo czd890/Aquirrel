@@ -18,6 +18,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
 
             conventionSet.PropertyAddedConventions.Insert(0, new StringDefaultLengthConvention());
             conventionSet.PropertyAddedConventions.Add(new DecimalPrecisionAttributeConvention());
+            conventionSet.PropertyAddedConventions.Add(new HasMaxLengthAttributeConvention());
 
             return conventionSet;
         }

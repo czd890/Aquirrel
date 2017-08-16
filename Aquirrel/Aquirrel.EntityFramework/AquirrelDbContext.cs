@@ -1,17 +1,30 @@
 ﻿using Aquirrel.EntityFramework.Internal;
+using Aquirrel.EntityFramework.Sharding;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Aquirrel.EntityFramework
 {
+    public class AquirrelDbContext<TEntity> : AquirrelDbContext
+    {
+        public AquirrelDbContext(DbContextOptions options) : base(options)
+        {
+        }
+    }
     public class AquirrelDbContext : DbContext
     {
         public AquirrelDbContext(DbContextOptions options) : base(options)
         {
         }
+        //public AquirrelDbContext(Sharding.ShardingDbContextOptions options,IServiceProvider provider)
+        //    : this(provider.GetRequiredService<ShardingDbContextFactory>().GetShardingDbContextOptions(options)) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             Console.WriteLine("AquirrelDbContext.OnModelCreating");

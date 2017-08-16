@@ -13,8 +13,11 @@ namespace Aquirrel.EntityFramework.Test
     {
         public string StringDefault { get; set; }
 
-        [MaxLength]
+        [HasMaxLength]
         public string StringMax { get; set; }
+
+        [MaxLength(999)]
+        public string StringMaxLenAttr { get; set; }
 
         [StringLength(640)]
         public string StringSetLength { get; set; }
@@ -37,14 +40,10 @@ namespace Aquirrel.EntityFramework.Test
 
     public class ShardTable : EntityBase
     {
-        public ShardTable()
-        {
-            this.Version = 99;
-        }
         public string MaxName { get; set; }
+        [DecimalPrecision]
+        public decimal DecimalSacle { get; set; }
         public string DefaultName { get; set; }
-
-        public byte[] ts { get; set; }
     }
 
     class ShardTableMapping : Mapping.EntityMapping<ShardTable>
@@ -58,24 +57,19 @@ namespace Aquirrel.EntityFramework.Test
             entityTypeBuilder.HasKey(p => p.Id);
 
             entityTypeBuilder.Property(p => p.MaxName).HasMaxLength(true);
-
-            entityTypeBuilder.Property(p => p.ts).IsRowVersion();
-            //entityTypeBuilder.Ignore(p => p.ts);
-
-            //entityTypeBuilder.Property(p => p.Version).ValueGeneratedOnAddOrUpdate();
-            entityTypeBuilder.Property(p => p.Version).ValueGeneratedOnAdd();
+            entityTypeBuilder.Property(p => p.DecimalSacle).HasPrecision(18, 6);
 
             //entityTypeBuilder.HasShardTable(new ShardTableShardRule() { });
 
         }
 
-        class ShardTableShardRule : Shard.ShardRule<ShardTable>
-        {
-            public string GetTableName(ShardTable entity)
-            {
-                var number = new String(entity.Id.TakeLast(2).ToArray());
-                return "ShardTable_" + number;
-            }
-        }
+        //class ShardTableShardRule : Shard.ShardRule<ShardTable>
+        //{
+        //    public string GetTableName(ShardTable entity)
+        //    {
+        //        var number = new String(entity.Id.TakeLast(2).ToArray());
+        //        return "ShardTable_" + number;
+        //    }
+        //}
     }
 }

@@ -11,7 +11,7 @@ namespace Aquirrel.EntityFramework
         TKey Id { get; }
         DateTime CreatedDate { get; }
         DateTime LastModfiyDate { get; }
-        byte Version { get; }
+        byte[] Version { get; }
     }
     public interface IEntityBase : IEntityBase<string>
     {
@@ -47,7 +47,7 @@ namespace Aquirrel.EntityFramework
         /// <summary>
         /// 数据版本。修改自增
         /// </summary>
-        public byte Version { get; protected set; }
+        public byte[] Version { get; private set; }
 
         public string StringId => this.Id.ToString();
     }

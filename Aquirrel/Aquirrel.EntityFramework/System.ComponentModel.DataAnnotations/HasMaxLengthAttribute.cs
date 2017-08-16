@@ -4,8 +4,8 @@ using System.Text;
 
 namespace System.ComponentModel.DataAnnotations
 {
-    public class IsMaxLengthAttribute : Attribute
+    public class HasMaxLengthAttribute : Attribute
     {
-        public bool IsMaxLength { get; set; } = true;
+        public bool HasMaxLength { get; set; } = true;
     }
 }

@@ -82,10 +82,10 @@ namespace Aquirrel.EntityFramework
         /// <summary>
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
         /// </summary>
-        internal PagedList() => Items = new T[0].AsQueryable();
+        internal PagedList() => Items = Array.Empty<T>();
     }
 
-    
+
     /// <summary>
     /// Provides the implementation of the <see cref="IPagedList{T}"/> and converter.
     /// </summary>

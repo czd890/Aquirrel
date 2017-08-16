@@ -8,15 +8,20 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Aquirrel.EntityFramework
+namespace Aquirrel.EntityFramework.Internal
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TContext, TEntity> : IRepository<TEntity>
+        where TContext : DbContext
+        where TEntity : class
     {
-        private readonly DbContext _dbContext;
+        private readonly TContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
 
-        public Repository(DbContext dbContext)
+        public DbContext DbContext => this._dbContext;
+
+        public Repository(TContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _dbSet = _dbContext.Set<TEntity>();
@@ -41,7 +46,7 @@ namespace Aquirrel.EntityFramework
             {
                 set = _dbSet;
             }
-            
+
             if (predicate != null)
             {
                 set = set.Where(predicate);
@@ -77,7 +82,7 @@ namespace Aquirrel.EntityFramework
                 return query.ToPagedList(pageIndex, pageSize);
             }
         }
-        
+
         public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             IQueryable<TEntity> query = _dbSet;

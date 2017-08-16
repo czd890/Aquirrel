@@ -15,7 +15,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
         public override InternalPropertyBuilder Apply(InternalPropertyBuilder propertyBuilder, DecimalPrecisionAttribute attribute, MemberInfo clrMember)
         {
             if (propertyBuilder.Metadata.ClrType == typeof(decimal))
-                propertyBuilder.HasPrecision(attribute.Precision, attribute.Scale);
+                propertyBuilder.HasPrecision(ConfigurationSource.DataAnnotation, attribute.Precision, attribute.Scale);
             return propertyBuilder;
         }
     }
