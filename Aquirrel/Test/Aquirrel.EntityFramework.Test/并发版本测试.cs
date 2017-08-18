@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 using Aquirrel.EntityFramework.Sharding;
 using Microsoft.EntityFrameworkCore;
 using Aquirrel.EntityFramework.Internal;
+using Aquirrel.EntityFramework.Repository;
 
 namespace Aquirrel.EntityFramework.Test
 {
@@ -131,6 +132,14 @@ namespace Aquirrel.EntityFramework.Test
             shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
             {
                 ShardingTableValue = "03"
+            });
+            xx = shardingRepo.Query().FirstOrDefault();
+            Assert.AreEqual(xx.msg, "主库分表");
+
+            //只分表
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            {
+                ShardingTableValue = "04"
             });
             xx = shardingRepo.Query().FirstOrDefault();
             Assert.AreEqual(xx.msg, "主库分表");

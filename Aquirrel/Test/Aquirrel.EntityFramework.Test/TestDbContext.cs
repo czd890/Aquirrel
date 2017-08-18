@@ -30,7 +30,8 @@ namespace Aquirrel.EntityFramework.Test
     public class LogDbContext : AquirrelDbContext
     {
         //public LogDbContext(DbContextOptions options) : base(options) { }
-        public LogDbContext(DbContextOptions<LogDbContext> options) : base(options) { }
+        public LogDbContext(DbContextOptions<LogDbContext> options) : base(options) {
+        }
 
     }
 

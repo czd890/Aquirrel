@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Aquirrel.EntityFramework.Internal;
 using System.Linq;
 using System.Collections.Concurrent;
-
+using Aquirrel.EntityFramework.Repository;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Aquirrel.EntityFramework.Sharding
 {
     /// <summary>
@@ -43,12 +44,15 @@ namespace Aquirrel.EntityFramework.Sharding
                 var tableName = this.GetShardingTableName<TContext, TEntity>(options);
                 if (tableName.IsNotNullOrEmpty())
                 {
+                    //!!!!!!!!!
+                    //wating change entitytype.annotaions life is scope
+                    throw new NotImplementedException("only support once request");
                     db = this.GetShardingDbContext<TContext>(options);
-                    var xxx = db.Model.FindEntityType(typeof(TEntity));
-                    var x2 = xxx.Relational();
-                    if (db.Model.FindEntityType(typeof(TEntity)).Relational()
+                    var entityType = db.Model.FindEntityType(typeof(TEntity));
+                    if (entityType.Relational()
                         is Microsoft.EntityFrameworkCore.Metadata.RelationalEntityTypeAnnotations extensions)
-                        extensions.TableName += "_" + tableName;
+
+                        extensions.TableName = entityType.ShortName() + "_" + tableName;
                 }
             }
             else if (options.ShardingDbValue.IsNotNullOrEmpty())
@@ -65,8 +69,6 @@ namespace Aquirrel.EntityFramework.Sharding
         public TContext GetShardingDbContext<TContext>(ShardingOptions options)
             where TContext : DbContext
         {
-
-
             var key = $"[sharding dbcontext][{typeof(TContext).FullName}][{options}]";
 
             return (TContext)this.provider.GetRequiredService<InternalScopeServiceContainer>()

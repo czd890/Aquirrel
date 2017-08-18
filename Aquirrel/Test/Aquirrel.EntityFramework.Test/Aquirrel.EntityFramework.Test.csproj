@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Aquirrel.Autofac\Aquirrel.Autofac.csproj" />
     <ProjectReference Include="..\..\Aquirrel.EntityFramework\Aquirrel.EntityFramework.csproj" />
+    <ProjectReference Include="..\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,5 +40,9 @@
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0-preview2-25405-01" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="project\DTO\" />
   </ItemGroup>
 </Project>

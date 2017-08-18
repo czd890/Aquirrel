@@ -33,6 +33,7 @@ namespace Aquirrel.MQ.Test
             eventBus.Subscribe<string>("defualt", "product_user_async_product.#", str =>
             {
                 logger.LogDebug($"{DateTime.Now} 收到集群消费消息：{str}");
+                Console.WriteLine(str);
                 return true;
             }, new SubscribeOptions() { BasicQos = 1 });
 

@@ -12,15 +12,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Aquirrel.EntityFramework
 {
-    public interface IRepository<TEntity> /*: IInfrastructure<DbContext>*/ where TEntity : class
+    public interface IRepositoryBase<TEntity> where TEntity : class
     {
-        //void ChangeTable(string table);
-
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true);
 
         IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null);
 
-        Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,  int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, CancellationToken cancellationToken = default(CancellationToken));
 
         IQueryable<TEntity> FromSql(string sql, params object[] parameters);
 
@@ -47,7 +45,14 @@ namespace Aquirrel.EntityFramework
         void Update(params TEntity[] entities);
 
         void Update(IEnumerable<TEntity> entities);
+    }
 
+
+}
+namespace Aquirrel.EntityFramework.Repository
+{
+    public interface IRepositoryDelete<TEntity> where TEntity : class
+    {
         void Delete(object id);
 
         void Delete(TEntity entity);
@@ -55,5 +60,24 @@ namespace Aquirrel.EntityFramework
         void Delete(params TEntity[] entities);
 
         void Delete(IEnumerable<TEntity> entities);
+    }
+
+    interface IRepository
+    {
+        //void ChangeTable(string table);
+
+        DbContext DbConext { get; }
+
+         int SaveChanges();
+         int SaveChanges(bool acceptAllChangesOnSuccess);
+
+        Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+    }
+
+    public interface IRepository<TEntity> : IRepositoryBase<TEntity>, IRepositoryDelete<TEntity>
+        where TEntity : class
+    {
+
     }
 }

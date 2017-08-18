@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 using Aquirrel.EntityFramework.Sharding;
+using Aquirrel.EntityFramework.Repository;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -18,15 +19,16 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddAquirrelDb(this IServiceCollection services)
         {
             Console.WriteLine("AquirrelDbCollectionExtensions.AddAquirrelDb");
-            services.AddScoped(typeof(Repository<,>));
 
-            services.AddScoped(typeof(UnitOfWork<>));
+            services.AddScoped(typeof(Repository<,>));
+            services.AddScoped<InternalScopeServiceContainer>();
+            services.AddSingleton<RepositoryFactory>();
 
             services.AddSingleton<IModelCustomizer, MyRelationalModelCustomizer>();
-
             services.AddSingleton<ICoreConventionSetBuilder, MyCoreConventionSetBuilder>();
+            services.AddSingleton<IModelSource, MyRelationalModelSource>();
 
-            services.AddScoped<InternalScopeServiceContainer>();
+
 
             return services;
         }

@@ -10,16 +10,20 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Aquirrel.EntityFramework.Internal
+namespace Aquirrel.EntityFramework.Repository
 {
-    public class Repository<TContext, TEntity> : IRepository<TEntity>
+    public class Repository<TContext, TEntity> : IRepository, IRepository<TEntity>
         where TContext : DbContext
         where TEntity : class
     {
         private readonly TContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
 
-        public DbContext DbContext => this._dbContext;
+        //public DbContext DbContext => this._dbContext;
+
+        DbContext IRepository.DbConext => this._dbContext;
+
+        //DbContext IInfrastructure<DbContext>.Instance => this._dbContext;
 
         public Repository(TContext dbContext)
         {
@@ -83,7 +87,7 @@ namespace Aquirrel.EntityFramework.Internal
             }
         }
 
-        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             IQueryable<TEntity> query = _dbSet;
             if (disableTracking)
@@ -173,5 +177,25 @@ namespace Aquirrel.EntityFramework.Internal
         public void Delete(params TEntity[] entities) => _dbSet.RemoveRange(entities);
 
         public void Delete(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
+
+        int IRepository.SaveChanges()
+        {
+            return this._dbContext.SaveChanges();
+        }
+
+        int IRepository.SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            return this._dbContext.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        Task<int> IRepository.SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return this._dbContext.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        Task<int> IRepository.SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return this._dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

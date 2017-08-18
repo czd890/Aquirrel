@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Aquirrel.EntityFramework
 {
-    public class AquirrelDbContext<TEntity> : AquirrelDbContext
-    {
-        public AquirrelDbContext(DbContextOptions options) : base(options)
-        {
-        }
-    }
     public class AquirrelDbContext : DbContext
     {
+        protected static DbContextOptions<TContext> CTORConvert<TContext>(DbContextOptions options)
+           where TContext : DbContext
+        {
+            return new DbContextOptions<TContext>(options.Extensions.ToDictionary(p => p.GetType(), p => p));
+        }
+
         public AquirrelDbContext(DbContextOptions options) : base(options)
         {
         }

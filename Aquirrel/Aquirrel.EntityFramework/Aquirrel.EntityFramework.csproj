@@ -15,7 +15,6 @@
     <Compile Remove="Repository\BaseRepository.cs" />
     <Compile Remove="Repository\IBaseRepository.cs" />
     <Compile Remove="System.ComponentModel.DataAnnotations\IsMaxLengthAttribute.cs" />
-    <Compile Remove="UnitOfWork\UnitOfWorkFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
