@@ -60,6 +60,7 @@ cd $projectRootDire
 cd $projectDir
 
 dotnet pack -o $outputdir -c Release 
+Write-Host "cd current dir:::$nugetDir"
 cd $nugetDir
 
 $fileList = Get-ChildItem  -Path $outputdir -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "^((?!symbols).)*$" } | % {$_.FullName}

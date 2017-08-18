@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib.</Description>
-    <VersionPrefix>2.0.0.0</VersionPrefix>
+    <VersionPrefix>2.0.0.1</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel</AssemblyName>
