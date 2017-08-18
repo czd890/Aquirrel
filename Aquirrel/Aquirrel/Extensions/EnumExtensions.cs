@@ -35,6 +35,5 @@ namespace Aquirrel
             }
             return description;
         }
-        enum xx { aa}
     }
 }

@@ -43,9 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="project\Repository\" />
-    <Folder Include="project\Service\" />
-    <Folder Include="project\Entity\" />
     <Folder Include="project\DTO\" />
   </ItemGroup>
 </Project>

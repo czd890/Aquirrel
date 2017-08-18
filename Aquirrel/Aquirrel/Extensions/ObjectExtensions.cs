@@ -56,20 +56,24 @@ namespace Aquirrel
             }
         }
 
+        static JsonSerializerSettings DefaultJsonSetting = new JsonSerializerSettings() { };
         public static string ToJson(this object obj)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, DefaultJsonSetting);
         }
-        static JsonSerializerSettings DefaultJsonSetting = new JsonSerializerSettings() { };
+        public static string ToJson(this object obj, JsonSerializerSettings setting)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, setting);
+        }
 
         public static string ToJson<T>(this object obj)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, typeof(T), DefaultJsonSetting);
         }
-
-        public static string ToJson(this object obj, JsonSerializerSettings setting)
+        public static string ToJson<T>(this object obj, JsonSerializerSettings setting)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, setting);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, typeof(T), setting);
         }
+
     }
 }
