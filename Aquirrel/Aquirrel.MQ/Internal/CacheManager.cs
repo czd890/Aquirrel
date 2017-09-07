@@ -56,7 +56,6 @@ namespace Aquirrel.MQ.Internal
         public struct ChannelModel
         {
             public IModel Channel { get; set; }
-            public SpinLock SL { get; set; }
         }
         public ChannelModel GetChannel(string productId)
         {
@@ -70,12 +69,40 @@ namespace Aquirrel.MQ.Internal
                 var conn = GetConnection(productId);
                 rabittmqChannel[productId] = new ChannelModel()
                 {
-                    Channel = conn.CreateModel(),
-                    SL = new SpinLock()
+                    Channel = conn.CreateModel()
                 };
                 rabittmqChannel[productId].Channel.BasicReturn += (obj, ea) =>
                 {
-                    _logger.LogInformation($"消息不可送达.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
+                    _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
+                };
+                //rabittmqChannel[productId].Channel.BasicAcks += (obj, ea) =>
+                //{
+
+                //};
+
+                //rabittmqChannel[productId].Channel.BasicNacks += (obj, ea) =>
+                //{
+
+                //};
+
+                //rabittmqChannel[productId].Channel.BasicRecoverOk += (obj, ea) =>
+                //{
+
+                //};
+
+                rabittmqChannel[productId].Channel.CallbackException += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} CallbackException.{ea.Detail?.ToJson()}{Environment.NewLine}{ea.Exception?.ToString()}");
+                };
+
+                rabittmqChannel[productId].Channel.FlowControl += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} FlowControl.{ea.Active}");
+                };
+
+                rabittmqChannel[productId].Channel.ModelShutdown += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} ModelShutdown.{ea.ToJson()}");
                 };
 
             }

@@ -49,26 +49,14 @@ namespace Aquirrel.MQ
 
             var msg = Encoding.UTF8.GetBytes(msgStr);
             var channel = _CacheManager.GetChannel(productId);
-            bool isLock = false;
-            channel.SL.Enter(ref isLock);
-            try
-            {
-                IBasicProperties props = channel.Channel.CreateBasicProperties();
-                props.ContentType = isJson ? "application/json" : "text/plain";
-                props.DeliveryMode = 2;
+            IBasicProperties props = channel.Channel.CreateBasicProperties();
+            props.ContentType = isJson ? "application/json" : "text/plain";
+            props.DeliveryMode = 2;
 
-                channel.Channel.BasicPublish(topic, tag, false, props, msg);
-            }
-            catch
+            Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
             {
-
-                throw;
-            }
-            finally
-            {
-                if (isLock)
-                    channel.SL.Exit();
-            }
+                channel.Channel.BasicPublish(topic, tag, true, props, msg);
+            }).RetryCount(3).Execute();
         }
         /// <summary>
         /// 
@@ -99,7 +87,7 @@ namespace Aquirrel.MQ
             var consumer = new EventingBasicConsumer(channel.Channel);
             consumer.Shutdown += (obj, ea) =>
             {
-                _logger.LogError("eventbus.consumer.shutdown:" + ea.ToJson());
+                _logger.LogError($"eventbus.consumer.shutdown;{Environment.NewLine}{productId}-{topic}-{ea.ToJson()}");
             };
             channel.Channel.BasicQos(0, (ushort)options.BasicQos, false);
             var tx = typeof(T) == typeof(string);
@@ -127,10 +115,10 @@ namespace Aquirrel.MQ
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(0, ex, "eventbus.subscribe.consumer");
+                    _logger.LogError(ex, $"eventbus.subscribe.consumer.exception;{Environment.NewLine}{productId}-{topic}-{ea.ToJson()}");
                 }
             };
-            _logger.LogInformation("eventbus.subscribe." + queueName);
+            _logger.LogInformation($"eventbus.subscribe;{productId}-{queueName}");
             channel.Channel.BasicConsume(queueName, false, consumer);
         }
 
