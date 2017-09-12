@@ -22,11 +22,11 @@ namespace Aquirrel.MQ.Internal
         EventBusSettings _settings;
         ILogger<IEventBus> _logger;
 
-        public IConnection GetConnection(string productId)
+        public IConnection GetConnection(string productId,string shardingKey)
         {
             if (this.disposedValue)
                 throw new ObjectDisposedException(nameof(CacheManager));
-            if (!rabittmqConn.ContainsKey(productId))
+            if (!rabittmqConn.ContainsKey(shardingKey))
             {
                 if (!_settings.Products.ContainsKey(productId))
                 {
@@ -45,68 +45,75 @@ namespace Aquirrel.MQ.Internal
                 factory.VirtualHost = option.VHost;
                 factory.RequestedHeartbeat = (ushort)option.Heartbeat;
                 factory.AutomaticRecoveryEnabled = option.AutoRecovery;
-
-                rabittmqConn[productId] = factory.CreateConnection();
+                rabittmqConn[shardingKey] = factory.CreateConnection();
             }
 
 
-            return rabittmqConn[productId];
+            return rabittmqConn[shardingKey];
         }
 
         public struct ChannelModel
         {
             public IModel Channel { get; set; }
+            public SpinLock SL { get; set; }
         }
-        public ChannelModel GetChannel(string productId)
+        public ChannelModel GetChannel(string productId, string shardingKey, bool shardingConn)
         {
 
             if (this.disposedValue)
                 throw new ObjectDisposedException(nameof(CacheManager));
             //return GetConnection(productId).CreateModel();
-
-            if (!rabittmqChannel.ContainsKey(productId))
+            if (!rabittmqChannel.ContainsKey(shardingKey))
             {
-                var conn = GetConnection(productId);
-                rabittmqChannel[productId] = new ChannelModel()
+                lock (rabittmqChannel)
                 {
-                    Channel = conn.CreateModel()
-                };
-                rabittmqChannel[productId].Channel.BasicReturn += (obj, ea) =>
-                {
-                    _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
-                };
-                //rabittmqChannel[productId].Channel.BasicAcks += (obj, ea) =>
-                //{
+                    if (!rabittmqChannel.ContainsKey(shardingKey))
+                    {
+                        var conn = GetConnection(productId, shardingKey);
 
-                //};
+                        rabittmqChannel[shardingKey] = new ChannelModel()
+                        {
+                            SL = new SpinLock(),
+                            Channel = conn.CreateModel()
+                        };
+                        rabittmqChannel[shardingKey].Channel.BasicReturn += (obj, ea) =>
+                        {
+                            _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
+                        };
+                        //rabittmqChannel[productId].Channel.BasicAcks += (obj, ea) =>
+                        //{
 
-                //rabittmqChannel[productId].Channel.BasicNacks += (obj, ea) =>
-                //{
+                        //};
 
-                //};
+                        //rabittmqChannel[productId].Channel.BasicNacks += (obj, ea) =>
+                        //{
 
-                //rabittmqChannel[productId].Channel.BasicRecoverOk += (obj, ea) =>
-                //{
+                        //};
 
-                //};
+                        //rabittmqChannel[productId].Channel.BasicRecoverOk += (obj, ea) =>
+                        //{
 
-                rabittmqChannel[productId].Channel.CallbackException += (obj, ea) =>
-                {
-                    _logger.LogError($"{productId} CallbackException.{ea.Detail?.ToJson()}{Environment.NewLine}{ea.Exception?.ToString()}");
-                };
+                        //};
 
-                rabittmqChannel[productId].Channel.FlowControl += (obj, ea) =>
-                {
-                    _logger.LogError($"{productId} FlowControl.{ea.Active}");
-                };
+                        rabittmqChannel[shardingKey].Channel.CallbackException += (obj, ea) =>
+                        {
+                            _logger.LogError($"{productId} CallbackException.{ea.Detail?.ToJson()}{Environment.NewLine}{ea.Exception?.ToString()}");
+                        };
 
-                rabittmqChannel[productId].Channel.ModelShutdown += (obj, ea) =>
-                {
-                    _logger.LogError($"{productId} ModelShutdown.{ea.ToJson()}");
-                };
+                        rabittmqChannel[shardingKey].Channel.FlowControl += (obj, ea) =>
+                        {
+                            _logger.LogError($"{productId} FlowControl.{ea.Active}");
+                        };
+
+                        rabittmqChannel[shardingKey].Channel.ModelShutdown += (obj, ea) =>
+                        {
+                            _logger.LogError($"{productId} ModelShutdown.{ea.ToJson()}");
+                        };
+                    }
+                }
 
             }
-            return rabittmqChannel[productId];
+            return rabittmqChannel[shardingKey];
         }
 
         #region IDisposable Support

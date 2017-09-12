@@ -12,10 +12,10 @@ namespace Aquirrel.EntityFramework.Test.project.Repository
         {
         }
     }
-    public class JDContext<TEntity> : JDContext
-    {
-        public JDContext(DbContextOptions<JDContext<TEntity>> options) : base(CTORConvert<JDContext>(options))
-        {
-        }
-    }
+    //public class JDContext<TEntity> : JDContext
+    //{
+    //    public JDContext(DbContextOptions<JDContext<TEntity>> options) : base(CTORConvert<JDContext>(options))
+    //    {
+    //    }
+    //}
 }

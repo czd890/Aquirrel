@@ -33,6 +33,7 @@ namespace Aquirrel.FailureRetry
 
 
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
+        Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
         internal Action doAction;
 
@@ -54,7 +55,11 @@ namespace Aquirrel.FailureRetry
             this.retryCount = retryCount;
             return this;
         }
-
+        public FailureRetryBuilder Failure(Action<RetryFaiureException> failure)
+        {
+            failureCallback = failure;
+            return this;
+        }
         public void Execute()
         {
             int i = 0;
@@ -70,7 +75,11 @@ namespace Aquirrel.FailureRetry
                     if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
                         return;
                     if (i > this.retryCount)
-                        throw new RetryFaiureException(ex, this.retryCount);
+                    {
+                        var _ex = new RetryFaiureException(ex, this.retryCount);
+                        if (failureCallback != null) failureCallback(_ex);
+                        throw _ex;
+                    }
                 }
             }
         }
@@ -110,6 +119,7 @@ namespace Aquirrel.FailureRetry.Internal
 
 
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
+        Action<RetryFaiureException> failureCallback;
         internal Func<T, bool> hasResultFailure;
         internal int retryCount = 2;
         internal Func<T> doAction;
@@ -128,6 +138,12 @@ namespace Aquirrel.FailureRetry.Internal
         public FailureRetryBuilder<T> RetryCount(int retryCount)
         {
             this.retryCount = Math.Max(1, retryCount);
+            return this;
+        }
+
+        public FailureRetryBuilder<T> Failure(Action<RetryFaiureException> failure)
+        {
+            failureCallback = failure;
             return this;
         }
 
@@ -150,7 +166,11 @@ namespace Aquirrel.FailureRetry.Internal
                         return default(T);
 
                     if (i > this.retryCount)
-                        throw new RetryFaiureException(ex, this.retryCount);
+                    {
+                        var _ex = new RetryFaiureException(ex, this.retryCount);
+                        if (failureCallback != null) failureCallback(_ex);
+                        throw _ex;
+                    }
                     continue;
                 }
 
@@ -159,7 +179,13 @@ namespace Aquirrel.FailureRetry.Internal
                 {
                     var ex = new RetryFaiureException("resutl filter error", i);
                     ex.Data["return result"] = r;
-                    throw ex;
+
+                    if (i > this.retryCount)
+                    {
+                        var _ex = new RetryFaiureException(ex, this.retryCount);
+                        if (failureCallback != null) failureCallback(_ex);
+                        throw _ex;
+                    }
                 }
             }
 
@@ -170,6 +196,7 @@ namespace Aquirrel.FailureRetry.Internal
     public class FailureRetryTaskBuilder
     {
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
+        Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
         internal Func<Task> doAction;
 
@@ -182,6 +209,12 @@ namespace Aquirrel.FailureRetry.Internal
         public FailureRetryTaskBuilder RetryCount(int retryCount)
         {
             this.retryCount = retryCount;
+            return this;
+        }
+
+        public FailureRetryTaskBuilder Failure(Action<RetryFaiureException> failure)
+        {
+            failureCallback = failure;
             return this;
         }
         public Task ExecuteAsync()
@@ -202,7 +235,11 @@ namespace Aquirrel.FailureRetry.Internal
                         if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
                             return;
                         if (i > this.retryCount)
-                            throw new RetryFaiureException(ex, this.retryCount);
+                        {
+                            var _ex = new RetryFaiureException(ex, this.retryCount);
+                            if (failureCallback != null) failureCallback(_ex);
+                            throw _ex;
+                        }
                     }
                 }
 
@@ -220,6 +257,7 @@ namespace Aquirrel.FailureRetry.Internal
 
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
         internal Func<T, bool> hasResultFailure;
+        Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
         internal Func<Task<T>> doAction;
 
@@ -239,7 +277,11 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryCount = Math.Max(1, retryCount);
             return this;
         }
-
+        public FailureRetryTaskBuilder<T> Failure(Action<RetryFaiureException> failure)
+        {
+            failureCallback = failure;
+            return this;
+        }
         public Task<T> ExecuteAsync()
         {
             return Task.Run(async () =>
@@ -259,14 +301,24 @@ namespace Aquirrel.FailureRetry.Internal
                             return default(T);
 
                         if (i > this.retryCount)
-                            throw new RetryFaiureException(ex, this.retryCount);
+                        {
+                            var _ex = new RetryFaiureException(ex, this.retryCount);
+                            if (failureCallback != null) failureCallback(_ex);
+                            throw _ex;
+                        }
                         continue;
                     }
                     if (i > this.retryCount)
                     {
                         var ex = new RetryFaiureException("resutl filter error", i);
                         ex.Data["return result"] = r;
-                        throw ex;
+
+                        if (i > this.retryCount)
+                        {
+                            var _ex = new RetryFaiureException(ex, this.retryCount);
+                            if (failureCallback != null) failureCallback(_ex);
+                            throw _ex;
+                        }
                     }
                 }
 

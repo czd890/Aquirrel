@@ -11,10 +11,14 @@ namespace Aquirrel.EntityFramework.Test.project.Repository
     {
         ShardingDbFactory shardingDbFactory;
 
-        //IRepository<Order> ReadonlyRepo { get { return shardingDbFactory.GetShardingDbContext} }
-        public OrderRepo(ShardingDbFactory shardingDbFactory, RepositoryFactory repositoryFactory) : base(repositoryFactory.GetRepository<JDContext, Order>())
+        public OrderRepo(IRepository<Order> repository) : base(repository)
         {
-            this.shardingDbFactory = shardingDbFactory;
         }
+
+        //IRepository<Order> ReadonlyRepo { get { return shardingDbFactory.GetShardingDbContext} }
+        //public OrderRepo(ShardingDbFactory shardingDbFactory, RepositoryFactory repositoryFactory) : base(repositoryFactory.GetRepository<JDContext, Order>())
+        //{
+        //    this.shardingDbFactory = shardingDbFactory;
+        //}
     }
 }

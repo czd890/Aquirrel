@@ -34,8 +34,9 @@ namespace Aquirrel.MQ
         /// <param name="tag">routingKey</param>
         /// <param name="id"></param>
         /// <param name="message"></param>
-        public void Publish<T>(string productId, string topic, string tag, string id, T message)
+        public void Publish<T>(string productId, string topic, string tag, string id, T message, PublishOptions options = null)
         {
+            options = options ?? PublishOptions.Default;
             var t = typeof(T);
             string msgStr;
             var isJson = false;
@@ -48,15 +49,48 @@ namespace Aquirrel.MQ
                 msgStr = message.ToJson<T>();
 
             var msg = Encoding.UTF8.GetBytes(msgStr);
-            var channel = _CacheManager.GetChannel(productId);
+            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}-{tag}", options.ShardingConn);
+
             IBasicProperties props = channel.Channel.CreateBasicProperties();
             props.ContentType = isJson ? "application/json" : "text/plain";
             props.DeliveryMode = 2;
+            props.Headers = new Dictionary<string, object>() { { "mid", id } };
 
-            Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
+            using (this._logger.BeginScope($"event bus pub {id}"))
             {
-                channel.Channel.BasicPublish(topic, tag, true, props, msg);
-            }).RetryCount(3).Execute();
+                Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
+                {
+                    bool ifLock = false;
+                    channel.SL.Enter(ref ifLock);
+                    if (ifLock)
+                    {
+                        try
+                        {
+                            channel.Channel.BasicPublish(topic, tag, true, props, msg);
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                        finally
+                        {
+                            if (ifLock) channel.SL.Exit();
+                        }
+                    }
+                    else throw new Exception("event bus get SL lock fail");
+                })
+                .RetryCount(3)
+                .RetryFilter(ex =>
+                {
+                    this._logger.LogError(ex, ex.Message);
+                    return true;
+                })
+                .Failure(ex =>
+                {
+                    this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{msg}");
+                })
+                .Execute();
+            }
         }
         /// <summary>
         /// 
@@ -70,7 +104,7 @@ namespace Aquirrel.MQ
         {
             options = options ?? SubscribeOptions.Default;
             var queueName = topic;
-            var channel = _CacheManager.GetChannel(productId);
+            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}", options.ShardingConn);
 
             if (options.Model == MessageModel.Broadcasting)
             {
@@ -93,29 +127,25 @@ namespace Aquirrel.MQ
             var tx = typeof(T) == typeof(string);
             consumer.Received += (obj, ea) =>
             {
+                var isSuccess = false;
                 try
                 {
                     var body = Encoding.UTF8.GetString(ea.Body);
-                    var result = false;
                     if (tx)
-                        result = action((T)((object)body));
+                        isSuccess = action((T)((object)body));
                     else
                     {
                         var msg = body.ToJson<T>();
-                        result = action(msg);
-                    }
-                    if (result)
-                    {
-                        consumer.Model.BasicAck(ea.DeliveryTag, true);
-                    }
-                    else
-                    {
-                        consumer.Model.BasicReject(ea.DeliveryTag, false);
+                        isSuccess = action(msg);
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, $"eventbus.subscribe.consumer.exception;{Environment.NewLine}{productId}-{topic}-{ea.ToJson()}");
+                }
+                finally
+                {
+                    consumer.Model.BasicAck(ea.DeliveryTag, isSuccess);
                 }
             };
             _logger.LogInformation($"eventbus.subscribe;{productId}-{queueName}");

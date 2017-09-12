@@ -8,6 +8,7 @@ namespace Aquirrel.MQ
     public class SubscribeOptions
     {
         public MessageModel Model { get; set; } = MessageModel.Clustering;
+        public bool ShardingConn { get; set; } = true;
 
         public int BasicQos { get; set; } = 1;
 

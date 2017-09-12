@@ -28,8 +28,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICoreConventionSetBuilder, MyCoreConventionSetBuilder>();
             //services.AddSingleton<IModelSource, MyRelationalModelSource>();
 
-
-
             return services;
         }
 
