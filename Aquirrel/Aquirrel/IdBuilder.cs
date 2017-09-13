@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aquirrel
 {
@@ -130,7 +128,7 @@ namespace Aquirrel
         static DateTime timeUtc1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static int TimeStampUTC()
         {
-            return (DateTime.UtcNow - timeUtc1970).TotalMilliseconds.ToInt();
+            return (int)(DateTime.UtcNow - timeUtc1970).TotalMilliseconds;
         }
     }
 }

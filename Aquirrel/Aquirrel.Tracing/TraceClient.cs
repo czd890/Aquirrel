@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aquirrel.Internal;
 using Aquirrel.Tracing.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Framework.DependencyInjection;
+using Aquirrel.Tools;
+
 namespace Aquirrel.Tracing
 {
     public class TraceClient : ITraceClient
     {
         ILogger _logger;
-        IReportClient _reportClient;
+        //IReportClient _reportClient;
+        ReportClient _reportClient;
         public TraceClient(ILogger<TraceClient> logger, IReportClient reportClient)
         {
             this._logger = logger;
-            this._reportClient = reportClient;
+            this._reportClient = (ReportClient)reportClient;
         }
 
         public TransactionEntry Current { get { return TransactionEntry.ALS.Value; } }

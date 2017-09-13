@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Aquirrel.ResetApi;
-using Aquirrel.ResetApi.Internal;
 using Aquirrel.Tracing.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

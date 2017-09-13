@@ -8,9 +8,8 @@ namespace Aquirrel.Tracing
     /// </summary>
     public interface IReportClient
     {
-
-        void Report(TraceEventEntry entry);
-        void Report(TraceExceptionEntry entry);
-        void Report(TraceCompleteEntry entry);
+        //void Report(TraceEventEntry entry);
+        //void Report(TraceExceptionEntry entry);
+        //void Report(TraceCompleteEntry entry);
     }
 }

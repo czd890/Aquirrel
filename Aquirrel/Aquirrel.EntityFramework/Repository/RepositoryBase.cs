@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aquirrel.EntityFramework.Repository;
 
-namespace Aquirrel.EntityFramework
+namespace Aquirrel.EntityFramework.Repository
 {
     public class RepositoryBase<TEntity> : IRepositoryBase<TEntity>
         where TEntity : class
@@ -34,10 +34,9 @@ namespace Aquirrel.EntityFramework
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             int pageIndex = 0,
             int pageSize = 20,
-            bool disableTracking = true,
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
+            bool disableTracking = true)
         {
-            return this.repository.GetPagedList(predicate, orderBy, pageIndex, pageSize, disableTracking, include);
+            return this.repository.GetPagedList(predicate, orderBy, pageIndex, pageSize, disableTracking);
         }
 
         public Task<IPagedList<TEntity>> GetPagedListAsync(
@@ -46,10 +45,9 @@ namespace Aquirrel.EntityFramework
             int pageIndex = 0,
             int pageSize = 20,
             bool disableTracking = true,
-            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return this.repository.GetPagedListAsync(predicate, orderBy, pageIndex, pageSize, disableTracking, include, cancellationToken);
+            return this.repository.GetPagedListAsync(predicate, orderBy, pageIndex, pageSize, disableTracking, cancellationToken);
         }
 
         public IQueryable<TEntity> FromSql(string sql, params object[] parameters)

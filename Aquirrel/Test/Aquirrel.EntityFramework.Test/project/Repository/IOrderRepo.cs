@@ -1,4 +1,5 @@
-﻿using Aquirrel.EntityFramework.Test.project.Entity;
+﻿using Aquirrel.EntityFramework.Repository;
+using Aquirrel.EntityFramework.Test.project.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;

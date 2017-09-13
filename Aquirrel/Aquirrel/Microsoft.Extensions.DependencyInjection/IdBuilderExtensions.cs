@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Aquirrel;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,7 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection ConfigureIdBuilderRule(this IServiceCollection services, IEnumerable<IdBuilderRule> rules)
         {
-            rules.Each(p => IdBuilder.Register(Type.GetType(p.Type), p));
+            foreach (var p in rules)
+            {
+                IdBuilder.Register(Type.GetType(p.Type), p);
+            }
             return services;
         }
     }

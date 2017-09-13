@@ -13,6 +13,7 @@ namespace Aquirrel.EntityFramework.Test.project.Repository
 
         public OrderRepo(IRepository<Order> repository) : base(repository)
         {
+           
         }
 
         //IRepository<Order> ReadonlyRepo { get { return shardingDbFactory.GetShardingDbContext} }

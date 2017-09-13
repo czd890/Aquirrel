@@ -1,7 +1,5 @@
 ﻿using Aquirrel.FailureRetry.Internal;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Aquirrel.FailureRetry

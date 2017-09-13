@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aquirrel.Autofac\Aquirrel.Autofac.csproj" />
     <ProjectReference Include="..\..\Aquirrel.EntityFramework\Aquirrel.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
     <ProjectReference Include="..\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj" />
   </ItemGroup>
 

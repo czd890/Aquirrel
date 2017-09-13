@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>aquirrel base lib. tools</Description>
+    <Authors>calvin</Authors>
+    <VersionPrefix>2.0.1.0</VersionPrefix>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Aquirrel.Tools</PackageId>
+    <PackageTags>Tools</PackageTags>
+    <PackageReleaseNotes>调整结构</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
+  </PropertyGroup>
+</Project>

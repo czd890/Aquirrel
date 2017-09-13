@@ -21,7 +21,7 @@ namespace Aquirrel.EntityFramework.Repository
 
         //public DbContext DbContext => this._dbContext;
 
-        DbContext IRepository.DbConext => this._dbContext;
+        //DbContext IRepository.DbConext => this._dbContext;
 
         //DbContext IInfrastructure<DbContext>.Instance => this._dbContext;
 
@@ -59,17 +59,12 @@ namespace Aquirrel.EntityFramework.Repository
             return set;
         }
 
-        public IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
+        public IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true)
         {
             IQueryable<TEntity> query = _dbSet;
             if (disableTracking)
             {
                 query = query.AsNoTracking();
-            }
-
-            if (include != null)
-            {
-                query = include(query);
             }
 
             if (predicate != null)
@@ -87,17 +82,12 @@ namespace Aquirrel.EntityFramework.Repository
             }
         }
 
-        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             IQueryable<TEntity> query = _dbSet;
             if (disableTracking)
             {
                 query = query.AsNoTracking();
-            }
-
-            if (include != null)
-            {
-                query = include(query);
             }
 
             if (predicate != null)

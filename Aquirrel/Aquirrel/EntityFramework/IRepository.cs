@@ -1,24 +1,19 @@
-﻿// Copyright (c) Arch team. All rights reserved.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Aquirrel.EntityFramework
+namespace Aquirrel.EntityFramework.Repository
 {
     public interface IRepositoryBase<TEntity> where TEntity : class
     {
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true);
 
-        IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null);
+        IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true);
 
-        Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,  int pageIndex = 0, int pageSize = 20, bool disableTracking = true, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken));
 
         IQueryable<TEntity> FromSql(string sql, params object[] parameters);
 
@@ -46,11 +41,6 @@ namespace Aquirrel.EntityFramework
 
         void Update(IEnumerable<TEntity> entities);
     }
-
-
-}
-namespace Aquirrel.EntityFramework.Repository
-{
     public interface IRepositoryDelete<TEntity> where TEntity : class
     {
         void Delete(object id);
@@ -62,14 +52,14 @@ namespace Aquirrel.EntityFramework.Repository
         void Delete(IEnumerable<TEntity> entities);
     }
 
-    interface IRepository
+    public interface IRepository
     {
         //void ChangeTable(string table);
 
-        DbContext DbConext { get; }
+        //DbContext DbConext { get; }
 
-         int SaveChanges();
-         int SaveChanges(bool acceptAllChangesOnSuccess);
+        int SaveChanges();
+        int SaveChanges(bool acceptAllChangesOnSuccess);
 
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));

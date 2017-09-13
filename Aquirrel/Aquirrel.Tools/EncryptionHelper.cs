@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aquirrel
+namespace Aquirrel.Tools
 {
     public static class EncryptionHelper
     {

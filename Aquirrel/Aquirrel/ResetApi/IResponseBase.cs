@@ -12,16 +12,7 @@ namespace Aquirrel.ResetApi
     {
         TData data { get; set; }
     }
-    public interface IRequest
-    {
-        HttpMethod Method { get; }
-        string App { get; }
-        string ApiName { get; }
-    }
-    public interface IRequestBase<out TResponse> : IRequest where TResponse : IResponseBase
-    {
-        string version { get; set; }
-    }
+
     public static class ResponseErrorCode
     {
         public static int TaskCancel = 650;

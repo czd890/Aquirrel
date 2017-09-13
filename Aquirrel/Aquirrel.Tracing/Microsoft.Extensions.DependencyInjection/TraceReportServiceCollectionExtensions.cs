@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aquirrel.ResetApi.Internal;
 using Aquirrel.Tracing;
 using Aquirrel.Tracing.Internal;
 using Microsoft.Extensions.Configuration;

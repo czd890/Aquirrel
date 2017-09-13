@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26906.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{442D3EA6-5833-42DA-8C96-9D7904EAAD9C}"
 EndProject
@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.MQ.Test", "test\Aq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.EntityFramework.Test", "test\Aquirrel.EntityFramework.Test\Aquirrel.EntityFramework.Test.csproj", "{674BF3C8-3EB3-4174-94E5-A46634AB092E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Autofac", "Aquirrel.Autofac\Aquirrel.Autofac.csproj", "{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.ResetApi.Test", "test\Aquirrel.ResetApi.Test\Aquirrel.ResetApi.Test.csproj", "{F5802989-6CB9-4D92-AD35-114E68FAAB44}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.ResetApi", "Aquirrel.ResetApi\Aquirrel.ResetApi.csproj", "{35BE177C-607B-4C59-9270-7D9918AC4020}"
@@ -39,7 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor.Castle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor.Test", "Test\Aquirrel.Interceptor.Test\Aquirrel.Interceptor.Test.csproj", "{20E2488E-92FA-4585-AFF3-71651D366D0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.EntityFramework.LogEntity", "Test\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj", "{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.EntityFramework.LogEntity", "Test\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj", "{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.Extensions", "Aquirrel.Extensions\Aquirrel.Extensions.csproj", "{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.Tools", "Aquirrel.Tools\Aquirrel.Tools.csproj", "{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +77,6 @@ Global
 		{674BF3C8-3EB3-4174-94E5-A46634AB092E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{674BF3C8-3EB3-4174-94E5-A46634AB092E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{674BF3C8-3EB3-4174-94E5-A46634AB092E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F5802989-6CB9-4D92-AD35-114E68FAAB44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5802989-6CB9-4D92-AD35-114E68FAAB44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5802989-6CB9-4D92-AD35-114E68FAAB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -111,6 +109,14 @@ Global
 		{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,7 +129,6 @@ Global
 		{6310BF0A-0F5D-4871-9FAE-9771C4D027B2} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{5B790F65-7B28-4199-BEF8-35E4A32E8A71} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{674BF3C8-3EB3-4174-94E5-A46634AB092E} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
-		{0EDE4275-B28E-455E-A43A-7AE8C36DBCFD} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{F5802989-6CB9-4D92-AD35-114E68FAAB44} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{35BE177C-607B-4C59-9270-7D9918AC4020} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{94EE1390-F0D7-40DB-96CF-69FB740B8F88} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
@@ -132,6 +137,8 @@ Global
 		{192CADBC-B392-4455-ADBF-8AAD8E4590C8} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{20E2488E-92FA-4585-AFF3-71651D366D0F} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
+		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
+		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A136EA3-C021-4244-9C19-644435245826}

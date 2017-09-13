@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Aquirrel.ResetApi.Internal;
-using Aquirrel.Tracing.Internal;
 
 namespace Aquirrel.ResetApi
 {

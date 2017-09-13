@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>aquirrel base lib. Extensions</Description>
+    <Authors>calvin</Authors>
+    <VersionPrefix>2.0.1.0</VersionPrefix>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Aquirrel.Extensions</PackageId>
+    <PackageTags>Extensions</PackageTags>
+    <PackageReleaseNotes>调整结构</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  </ItemGroup>
+</Project>
