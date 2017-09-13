@@ -9,7 +9,7 @@ namespace Aquirrel.Internal
 {
     public class LocalIp
     {
-        static string ipv4=null;
+        static string ipv4 = null;
         public static async Task<string> GetLocalIPV4()
         {
             if (ipv4 != null)
@@ -26,7 +26,7 @@ namespace Aquirrel.Internal
                     //AddressFamily.InterNetworkV6表示此地址为IPv6类型
                     if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
                     {
-                        return IpEntry.AddressList[i].ToString();
+                        return ipv4 = IpEntry.AddressList[i].ToString();
                     }
                 }
                 return "";

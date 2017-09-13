@@ -69,7 +69,7 @@ namespace Aquirrel.ResetApi
         }
         public async Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request, CancellationToken token)
         {
-            var obj = new ResponseBase();
+            var obj = new ResponseBase(500, "unkown");
             var read = await this.ReadAsync(request, obj, token);
             if (read.Item1)
             {
