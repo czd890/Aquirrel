@@ -61,8 +61,8 @@ namespace Aquirrel.EntityFramework.Test
                    opt.ConfigureEntityMappings(typeof(LogEntity.Log).Assembly);
                    opt.ConfigureAutoEntityAssemblys(typeof(LogEntity.Log).Assembly);
                })
-               .AddAquirrelDb()
-               .AddAquirrelShardingDb<MyShardingFactory>();
+               .AddAquirrelDb();
+            //.AddAquirrelShardingDb<MyShardingFactory>();
 
 
 

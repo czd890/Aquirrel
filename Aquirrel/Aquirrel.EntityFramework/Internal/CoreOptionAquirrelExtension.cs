@@ -30,6 +30,8 @@ namespace Aquirrel.EntityFramework.Internal
         /// </summary>
         public Assembly[] EntityMappingsAssebmlys { get; set; }
 
+        public string LogFragment => "aquirrel db options";
+
         public bool ApplyServices(IServiceCollection services) => true;
 
         public long GetServiceProviderHashCode() => 0;
