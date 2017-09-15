@@ -58,7 +58,7 @@ namespace Aquirrel.Logger.File
                     if (level.IsNotNullOrEmpty() && Enum.TryParse(level, true, out LogLevel lev))
                         return (true, lev);
                     else if ((level = logLevelSection["Default"]).IsNotNullOrEmpty() && Enum.TryParse(level, true, out LogLevel lev2))
-                        return (true, lev2);
+                        return (false, lev2);
                 }
             }
 

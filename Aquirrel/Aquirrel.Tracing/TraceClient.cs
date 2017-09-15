@@ -5,70 +5,47 @@ using System.Threading.Tasks;
 using Aquirrel.Tracing.Internal;
 using Microsoft.Extensions.Logging;
 using Aquirrel.Tools;
+using System.Threading;
 
 namespace Aquirrel.Tracing
 {
     public class TraceClient : ITraceClient
     {
         ILogger _logger;
-        //IReportClient _reportClient;
-        ReportClient _reportClient;
-        public TraceClient(ILogger<TraceClient> logger, IReportClient reportClient)
+        public TraceClient(ILogger<TraceClient> logger)
         {
             this._logger = logger;
-            this._reportClient = (ReportClient)reportClient;
         }
 
-        public TransactionEntry Current { get { return TransactionEntry.ALS.Value; } }
-        public TransactionEntry CreateTransaction(string app, string name)
+        public IRequestEntry Current => RequestEntry.ALS.Value;
+        public void Init()
         {
-            return this.CreateTransaction(app, name, "", 0);
+            RequestEntry.ALS.Value = new RequestEntry();
         }
-
-        //TODO 重写组装TraceEventEntry 等model
-
-        public TransactionEntry CreateTransaction(string app, string name, string traceId, int tracelevel, string clientIp = "")
+        public async Task<IRequestEntry> BeginRequestAsync(string app, string traceId, string traceDepth, string clientIp = "")
         {
-            var als = TransactionEntry.ALS.Value = new TransactionEntry();
+            var als = RequestEntry.ALS.Value;
+
             als.App = app;
-            als.Name = name;
-            als.TraceId = traceId.IsNullOrEmpty() ? Guid.NewGuid().ToString() : traceId;
-            als.TraceLevel = tracelevel;
-            als.LastTime = DateTime.Now;
-            als.LocalIp = LocalIp.GetLocalIPV4().ConfigureAwait(false).GetAwaiter().GetResult();
+            als.TraceId = traceId;
+            als.TraceDepth = traceDepth;
             als.ClientIp = clientIp;
-            als.ExtendData.isFirst = false;
-            als.ExtendData.seq = 0;
-            this._reportClient.Report(new TraceEventEntry() { ALS = TransactionEntry.ALS.Value, Event = "BEGIN" });
+
+            als.BeginTime = DateTime.Now;
+            als.LocalIp = await LocalIp.GetLocalIPV4();
             return als;
         }
-        public void Complete()
+
+        public void CompleteRequest()
         {
-            this._reportClient.Report(new TraceEventEntry() {  ALS = TransactionEntry.ALS.Value, Event = "END" });
+            RequestEntry.ALS.Value.EndTime = DateTime.Now;
+            //TODO 上报接口请求日志
+            this._logger.LogTrace(RequestEntry.ALS.Value.ToJson());
         }
 
-        public void Event(string eventName)
+        public void ErrorRequest(Exception exception)
         {
-            this._reportClient.Report(new TraceEventEntry() { ALS = TransactionEntry.ALS.Value, Event = eventName });
+            RequestEntry.ALS.Value.Exception = exception;
         }
-
-        public void Exception(Exception ex)
-        {
-            this.Exception("", ex);
-        }
-        public void Exception(string message)
-        {
-            this.Exception(message, null);
-        }
-
-        public void Exception(string message, Exception ex)
-        {
-            this._reportClient.Report(new TraceExceptionEntry() { ALS = TransactionEntry.ALS.Value, Message = message, EX = ex });
-        }
-
-
-
-
-
     }
 }

@@ -50,6 +50,9 @@ namespace Aquirrel.Logger.File.Test
 
             sp.GetService<TestService>().Do();
             sp.GetService<TestService2>().Do();
+
+
+
             sp.GetService<ILogger<Microsoft.AspNetCore.Hosting.IHostingEnvironment>>().LogDebug("不记录");
             sp.GetService<ILogger<Microsoft.AspNetCore.Hosting.IHostingEnvironment>>().LogInformation("记录");
             logger.LogInformation("finish");

@@ -20,10 +20,6 @@ namespace Aquirrel.ResetApi.Test
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-           var builder2 = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("aquirrel.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"aquirrel.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsEnvironment("Development"))
             {
@@ -33,11 +29,9 @@ namespace Aquirrel.ResetApi.Test
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
-            this.AquirrelConf = builder2.Build();
         }
 
         public IConfigurationRoot Configuration { get; }
-        public IConfiguration AquirrelConf { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
@@ -47,15 +41,23 @@ namespace Aquirrel.ResetApi.Test
 
             services.AddMvc();
             services.AddRestApi();
-            services.AddAquirrelTrace(AquirrelConf.GetSection("Aquirrel.Tracing"));
+            services.AddAquirrelTrace(Configuration.GetSection("Aquirrel.Tracing"));
+
+            services.AddLogging(loggerBuilder => {
+                loggerBuilder.AddConfiguration(Configuration.GetSection("FileLogging"));
+
+                loggerBuilder.AddDebug();
+                loggerBuilder.AddConsole(consoleOptions => { consoleOptions.IncludeScopes = true; });
+                loggerBuilder.AddFile(Configuration.GetSection("FileLogging"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(AquirrelConf.GetSection("FileLogging"));
-            loggerFactory.AddDebug();
-            loggerFactory.AddFile(AquirrelConf.GetSection("FileLogging"));
+            //loggerFactory.AddConsole(AquirrelConf.GetSection("FileLogging"));
+            //loggerFactory.AddDebug();
+            //loggerFactory.AddFile(AquirrelConf.GetSection("FileLogging"));
 
             app.UseRestApiTrace();
 

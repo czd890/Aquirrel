@@ -39,54 +39,54 @@ namespace Aquirrel.Tracing
         }
 
         //TODO 消息的格式化独立出来可替换
-        public void Report(TraceCompleteEntry entry)
-        {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message } });
-        }
+        //public void Report(TraceCompleteEntry entry)
+        //{
+        //    this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
+        //    Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message } });
+        //}
 
-        public void Report(TraceExceptionEntry entry)
-        {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message }, { "ex", entry.EX?.ToString() } });
-        }
+        //public void Report(TraceExceptionEntry entry)
+        //{
+        //    this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
+        //    Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "msg", entry.Message }, { "ex", entry.EX?.ToString() } });
+        //}
 
-        public void Report(TraceEventEntry entry)
-        {
-            this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
-            Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "event", entry.Event } });
-        }
+        //public void Report(TraceEventEntry entry)
+        //{
+        //    this._logger.LogTrace(nameof(entry) + " " + entry.ToJson());
+        //    Report(entry.ALS, new List<KeyValuePair<string, string>>() { { "event", entry.Event } });
+        //}
 
-        void Report(TransactionEntry als, IEnumerable<KeyValuePair<string, string>> datas)
-        {
-            if (als == null)
-            {
-                this._logger.LogDebug("trace event als is null.");
-                return;
-            }
-            als.ExtendData.seq++;
-            var now = als.LastTime = DateTime.Now;
+        //void Report(TransactionEntry als, IEnumerable<KeyValuePair<string, string>> datas)
+        //{
+        //    if (als == null)
+        //    {
+        //        this._logger.LogDebug("trace event als is null.");
+        //        return;
+        //    }
+        //    als.ExtendData.seq++;
+        //    var now = als.BeginTime = DateTime.Now;
 
-            dynamic dy = new System.Dynamic.ExpandoObject();
-            if (!als.ExtendData.isFirst)
-            {
-                dy.app = als.App;
-                dy.name = als.Name;
-                dy.clientip = als.ClientIp;
-                dy.localip = als.LocalIp;
-                dy.level = als.TraceLevel;
-            }
-            dy.seq = als.ExtendData.seq;
-            dy.traceid = als.TraceId;
-            dy.data = datas;
-            dy.time = now;
-            if (this.workAdd.Count > this._conf.MaxQueueWait)
-            {
-                object result;
-                this.workAdd.TryDequeue(out result);
-            }
-            this.workAdd.Enqueue(dy);
-        }
+        //    dynamic dy = new System.Dynamic.ExpandoObject();
+        //    if (!als.ExtendData.isFirst)
+        //    {
+        //        dy.app = als.App;
+        //        dy.name = als.Name;
+        //        dy.clientip = als.ClientIp;
+        //        dy.localip = als.LocalIp;
+        //        dy.level = als.TraceLevel;
+        //    }
+        //    dy.seq = als.ExtendData.seq;
+        //    dy.traceid = als.TraceId;
+        //    dy.data = datas;
+        //    dy.time = now;
+        //    if (this.workAdd.Count > this._conf.MaxQueueWait)
+        //    {
+        //        object result;
+        //        this.workAdd.TryDequeue(out result);
+        //    }
+        //    this.workAdd.Enqueue(dy);
+        //}
 
         void Work()
         {

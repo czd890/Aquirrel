@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace Aquirrel.ResetApi
 {
 
-    public class RequestBase<TResponse> : IRequestBase<TResponse> where TResponse : IResponseBase
+    public class RequestBase<TResponse> : IRequestBase<TResponse>
+        where TResponse : class, IResponseBase, new()
     {
         public RequestBase(HttpMethod method, string app, string apiName)
         {
@@ -34,8 +35,10 @@ namespace Aquirrel.ResetApi
         string IRequest.App { get { return this._app; } }
 
         string IRequest.ApiName { get { return this.apiName; } }
+        Type IRequestBase<TResponse>.ResponseType => typeof(TResponse);
 
 
         public string version { get; set; }
+
     }
 }

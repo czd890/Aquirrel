@@ -24,68 +24,73 @@ namespace Aquirrel.ResetApi
             this.ApiResolveService = apiResolveService;
             this.TraceClient = traceClient;
         }
-        public Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request)
+
+        public Task<TData> ExecuteAsync<TData>(IRequestBase<IResponseBase<TData>> request)
         {
             return this.ExecuteAsync(request, CancellationToken.None);
         }
-        public async Task<T> ExecuteAsync<T>(IRequestBase<IResponseBase<T>> request, CancellationToken token)
+        public async Task<TData> ExecuteAsync<TData>(IRequestBase<IResponseBase<TData>> request, CancellationToken token)
         {
-            var res = await ExecuteAsync<IResponseBase<T>, T>(request, token);
+            var res = await ExecuteAsync<IResponseBase<TData>, TData>(request, token);
             if (res.IsSuccess)
             {
                 return res.data;
             }
             throw new BusinessException($"{res.msg}.errorcode:{res.resCode}");
         }
-        public Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request) where IRes : class, IResponseBase<IData>
-        {
-            return this.ExecuteAsync<IRes, IData>(request, CancellationToken.None);
-        }
-        public async Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request, CancellationToken token) where IRes : class, IResponseBase<IData>
-        {
-            var resType = typeof(IRes);
-            var obj = (IRes)Activator.CreateInstance(resType);
 
-            var read = await ReadAsync(request, obj, token);
-            if (read.Item1)
-            {
-                try
-                {
-                    obj = read.Item2.ToJson<IRes>();
-                }
-                catch (Exception ex)
-                {
-                    obj.resCode = ResponseErrorCode.ToJsonError;
-                    obj.msg = ex.Message;
-                    this.Logger.LogError(0, ex, "rpc content to json error.{0}", read.Item2);
-                }
-            }
-            return obj;
 
+        public Task<TRes> ExecuteAsync<TRes, TData>(IRequestBase<TRes> request)
+            where TRes : class, IResponseBase<TData>
+        {
+            return this.ExecuteAsync<TRes, TData>(request, CancellationToken.None);
         }
+        public async Task<TRes> ExecuteAsync<TRes, TData>(IRequestBase<TRes> request, CancellationToken token)
+            where TRes : class, IResponseBase<TData>
+        {
+            return (TRes)await this.ExecuteAsync((IRequestBase<IResponseBase>)request, token);
+        }
+
+
         public Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request)
         {
             return this.ExecuteAsync(request, CancellationToken.None);
         }
         public async Task<IResponseBase> ExecuteAsync(IRequestBase<IResponseBase> request, CancellationToken token)
         {
-            var obj = new ResponseBase(500, "unkown");
-            var read = await this.ReadAsync(request, obj, token);
-            if (read.Item1)
+            try
             {
-                try
+                var obj = (IResponseBase)Activator.CreateInstance(request.ResponseType);
+
+
+                var read = await ReadAsync(request, obj, token);
+                if (read.Item1)
                 {
-                    obj = read.Item2.ToJson<ResponseBase>();
+                    try
+                    {
+                        obj = read.Item2.ToJson<IResponseBase>(request.ResponseType);
+                    }
+                    catch (Exception ex)
+                    {
+                        obj.resCode = ResponseErrorCode.ToJsonError;
+                        obj.msg = ex.Message;
+                        this.Logger.LogError(0, ex, "rpc content to json error.{0}", read.Item2);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    obj.resCode = ResponseErrorCode.ToJsonError;
-                    obj.msg = ex.Message;
-                    this.Logger.LogError(0, ex, "rpc content to json error.{0}", read.Item2);
-                }
+                return obj;
             }
-            return obj;
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
+
+        //public Task<TData> ExecuteWithNoErrorAsync<TData>(IRequestBase<IResponseBase<TData>> request) 
+        //{
+        //    this.ExecuteAsync(request);
+        //    return null;
+        //}
 
         async Task<Tuple<bool, string>> ReadAsync(IRequest request, IResponseBase resObj, CancellationToken token)
         {
@@ -129,6 +134,11 @@ namespace Aquirrel.ResetApi
                 resObj.msg = "read prc content task is canceled";
                 return r;
             }
+            if (this.TraceClient != null && this.TraceClient.Current != null)
+            {
+                var als = this.TraceClient.Current;
+                als.ChildRequest[res.RequestMessage.Headers.GetValues(RestApiConst.RequestDepth).FirstOrDefault()].EndTime = DateTime.Now;
+            }
             return new Tuple<bool, string>(true, resultStr);
         }
 
@@ -136,23 +146,50 @@ namespace Aquirrel.ResetApi
         Task<HttpResponseMessage> SendAsync(IRequest request, CancellationToken token)
         {
             var content = request.ToJson();
-            var req = new HttpRequestMessage()
+            HttpRequestMessage req;
+            if (request.Method == HttpMethod.Post || request.Method == HttpMethod.Put)
             {
-                Method = request.Method,
-                Content = new StringContent(content, Encoding.UTF8, "application/json"),
-                RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
-            };
-            var als = this.TraceClient?.Current;
-            req.Headers.Add(RestApiConst.TraceId, als?.TraceId);
-            var next = 0;
-            if (als != null)
-            {
-                if (!((IDictionary<string, object>)als.ExtendData).ContainsKey("NextRpc"))
-                    als.ExtendData.NextRpc = 0;
-                als.ExtendData.NextRpc += RestApiConst.TraceLevelCurrentIncrement;
-                next = als.TraceLevel + als.ExtendData.NextRpc;
+                req = new HttpRequestMessage()
+                {
+                    Method = request.Method,
+                    Content = new StringContent(content, Encoding.UTF8, "application/json"),
+                    RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
+                };
             }
-            req.Headers.Add(RestApiConst.TraceLevel, next.ToString());
+            else
+            {
+                var uri = this.ApiResolveService.Resolve(request.App, request.ApiName);
+                System.Text.StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append(uri.Query);
+                if (uri.Query.IsNotNullOrEmpty())
+                    stringBuilder.Append("&");
+                else
+                    stringBuilder.Append("?");
+
+                request.GetType().GetProperties()
+                    .Each(p =>
+                    {
+                        stringBuilder.Append($"{System.Web.HttpUtility.UrlEncode(p.Name)}={System.Web.HttpUtility.UrlEncode(p.GetValue(request)?.ToString())}&");
+                    });
+
+                var u = new UriBuilder(uri);
+                u.Query = stringBuilder.ToString();
+
+                req = new HttpRequestMessage()
+                {
+                    Method = request.Method,
+                    RequestUri = u.Uri
+
+                };
+            }
+
+            if (this.TraceClient != null&& this.TraceClient.Current!=null)
+            {
+                var als = this.TraceClient.Current;
+                var nextALS = als.NewChildRequest();
+                req.Headers.TryAddWithoutValidation(RestApiConst.TraceId, nextALS.TraceId);
+                req.Headers.TryAddWithoutValidation(RestApiConst.RequestDepth, nextALS.TraceDepth);
+            }
             return httpClient.SendAsync(req, token);
         }
     }

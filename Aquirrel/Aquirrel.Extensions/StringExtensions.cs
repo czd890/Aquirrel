@@ -50,6 +50,10 @@ namespace Aquirrel
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(source);
         }
+        public static T ToJson<T>(this string source, Type sourceType)
+        {
+            return (T)Newtonsoft.Json.JsonConvert.DeserializeObject(source, sourceType);
+        }
 
         public static DateTime ToDateTime(this string source)
         {

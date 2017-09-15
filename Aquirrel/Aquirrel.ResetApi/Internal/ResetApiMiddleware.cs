@@ -31,30 +31,37 @@ namespace Aquirrel.ResetApi.Internal
         {
             var begin = DateTime.Now;
             string pid = "";
-            int pLevel = 0;
+            string depth = "";
+
             if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceId))
                 pid = httpContext.Request.Headers[RestApiConst.TraceId].FirstOrDefault();
-            if (httpContext.Request.Headers.ContainsKey(RestApiConst.TraceLevel))
-                pLevel = httpContext.Request.Headers[RestApiConst.TraceLevel].FirstOrDefault().ToInt(0);
             if (pid.IsNullOrEmpty())
                 pid = RestApiConst.NewTraceId();
-           
-            pLevel += RestApiConst.TraceLevelRPCIncrement;
-            _traceClient?.CreateTransaction(_env.ApplicationName, httpContext.Request.Method + ":" + httpContext.Request.Path, pid, pLevel,
-                httpContext.Connection.RemoteIpAddress.ToString());
 
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.RequestDepth))
+                depth = httpContext.Request.Headers[RestApiConst.RequestDepth].FirstOrDefault();
+            if (depth.IsNullOrEmpty())
+                depth = RestApiConst.NewDepth().ToString();
+
+            _traceClient?.Init();
+
+            var als = await _traceClient?.BeginRequestAsync(_env.ApplicationName, pid, depth, httpContext.Connection.RemoteIpAddress.ToString());
+            als.Datas["headers"] = httpContext.Request.Headers.ToJson();
+            als.Datas["httpMethod"] = httpContext.Request.Method;
+            als.Datas["requestUrl"] = httpContext.Request.Path.Value;
+            httpContext.Items["__ResetApiMiddleware_als"] = als;
             try
             {
                 await _next(httpContext);
             }
             catch (Exception ex)
             {
-                _traceClient?.Exception(ex);
+                _traceClient?.ErrorRequest(ex);
                 throw;
             }
             finally
             {
-                _traceClient?.Complete();
+                _traceClient?.CompleteRequest();
             }
         }
     }

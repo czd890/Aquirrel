@@ -9,7 +9,7 @@ using Microsoft.Framework.DependencyInjection;
 
 namespace Aquirrel.ResetApi.Test.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class ValuesController : Controller
     {
         IApiClient ApiClient;
@@ -20,58 +20,74 @@ namespace Aquirrel.ResetApi.Test.Controllers
             this._logger = logger;
 
         }
-        public class myreq : RequestBase<ResponseBase>
+        public class MyPostReq : RequestBase<ResponseBase<IEnumerable<string>>>
         {
-            public myreq() : base(HttpMethod.Post, "http://localhost:5000/", "api/values")
+            public MyPostReq() : base(HttpMethod.Post, "http://localhost:6367", "api/values/postreq")
             {
 
             }
             public List<int> heihei { get; set; }
-
-
         }
-        // GET api/values
+
+        public class MyPostThirdReq : RequestBase<ResponseBase<IEnumerable<string>>>
+        {
+            public MyPostThirdReq() : base(HttpMethod.Post, "http://localhost:6367", "api/values/PostThirdReq")
+            {
+
+            }
+            public List<int> heihei { get; set; }
+        }
+
+
+        public class MyGettReq : RequestBase<ResponseBase<IEnumerable<string>>>
+        {
+            public MyGettReq() : base(HttpMethod.Get, "http://localhost:6367", "api/values/getreqAsync")
+            {
+
+            }
+            public List<int> heihei { get; set; }
+        }
+
         [HttpGet]
-        public async Task<IEnumerable<string>> Get()
+        public async Task<IEnumerable<string>> beginreq()
         {
             //var req = /*(IRequestBase<IResponseBase>)*/new RequestBase<ResponseBase>(HttpMethod.Post, "http://localhost:5000/", "api/values");
-            var req = new myreq() { heihei = new List<int>() { 1, 2, 3 } };
-            await this.ApiClient.ExecuteAsync(req);
-            await this.ApiClient.ExecuteAsync(req);
-            await this.ApiClient.ExecuteAsync(req);
-            //await Task.Delay(3000);
-            return new string[] { "value1", "value2" };
+            var postReq = new MyPostReq() { heihei = new List<int>() { 1, 2, 3 } };
+            var values = await this.ApiClient.ExecuteAsync(postReq);
+
+            var getReq = new MyGettReq() { heihei = new List<int>() { 4, 5, 6 } };
+
+            var v2 = await this.ApiClient.ExecuteAsync<ResponseBase<IEnumerable<string>>, IEnumerable<string>>(getReq);
+
+
+            var x = values.ToList();
+            x.AddRange(v2.data);
+            return x;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public async Task<string> Get(int id)
+
+        [HttpGet]
+        public async Task<IResponseBase> getreqAsync([FromQuery]MyGettReq req)
         {
-            await Task.Delay(3000);
-            return "value";
+
+            var postReq = new MyPostThirdReq() { heihei = new List<int>() { 1, 2, 3 } };
+            var values = await this.ApiClient.ExecuteAsync(postReq);
+
+            return new ResponseBase<IEnumerable<string>>(new string[] { "value1", "value2" });
         }
 
-        // POST api/values
         [HttpPost]
-        public async Task Post(myreq model)
+        public IResponseBase postreq([FromBody]MyPostReq req)
         {
-            var req = new RequestBase<ResponseBase>(HttpMethod.Put, "http://localhost:5000/", "api/values");
-            await this.ApiClient.ExecuteAsync(req);
-            await this.ApiClient.ExecuteAsync(req);
-            await this.ApiClient.ExecuteAsync(req);
             this._logger.LogDebug("post--------------------");
+
+            return new ResponseBase<IEnumerable<string>>(new string[] { "value3", "value4" });
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IResponseBase PostThirdReq([FromBody]MyPostThirdReq req)
         {
+            return new ResponseBase<IEnumerable<string>>(new string[] { "value5", "value6" });
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

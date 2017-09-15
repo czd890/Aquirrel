@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel.Extensions\Aquirrel.Extensions.csproj" />
+    <ProjectReference Include="..\Aquirrel.ResetApi\Aquirrel.ResetApi.csproj" />
     <ProjectReference Include="..\Aquirrel.Tools\Aquirrel.Tools.csproj" />
     <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />
   </ItemGroup>

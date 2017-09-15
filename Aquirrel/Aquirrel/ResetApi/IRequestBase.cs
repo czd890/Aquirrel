@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace Aquirrel.ResetApi
 {
@@ -11,5 +12,7 @@ namespace Aquirrel.ResetApi
     public interface IRequestBase<out TResponse> : IRequest where TResponse : IResponseBase
     {
         string version { get; set; }
+
+        Type ResponseType { get; }
     }
 }

@@ -19,5 +19,7 @@ namespace Aquirrel.ResetApi
         public static int TaskFail = 651;
         public static int ReadRpcContentError = 652;
         public static int ToJsonError = 653;
+        public static int Error = 500;
+        public static int BusinessError = 5000;
     }
 }
