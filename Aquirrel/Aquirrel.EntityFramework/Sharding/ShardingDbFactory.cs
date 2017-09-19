@@ -28,7 +28,7 @@ namespace Aquirrel.EntityFramework.Sharding
         //    return null;
         //}
 
-        public IRepository<TEntity> GetShardingRepository<TContext, TEntity>(ShardingOptions options)
+        public IRepositoryBase<TEntity> GetShardingRepository<TContext, TEntity>(ShardingOptions options)
             where TContext : DbContext
             where TEntity : class
         {
@@ -61,7 +61,7 @@ namespace Aquirrel.EntityFramework.Sharding
             else
                 throw new NotImplementedException();
 
-            return (IRepository<TEntity>)this.provider.GetRequiredService<InternalScopeServiceContainer>()
+            return (IRepositoryBase<TEntity>)this.provider.GetRequiredService<InternalScopeServiceContainer>()
                 .GetOrAdd(key, k => new Repository<TContext, TEntity>(db));
 
         }

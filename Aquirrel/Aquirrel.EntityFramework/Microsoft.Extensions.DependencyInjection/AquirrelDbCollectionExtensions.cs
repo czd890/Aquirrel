@@ -26,8 +26,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IModelCustomizer, MyRelationalModelCustomizer>();
             services.AddSingleton<ICoreConventionSetBuilder, MyCoreConventionSetBuilder>();
-            //services.AddSingleton<IModelSource, MyRelationalModelSource>();
-
+            services.AddSingleton<IModelSource, MyRelationalModelSource>();
+            //services.AddScoped<IDistributedCommitService, DistributedCommitService>();
             return services;
         }
 

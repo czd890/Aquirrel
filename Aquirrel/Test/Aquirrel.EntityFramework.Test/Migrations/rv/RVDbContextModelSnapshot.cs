@@ -8,40 +8,17 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Aquirrel.EntityFramework.Test.Migrations.test
+namespace Aquirrel.EntityFramework.Test.Migrations.rv
 {
-    [DbContext(typeof(TestDbContext))]
-    [Migration("20170815051016_init001")]
-    partial class init001
+    [DbContext(typeof(RVDbContext))]
+    partial class RVDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-preview2-25794")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Aquirrel.EntityFramework.Test.AutoEntryTable", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(32);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<DateTime>("LastModfiyDate");
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<string>("name")
-                        .HasMaxLength(32);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Table_attr_name");
-                });
+                .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
 
             modelBuilder.Entity("Aquirrel.EntityFramework.Test.ModelA", b =>
                 {
@@ -53,6 +30,8 @@ namespace Aquirrel.EntityFramework.Test.Migrations.test
 
                     b.Property<DateTime>("LastModfiyDate");
 
+                    b.Property<int>("RowVersion");
+
                     b.Property<string>("StringDefault")
                         .HasMaxLength(32);
 
@@ -63,10 +42,6 @@ namespace Aquirrel.EntityFramework.Test.Migrations.test
 
                     b.Property<string>("StringSetLength")
                         .HasMaxLength(640);
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<decimal>("decimalDefault");
 
@@ -89,14 +64,18 @@ namespace Aquirrel.EntityFramework.Test.Migrations.test
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<decimal>("DecimalSacle")
-                        .HasColumnType("decimal(18,6)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("DefaultName")
                         .HasMaxLength(32);
 
                     b.Property<DateTime>("LastModfiyDate");
 
-                    b.Property<string>("MaxName");
+                    b.Property<string>("MaxName")
+                        .HasMaxLength(32);
+
+                    b.Property<int>("RowVersion")
+                        .IsConcurrencyToken();
 
                     b.HasKey("Id");
 

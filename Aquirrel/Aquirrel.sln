@@ -39,9 +39,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Interceptor.Test",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.EntityFramework.LogEntity", "Test\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj", "{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.Extensions", "Aquirrel.Extensions\Aquirrel.Extensions.csproj", "{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Extensions", "Aquirrel.Extensions\Aquirrel.Extensions.csproj", "{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.Tools", "Aquirrel.Tools\Aquirrel.Tools.csproj", "{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquirrel.Tools", "Aquirrel.Tools\Aquirrel.Tools.csproj", "{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquirrel.AutoMapper", "Aquirrel.AutoMapper\Aquirrel.AutoMapper.csproj", "{0F8B444A-D005-497A-9A35-956605CBF95E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F8B444A-D005-497A-9A35-956605CBF95E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F8B444A-D005-497A-9A35-956605CBF95E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F8B444A-D005-497A-9A35-956605CBF95E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F8B444A-D005-497A-9A35-956605CBF95E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +145,7 @@ Global
 		{E89B7A57-6B32-4795-BDB8-DDAAAD44C14D} = {EB3BC2E3-07A4-4B4F-AB1E-632C57BCFD20}
 		{54E90FCB-B219-41D5-81C5-BB0B8FF7E60D} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 		{33FE434D-A3D3-4AE0-A81D-184E2E6C1137} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
+		{0F8B444A-D005-497A-9A35-956605CBF95E} = {442D3EA6-5833-42DA-8C96-9D7904EAAD9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A136EA3-C021-4244-9C19-644435245826}

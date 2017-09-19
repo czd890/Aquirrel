@@ -3,19 +3,33 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aquirrel.EntityFramework
 {
-    public static class DistributedCommitService
+
+    public interface IDistributedCommitService
     {
-        public static bool Commit(params object[] repo)
+        int SaveChanges(params IPersistence[] persistence);
+        Task<int> SaveChangesAsync(params IPersistence[] persistence);
+        Task<int> SaveChangesAsync(IPersistence[] persistence, CancellationToken cancellationToken = default(CancellationToken));
+    }
+    public class DistributedCommitService : IDistributedCommitService
+    {
+        public int SaveChanges(params IPersistence[] persistence)
         {
-            List<IDbContextTransaction> trans = new List<IDbContextTransaction>();
-            //foreach (var item in repo)
-            //{
-            //    (item as IRepository)?.DbConext.Database.BeginTransaction()
-            //}
-            return false;
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync(params IPersistence[] persistence)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync(IPersistence[] persistence, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
         }
     }
 }

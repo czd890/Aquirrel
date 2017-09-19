@@ -36,7 +36,7 @@ namespace Aquirrel.ResetApi
             {
                 return res.data;
             }
-            throw new BusinessException($"{res.msg}.errorcode:{res.resCode}");
+            throw new BusinessException(res.msg, res.resCode);
         }
 
 
@@ -183,7 +183,7 @@ namespace Aquirrel.ResetApi
                 };
             }
 
-            if (this.TraceClient != null&& this.TraceClient.Current!=null)
+            if (this.TraceClient != null && this.TraceClient.Current != null)
             {
                 var als = this.TraceClient.Current;
                 var nextALS = als.NewChildRequest();

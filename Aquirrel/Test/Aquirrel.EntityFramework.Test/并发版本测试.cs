@@ -116,7 +116,7 @@ namespace Aquirrel.EntityFramework.Test
             });
             var xx = shardingRepo.Query().FirstOrDefault();
             Assert.AreEqual(xx.msg, "分库主表");
-            
+
 
             //分库又分表
             shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
@@ -165,5 +165,40 @@ namespace Aquirrel.EntityFramework.Test
         public void conv()
         {
         }
+
+        [TestMethod]
+        public void mysql乐观锁测试()
+        {
+            var sp = new Startup_RV().ConfigureServices(new ServiceCollection());
+            var db = sp.GetService<RVDbContext>();
+            //var m = new ModelA() { StringSetLength = "BBBB" };
+            //db.ModelASet.Add(m);
+            //m.Before();
+            //db.SaveChanges();
+
+
+            //m.StringMax = "stringmax";
+            //m.Before();
+            //db.SaveChanges();
+
+            //var m = db.ModelASet.Find("201709191740078993");
+            //m.StringDefault = "StringDefault";
+            //m.Before();
+            //db.SaveChanges();
+
+            //var st = new ShardTable() {  DefaultName="DN"};
+            //db.Set<ShardTable>().Add(st);
+            //st.Before();
+            //db.SaveChanges();
+
+            var m = db.Set<ShardTable>().Find("201709191809163785");
+            m.DecimalSacle += 99;
+            
+            ((ISaveEntityEvent)m).Before();
+            db.SaveChanges();
+
+        }
+
+
     }
 }

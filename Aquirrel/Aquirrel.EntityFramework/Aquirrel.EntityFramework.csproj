@@ -1,19 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. entityframework</Description>
-    <VersionPrefix>2.0.1.1</VersionPrefix>
+    <VersionPrefix>2.2.0</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.EntityFramework</AssemblyName>
     <PackageId>Aquirrel.EntityFramework</PackageId>
     <PackageTags>entityframework core;entityframework</PackageTags>
-    <PackageReleaseNotes>调整结构</PackageReleaseNotes>
+    <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
     <RootNamespace>Aquirrel.EntityFramework</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Repository\BaseRepository.cs" />
     <Compile Remove="Repository\IBaseRepository.cs" />
+    <Compile Remove="Repository\RepositoryBase.cs" />
     <Compile Remove="System.ComponentModel.DataAnnotations\IsMaxLengthAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,46 @@ using Aquirrel.EntityFramework.Sharding;
 
 namespace Aquirrel.EntityFramework.Test
 {
+
+    public class Startup_RV
+    {
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            var mysql = "Data Source=localhost;Port=3306;Database=test;User ID=root;Password=123456;CharSet=utf8;Allow User Variables=True";
+
+            //IServiceCollection services = new ServiceCollection();
+
+            services.AddEntityFrameworkMySql();
+
+         var   appsettings = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            services.AddDbContext<RVDbContext>((sp, op) =>
+            {
+                op.UseInternalServiceProvider(sp);
+                op.UseMySql(mysql, mysqlOption =>
+                {
+                    mysqlOption.CommandTimeout(10);
+                    mysqlOption.UseRelationalNulls(false);
+                });
+                op.ConfigureEntityMappings(typeof(RVDbContext).Assembly);
+            });
+            services.AddAquirrelDb();
+            services.AddLogging(op =>
+            {
+                op.AddConfiguration(appsettings.GetSection("FileLogging"));
+                op.AddFile(appsettings.GetSection("FileLogging"));
+                op.SetMinimumLevel(LogLevel.Trace);
+                op.AddConsole(cp => cp.IncludeScopes = true);
+            });
+
+            Console.WriteLine("ConfigureServices finish");
+            return services.BuildServiceProvider();
+        }
+    }
+
     public class Startup
     {
         public static string SqlConnectionString = "server=.;database=test_ef_core;uid=sa;pwd=sasa;";

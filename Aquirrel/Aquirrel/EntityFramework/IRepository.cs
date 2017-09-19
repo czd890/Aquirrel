@@ -51,23 +51,12 @@ namespace Aquirrel.EntityFramework.Repository
 
         void Delete(IEnumerable<TEntity> entities);
     }
-
-    public interface IRepository
+    public interface IPersistence
     {
-        //void ChangeTable(string table);
-
-        //DbContext DbConext { get; }
-
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);
 
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
-    }
-
-    public interface IRepository<TEntity> : IRepositoryBase<TEntity>, IRepositoryDelete<TEntity>
-        where TEntity : class
-    {
-
     }
 }

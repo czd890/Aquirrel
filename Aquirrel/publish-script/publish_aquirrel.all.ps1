@@ -19,5 +19,5 @@ Set-Location ($MyInvocation.MyCommand.Definition|Split-Path -Parent)
 .\publish_aquirrel.resetapi -releasenote $releasenote -fullversion $fullversion
 .\publish_aquirrel.tracing -releasenote $releasenote -fullversion $fullversion
 .\publish_aquirrel.tools -releasenote $releasenote -fullversion $fullversion
-
+.\publish_aquirrel.automapper -releasenote $releasenote -fullversion $fullversion
 Write-Host "all publish finished!!!"

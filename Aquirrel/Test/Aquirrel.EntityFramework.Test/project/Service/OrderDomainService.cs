@@ -18,7 +18,7 @@ namespace Aquirrel.EntityFramework.Test.project.Service
             var order = this.orderRepo.Find(orderId);
             order.OrderStatus = 999;
 
-            DistributedCommitService.Commit(this.orderRepo);
+            //DistributedCommitService.Commit(this.orderRepo);
         }
     }
 }

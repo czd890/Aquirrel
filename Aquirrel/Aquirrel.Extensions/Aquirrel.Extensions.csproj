@@ -2,11 +2,11 @@
   <PropertyGroup>
     <Description>aquirrel base lib. Extensions</Description>
     <Authors>calvin</Authors>
-    <VersionPrefix>2.0.1.0</VersionPrefix>
+    <VersionPrefix>2.2.0</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Aquirrel.Extensions</PackageId>
     <PackageTags>Extensions</PackageTags>
-    <PackageReleaseNotes>调整结构</PackageReleaseNotes>
+    <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>

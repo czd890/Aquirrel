@@ -48,7 +48,7 @@ namespace Aquirrel.EntityFramework.Internal
                 //所有显示mapping的mappings
                 var allMappings = allAssebmlysTypes
                     .Where(type => type.GetTypeInfo().IsClass)//当前类型是class
-                    .Where(type => type != EntityMapping__type)//当前类型不是EntityMapping<>本身
+                    .Where(type => !type.IsGenericType)
                     .Where(type => IEntityMapping_typeInfo.IsAssignableFrom(type))//当前类型是IEntityMapping接口的实现
                     .ToArray();
 

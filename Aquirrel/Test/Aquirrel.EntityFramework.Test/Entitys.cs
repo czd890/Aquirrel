@@ -44,6 +44,11 @@ namespace Aquirrel.EntityFramework.Test
         [DecimalPrecision]
         public decimal DecimalSacle { get; set; }
         public string DefaultName { get; set; }
+
+        protected override void Before()
+        {
+            base.Before();
+        }
     }
 
     class ShardTableMapping : Mapping.EntityMapping<ShardTable>
@@ -52,12 +57,12 @@ namespace Aquirrel.EntityFramework.Test
         {
             Console.WriteLine("ShardTable mapping.............");
 
-            //base.Mapping(entityTypeBuilder);
+            base.Mapping(entityTypeBuilder);
 
-            entityTypeBuilder.HasKey(p => p.Id);
+            //entityTypeBuilder.HasKey(p => p.Id);
 
-            entityTypeBuilder.Property(p => p.MaxName).HasMaxLength(true);
-            entityTypeBuilder.Property(p => p.DecimalSacle).HasPrecision(18, 6);
+            //entityTypeBuilder.Property(p => p.MaxName).HasMaxLength(true);
+            //entityTypeBuilder.Property(p => p.DecimalSacle).HasPrecision(18, 6);
 
             //entityTypeBuilder.HasShardTable(new ShardTableShardRule() { });
 

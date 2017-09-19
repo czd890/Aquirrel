@@ -28,7 +28,8 @@ namespace Aquirrel.EntityFramework.Mapping
         {
             var entityTypeInfo = this.EntityType.GetTypeInfo();
             var baseType = typeof(IEntityBase<>);
-            //当前类实现了IEntityBase<>,自然一定有id,CreatedDate,Version 等字段
+
+
             if (entityTypeInfo.GetInterfaces().Any(face => face.GetTypeInfo().IsGenericType && face.GetGenericTypeDefinition() == baseType))
             {
                 var keyBuilder = entityTypeBuilder.HasKey("Id");
@@ -37,7 +38,7 @@ namespace Aquirrel.EntityFramework.Mapping
                     keyBuilder.ForSqlServerIsClustered(false);
                     entityTypeBuilder.HasIndex("CreatedDate").IsUnique(false).ForSqlServerIsClustered(true);
                 }
-                entityTypeBuilder.Property("Version").IsRowVersion();
+                entityTypeBuilder.Property("RowVersion").IsConcurrencyToken();
             }
         }
 

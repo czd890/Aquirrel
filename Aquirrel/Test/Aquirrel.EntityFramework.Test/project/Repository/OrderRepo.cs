@@ -7,13 +7,13 @@ using System.Text;
 
 namespace Aquirrel.EntityFramework.Test.project.Repository
 {
-    public class OrderRepo : RepositoryBase<Order>, IOrderRepo
+    public class OrderRepo : Repository<JDContext, Order>, IOrderRepo
     {
         ShardingDbFactory shardingDbFactory;
 
-        public OrderRepo(IRepository<Order> repository) : base(repository)
+        public OrderRepo(JDContext jDContext) : base(jDContext)
         {
-           
+
         }
 
         //IRepository<Order> ReadonlyRepo { get { return shardingDbFactory.GetShardingDbContext} }

@@ -13,7 +13,7 @@ namespace Aquirrel.EntityFramework.Repository
         {
             this.provider = provider;
         }
-        public IRepository<TEntity> GetRepository<TContext, TEntity>()
+        public IRepositoryBase<TEntity> GetRepository<TContext, TEntity>()
             where TContext : DbContext
             where TEntity : class
         {

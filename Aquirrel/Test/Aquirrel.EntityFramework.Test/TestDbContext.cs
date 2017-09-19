@@ -14,6 +14,15 @@ using Aquirrel.EntityFramework.Sharding;
 
 namespace Aquirrel.EntityFramework.Test
 {
+
+    public class RVDbContext : AquirrelDbContext
+    {
+        public RVDbContext(DbContextOptions<RVDbContext> options) : base(options)
+        {
+            
+        }
+        public DbSet<ModelA> ModelASet { get; set; }
+    }
     public class TestDbContext : AquirrelDbContext
     {
         public TestDbContext(DbContextOptions options) : base(options)
@@ -30,7 +39,8 @@ namespace Aquirrel.EntityFramework.Test
     public class LogDbContext : AquirrelDbContext
     {
         //public LogDbContext(DbContextOptions options) : base(options) { }
-        public LogDbContext(DbContextOptions<LogDbContext> options) : base(options) {
+        public LogDbContext(DbContextOptions<LogDbContext> options) : base(options)
+        {
         }
 
     }
@@ -60,6 +70,18 @@ namespace Aquirrel.EntityFramework.Test
             var sp = new Startup(null).ConfigureServices(new ServiceCollection());
             var db = sp.GetService<TestDbContext>();
 
+            return db;
+        }
+    }
+
+
+    public class RVDbContextIDesignTimeDbContextFactory : IDesignTimeDbContextFactory<RVDbContext>
+    {
+        public RVDbContext CreateDbContext(string[] args)
+        {
+            var sp = new Startup_RV().ConfigureServices(new ServiceCollection());
+            var db = sp.GetService<RVDbContext>();
+            Console.WriteLine("db is null? " + (db == null));
             return db;
         }
     }
