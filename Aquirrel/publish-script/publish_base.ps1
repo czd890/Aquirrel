@@ -66,7 +66,8 @@ cd $nugetDir
 $fileList = Get-ChildItem  -Path $outputdir -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "^((?!symbols).)*$" } | % {$_.FullName}
 foreach ($f in $fileList) {
     write-Host "publish:::$f" 
-    .\nuget.exe  push $f -ApiKey "25951454-f86d-475b-a314-9be39ed810d6"
+    # .\nuget.exe  push $f -ApiKey "25951454-f86d-475b-a314-9be39ed810d6"
+    .\nuget push $f -Source "http://nuget.guodong.cn/api/v2/package" -ApiKey "014B34AB-4D68-4147-91FE-A2094B6A8ECB"
 }
 cd $orgDir
 write-Host "finsh"
