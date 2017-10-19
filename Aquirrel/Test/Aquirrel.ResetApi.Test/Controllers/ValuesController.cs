@@ -72,7 +72,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
 
             var postReq = new MyPostThirdReq() { heihei = new List<int>() { 1, 2, 3 } };
             var values = await this.ApiClient.ExecuteAsync(postReq);
-
+           
             return new ResponseBase<IEnumerable<string>>(new string[] { "value1", "value2" });
         }
 
@@ -86,6 +86,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
 
         public IResponseBase PostThirdReq([FromBody]MyPostThirdReq req)
         {
+            throw new Exception("aaaaaaaaaaaaaa");
             return new ResponseBase<IEnumerable<string>>(new string[] { "value5", "value6" });
         }
 

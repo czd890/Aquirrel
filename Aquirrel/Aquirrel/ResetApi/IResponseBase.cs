@@ -7,6 +7,7 @@ namespace Aquirrel.ResetApi
         int resCode { get; set; }
         string msg { get; set; }
         bool IsSuccess { get; }
+        void ThrowIfError();
     }
     public interface IResponseBase<TData> : IResponseBase
     {

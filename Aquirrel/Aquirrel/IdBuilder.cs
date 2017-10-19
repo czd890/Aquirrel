@@ -128,7 +128,11 @@ namespace Aquirrel
         static DateTime timeUtc1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static int TimeStampUTC()
         {
-            return (int)(DateTime.UtcNow - timeUtc1970).TotalMilliseconds;
+            return TimeStampUTC(DateTime.UtcNow);
+        }
+        public static int TimeStampUTC(DateTime now)
+        {
+            return (int)(now.ToUniversalTime() - timeUtc1970).TotalMilliseconds;
         }
     }
 }

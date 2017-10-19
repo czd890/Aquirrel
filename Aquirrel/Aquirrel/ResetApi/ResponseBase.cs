@@ -24,6 +24,10 @@ namespace Aquirrel.ResetApi
         public int resCode { get; set; }
 
         public bool IsSuccess { get { return this.resCode == 200; } }
+        public void ThrowIfError()
+        {
+            if (!this.IsSuccess) throw new BusinessException(this.msg, this.resCode);
+        }
 
         public string msg { get; set; }
 

@@ -41,7 +41,7 @@ namespace Aquirrel.EntityFramework.Repository
             }
         }
 
-        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true)
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true)
         {
             IQueryable<TEntity> set;
             if (disableTracking)
@@ -61,7 +61,7 @@ namespace Aquirrel.EntityFramework.Repository
             return set;
         }
 
-        public IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true)
+        public virtual IPagedList<TEntity> GetPagedList(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true)
         {
             IQueryable<TEntity> query = DbSet;
             if (disableTracking)
@@ -84,7 +84,7 @@ namespace Aquirrel.EntityFramework.Repository
             }
         }
 
-        public Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<IPagedList<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, int pageIndex = 0, int pageSize = 20, bool disableTracking = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             IQueryable<TEntity> query = DbSet;
             if (disableTracking)
@@ -107,44 +107,44 @@ namespace Aquirrel.EntityFramework.Repository
             }
         }
 
-        public IQueryable<TEntity> FromSql(string sql, params object[] parameters) => DbSet.FromSql(sql, parameters);
+        public virtual IQueryable<TEntity> FromSql(string sql, params object[] parameters) => DbSet.FromSql(sql, parameters);
 
-        public TEntity Find(params object[] keyValues) => DbSet.Find(keyValues);
+        public virtual TEntity Find(params object[] keyValues) => DbSet.Find(keyValues);
 
-        public Task<TEntity> FindAsync(params object[] keyValues) => DbSet.FindAsync(keyValues);
+        public virtual Task<TEntity> FindAsync(params object[] keyValues) => DbSet.FindAsync(keyValues);
 
-        public Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => DbSet.FindAsync(keyValues, cancellationToken);
+        public virtual Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken) => DbSet.FindAsync(keyValues, cancellationToken);
 
-        public void Add(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
             var entry = DbSet.Add(entity);
         }
 
-        public void Add(params TEntity[] entities) => DbSet.AddRange(entities);
+        public virtual void Add(params TEntity[] entities) => DbSet.AddRange(entities);
 
-        public void Add(IEnumerable<TEntity> entities) => DbSet.AddRange(entities);
+        public virtual void Add(IEnumerable<TEntity> entities) => DbSet.AddRange(entities);
 
-        public Task AddAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task AddAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             return DbSet.AddAsync(entity, cancellationToken);
         }
 
-        public Task AddAsync(params TEntity[] entities) => DbSet.AddRangeAsync(entities);
+        public virtual Task AddAsync(params TEntity[] entities) => DbSet.AddRangeAsync(entities);
 
-        public Task AddAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => DbSet.AddRangeAsync(entities, cancellationToken);
+        public virtual Task AddAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) => DbSet.AddRangeAsync(entities, cancellationToken);
 
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             DbSet.Update(entity);
         }
 
-        public void Update(params TEntity[] entities) => DbSet.UpdateRange(entities);
+        public virtual void Update(params TEntity[] entities) => DbSet.UpdateRange(entities);
 
-        public void Update(IEnumerable<TEntity> entities) => DbSet.UpdateRange(entities);
+        public virtual void Update(IEnumerable<TEntity> entities) => DbSet.UpdateRange(entities);
 
-        public void Delete(TEntity entity) => DbSet.Remove(entity);
+        public virtual void Delete(TEntity entity) => DbSet.Remove(entity);
 
-        public void Delete(object id)
+        public virtual void Delete(object id)
         {
             // using a stub entity to mark for deletion
             var typeInfo = typeof(TEntity).GetTypeInfo();
@@ -166,9 +166,9 @@ namespace Aquirrel.EntityFramework.Repository
             }
         }
 
-        public void Delete(params TEntity[] entities) => DbSet.RemoveRange(entities);
+        public virtual void Delete(params TEntity[] entities) => DbSet.RemoveRange(entities);
 
-        public void Delete(IEnumerable<TEntity> entities) => DbSet.RemoveRange(entities);
+        public virtual void Delete(IEnumerable<TEntity> entities) => DbSet.RemoveRange(entities);
 
         int IPersistence.SaveChanges()
         {
@@ -194,7 +194,7 @@ namespace Aquirrel.EntityFramework.Repository
             return this.DbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public void Before()
+        public virtual void Before()
         {
             this.DbContext.ChangeTracker.Entries()
                   .Where(p => p.State == EntityState.Modified)
