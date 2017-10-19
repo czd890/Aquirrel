@@ -59,7 +59,7 @@ namespace Aquirrel.EntityFramework
 
         public virtual string StringId => this.Id.ToString();
 
-        public int RowVersion { get; protected internal set; } = -1;
+        public int RowVersion { get; protected internal set; } = 0;
 
         protected virtual void Before()
         {
