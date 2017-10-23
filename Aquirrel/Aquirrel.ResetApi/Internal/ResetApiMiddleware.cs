@@ -42,6 +42,8 @@ namespace Aquirrel.ResetApi.Internal
                 depth = httpContext.Request.Headers[RestApiConst.RequestDepth].FirstOrDefault();
             if (depth.IsNullOrEmpty())
                 depth = RestApiConst.NewDepth().ToString();
+            httpContext.Response.Headers[RestApiConst.RequestDepth] = depth;
+            httpContext.Response.Headers[RestApiConst.TraceId] = pid;
 
             _traceClient?.Init();
 

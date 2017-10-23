@@ -46,6 +46,8 @@ namespace Aquirrel.Logger.File
             get { return this._configuration["DefaultFileName"] ?? "[yyyyMMdd]"; }
         }
 
+        public string LogFormat => this._configuration["LogFormat"] ?? "";
+
         public (bool isMatch, LogLevel logLevel) GetMinLevel(string name)
         {
             var fileSection = this._configuration.GetSection("File");
@@ -93,7 +95,7 @@ namespace Aquirrel.Logger.File
             }
             return (false, this.DefaultPath);
         }
-        public (bool isMatch,string fileName) GetFileName(string name)
+        public (bool isMatch, string fileName) GetFileName(string name)
         {
             var config = this._configuration.GetSection("Config");
             if (config != null)
@@ -114,7 +116,7 @@ namespace Aquirrel.Logger.File
             }
             return (false, this.DefaultFileName);
         }
-        public (bool isMatch,int maxSize) GetMaxSize(string name)
+        public (bool isMatch, int maxSize) GetMaxSize(string name)
         {
             var config = this._configuration.GetSection("Config");
             if (config != null)
@@ -135,6 +137,19 @@ namespace Aquirrel.Logger.File
                 }
             }
             return (false, this.DefaultMaxSize);
+        }
+
+        public (bool isMatch, string format) GetLogFormat(string name)
+        {
+            var config = this._configuration.GetSection("Config");
+            if (config != null)
+            {
+                var sec = config.GetSection(name);
+                if (sec != null && sec["LogFormat"].IsNotNullOrEmpty())
+                    return (true, sec["LogFormat"]);
+            }
+
+            return (false, this.LogFormat);
         }
     }
 }

@@ -18,6 +18,10 @@ namespace Aquirrel.Logger.File.Internal
         public string Log<TState>(LoggerOptionsModel options, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             var msg = formatter(state, exception);
+            if (options.LogFormat.Equals("json", StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildLogByJson(logLevel, eventId, msg, exception, options);
+            }
             var log = BuildLog(logLevel, eventId, msg, exception, options);
             return log;
         }
@@ -102,6 +106,31 @@ namespace Aquirrel.Logger.File.Internal
                 builder.Insert(length, _messagePadding);
                 builder.AppendLine();
             }
+        }
+
+        protected string BuildLogByJson(LogLevel logLevel, EventId eventId, string message, Exception ex, LoggerOptionsModel options)
+        {
+
+            var builder = _logBuilder;
+            if (builder == null)
+                builder = new StringBuilder();
+
+            GetScopeInformation(builder);
+
+            var info = new {
+                logLevel=logLevel.ToInt(),
+                logLevelDesc=GetLogLevelString(logLevel),
+                timestamp= DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff"),
+                threadId= Thread.CurrentThread.ManagedThreadId.ToString(),
+                eventId=eventId,
+                categoryName=options.CategoryName,
+                message=message,
+                exception=ex?.ToString(),
+                scope= builder.ToString()
+            };
+
+
+            return info.ToJson();
         }
 
     }

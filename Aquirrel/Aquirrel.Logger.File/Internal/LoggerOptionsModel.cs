@@ -46,6 +46,10 @@ namespace Aquirrel.Logger.File.Internal
         /// 是否启用scopes
         /// </summary>
         public bool IncludeScopes { get; set; }
+        /// <summary>
+        /// 持久化格式
+        /// </summary>
+        public string LogFormat { get; set; }
 
         public override int GetHashCode()
         {

@@ -101,6 +101,17 @@ namespace Aquirrel.Logger.File
                 }
             }
             model.MaxSize_Bytes = model.MaxSize_Bytes * 1024 * 1024;
+
+            model.LogFormat = this._configuration.LogFormat;
+            foreach (var item in keys)
+            {
+                var switchV = _configuration.GetLogFormat(item);
+                if (switchV.isMatch)
+                {
+                    model.LogFormat = switchV.format;
+                    break;
+                }
+            }
         }
 
         IEnumerable<string> GetKeys(string categoryName)
