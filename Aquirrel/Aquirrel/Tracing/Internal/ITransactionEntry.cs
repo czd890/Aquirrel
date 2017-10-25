@@ -13,6 +13,10 @@ namespace Aquirrel.Tracing.Internal
         string LocalIp { get; set; }
         string TraceDepth { get; set; }
         string TraceId { get; set; }
+        string UserOpenId { get; set; }
+        string UserTraceId { get; set; }
+        string AccessToken { get; set; }
+        string RealIp { get; set; }
 
         Dictionary<string, IRequestEntry> ChildRequest { get; }
         Dictionary<string, object> Datas { get; }

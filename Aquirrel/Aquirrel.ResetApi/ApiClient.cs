@@ -204,6 +204,10 @@ namespace Aquirrel.ResetApi
             {
                 req.Headers.TryAddWithoutValidation(RestApiConst.TraceId, nextALS.TraceId);
                 req.Headers.TryAddWithoutValidation(RestApiConst.RequestDepth, nextALS.TraceDepth);
+                req.Headers.TryAddWithoutValidation(RestApiConst.UserOpenId, nextALS.UserOpenId);
+                req.Headers.TryAddWithoutValidation(RestApiConst.UserTraceId, nextALS.UserTraceId);
+                req.Headers.TryAddWithoutValidation(RestApiConst.AccessToken, nextALS.AccessToken);
+                req.Headers.TryAddWithoutValidation(RestApiConst.RealIp, nextALS.RealIp);
             }
             return httpClient.SendAsync(req, token);
         }

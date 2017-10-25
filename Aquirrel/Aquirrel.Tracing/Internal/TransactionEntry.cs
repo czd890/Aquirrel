@@ -41,6 +41,10 @@ namespace Aquirrel.Tracing.Internal
         public TimeSpan Duration => this.EndTime > this.BeginTime ? this.EndTime - this.BeginTime : TimeSpan.Zero;
 
         public Exception Exception { get; set; }
+        public string UserOpenId { get; set; }
+        public string UserTraceId { get; set; }
+        public string AccessToken { get; set; }
+        public string RealIp { get; set; }
 
         private int _currentDepth;
 

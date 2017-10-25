@@ -51,6 +51,16 @@ namespace Aquirrel.ResetApi.Internal
             als.Datas["headers"] = httpContext.Request.Headers.ToJson();
             als.Datas["httpMethod"] = httpContext.Request.Method;
             als.Datas["requestUrl"] = httpContext.Request.Path.Value;
+
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.UserOpenId))
+                als.UserOpenId = httpContext.Request.Headers[RestApiConst.UserOpenId].FirstOrDefault();
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.UserTraceId))
+                als.UserTraceId = httpContext.Request.Headers[RestApiConst.UserTraceId].FirstOrDefault();
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.AccessToken))
+                als.AccessToken = httpContext.Request.Headers[RestApiConst.AccessToken].FirstOrDefault();
+            if (httpContext.Request.Headers.ContainsKey(RestApiConst.RealIp))
+                als.RealIp = httpContext.Request.Headers[RestApiConst.RealIp].FirstOrDefault();
+
             httpContext.Items["__ResetApiMiddleware_als"] = als;
             try
             {
