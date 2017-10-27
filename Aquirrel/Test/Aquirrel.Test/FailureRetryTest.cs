@@ -45,11 +45,19 @@ namespace Aquirrel.Test
         {
             Assert.ThrowsException<RetryFaiureException>(() =>
             {
-                FailureRetryBuilder.Bind(() => { return "aa"; }).ResultFilter(str =>
+                try
                 {
-                    Console.WriteLine("执行结果:" + str);
-                    return true;
-                }).Execute();
+                    FailureRetryBuilder.Bind(() => { return "aa"; }).ResultFilter(str =>
+                            {
+                                Console.WriteLine("执行结果:" + str);
+                                return true;
+                            }).Execute();
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
             });
         }
         [TestMethod]

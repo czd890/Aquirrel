@@ -1,5 +1,6 @@
 ﻿using Aquirrel.FailureRetry.Internal;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aquirrel.FailureRetry
@@ -33,6 +34,7 @@ namespace Aquirrel.FailureRetry
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        internal int retryInterval = 0;
         internal Action doAction;
 
         public static FailureRetryBuilder Bind(Action doAction)
@@ -58,6 +60,12 @@ namespace Aquirrel.FailureRetry
             failureCallback = failure;
             return this;
         }
+        public FailureRetryBuilder RetryInterval(int retryInterval)
+        {
+            this.retryInterval = retryInterval;
+            return this;
+        }
+
         public void Execute()
         {
             int i = 0;
@@ -79,6 +87,8 @@ namespace Aquirrel.FailureRetry
                         throw _ex;
                     }
                 }
+                if (this.retryInterval > 0)
+                    Thread.Sleep(this.retryInterval);
             }
         }
 
@@ -120,6 +130,7 @@ namespace Aquirrel.FailureRetry.Internal
         Action<RetryFaiureException> failureCallback;
         internal Func<T, bool> hasResultFailure;
         internal int retryCount = 2;
+        internal int retryInterval = 0;
         internal Func<T> doAction;
 
         public FailureRetryBuilder<T> RetryFilter(Func<RetryFaiureException, bool> hasExceptionFailure)
@@ -138,7 +149,11 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryCount = Math.Max(1, retryCount);
             return this;
         }
-
+        public FailureRetryBuilder<T> RetryInterval(int retryInterval)
+        {
+            this.retryInterval = retryInterval;
+            return this;
+        }
         public FailureRetryBuilder<T> Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
@@ -154,9 +169,8 @@ namespace Aquirrel.FailureRetry.Internal
                 try
                 {
                     r = doAction();
-                    if (this.hasResultFailure == null || !this.hasResultFailure(r)) return r;
-
-
+                    if (this.hasResultFailure == null || !this.hasResultFailure(r))
+                        return r;
                 }
                 catch (Exception ex)
                 {
@@ -169,6 +183,9 @@ namespace Aquirrel.FailureRetry.Internal
                         if (failureCallback != null) failureCallback(_ex);
                         throw _ex;
                     }
+                    if (this.retryInterval > 0)
+                        Thread.Sleep(this.retryInterval);
+
                     continue;
                 }
 
@@ -185,6 +202,8 @@ namespace Aquirrel.FailureRetry.Internal
                         throw _ex;
                     }
                 }
+                if (this.retryInterval > 0)
+                    Thread.Sleep(this.retryInterval);
             }
 
             throw new RetryFaiureException("retry has max. but proccess is error", this.retryCount);
@@ -196,6 +215,7 @@ namespace Aquirrel.FailureRetry.Internal
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        internal int retryInterval = 0;
         internal Func<Task> doAction;
 
         public FailureRetryTaskBuilder RetryFilter(Func<RetryFaiureException, bool> hasExceptionFailure)
@@ -209,7 +229,11 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryCount = retryCount;
             return this;
         }
-
+        public FailureRetryTaskBuilder RetryInterval(int retryInterval)
+        {
+            this.retryInterval = retryInterval;
+            return this;
+        }
         public FailureRetryTaskBuilder Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
@@ -239,9 +263,9 @@ namespace Aquirrel.FailureRetry.Internal
                             throw _ex;
                         }
                     }
+                    if (this.retryInterval > 0)
+                        await Task.Delay(this.retryInterval);
                 }
-
-
             });
         }
 
@@ -257,6 +281,7 @@ namespace Aquirrel.FailureRetry.Internal
         internal Func<T, bool> hasResultFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        internal int retryInterval = 0;
         internal Func<Task<T>> doAction;
 
         public FailureRetryTaskBuilder<T> RetryFilter(Func<RetryFaiureException, bool> hasExceptionFailure)
@@ -275,11 +300,17 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryCount = Math.Max(1, retryCount);
             return this;
         }
+        public FailureRetryTaskBuilder<T> RetryInterval(int retryInterval)
+        {
+            this.retryInterval = retryInterval;
+            return this;
+        }
         public FailureRetryTaskBuilder<T> Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
             return this;
         }
+
         public Task<T> ExecuteAsync()
         {
             return Task.Run(async () =>
@@ -304,8 +335,15 @@ namespace Aquirrel.FailureRetry.Internal
                             if (failureCallback != null) failureCallback(_ex);
                             throw _ex;
                         }
+
+                        if (this.retryInterval > 0)
+                            await Task.Delay(this.retryInterval);
+
                         continue;
                     }
+
+                   
+
                     if (i > this.retryCount)
                     {
                         var ex = new RetryFaiureException("resutl filter error", i);
@@ -318,6 +356,8 @@ namespace Aquirrel.FailureRetry.Internal
                             throw _ex;
                         }
                     }
+                    if (this.retryInterval > 0)
+                        await Task.Delay(this.retryInterval);
                 }
 
                 throw new RetryFaiureException("retry has max. but proccess is error", this.retryCount);
