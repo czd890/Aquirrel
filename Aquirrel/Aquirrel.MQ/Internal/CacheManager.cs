@@ -55,7 +55,6 @@ namespace Aquirrel.MQ.Internal
         public struct ChannelModel
         {
             public IModel Channel { get; set; }
-            public SpinLock SL { get; set; }
         }
         public ChannelModel GetChannel(string productId, string shardingKey, bool shardingConn)
         {
@@ -73,7 +72,6 @@ namespace Aquirrel.MQ.Internal
 
                         rabittmqChannel[shardingKey] = new ChannelModel()
                         {
-                            SL = new SpinLock(),
                             Channel = conn.CreateModel()
                         };
                         rabittmqChannel[shardingKey].Channel.BasicReturn += (obj, ea) =>

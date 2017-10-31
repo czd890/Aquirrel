@@ -4,7 +4,7 @@
       "Name": "test",
       "UserName": "admin",
       "UserPassword": "admin",
-      "Address": "192.168.1.86",
+      "Address": "mq.guodong.com",
       "Port": 5672,
       "VHost": "/",
       "Heartbeat": 60,

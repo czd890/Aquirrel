@@ -24,6 +24,7 @@ namespace Aquirrel.MQ
         EventBusSettings _settings;
         ILogger _logger;
         CacheManager _CacheManager;
+        static int[] retryInterval = new[] { 0, 10, 20, 40 };
         /// <summary>
         /// 
         /// </summary>
@@ -38,10 +39,10 @@ namespace Aquirrel.MQ
             options = options ?? PublishOptions.Default;
             var t = typeof(T);
             string msgStr;
-            var isJson = false;
+            var isJson = true;
             if (t == typeof(string))
             {
-                isJson = true;
+                isJson = false;
                 msgStr = message.ToString();
             }
             else
@@ -57,38 +58,29 @@ namespace Aquirrel.MQ
 
             using (this._logger.BeginScope($"event bus pub {id}"))
             {
-                Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
-                {
-                    bool ifLock = false;
-                    channel.SL.Enter(ref ifLock);
-                    if (ifLock)
-                    {
-                        try
-                        {
-                            channel.Channel.BasicPublish(topic, tag, true, props, msg);
-                        }
-                        catch
-                        {
-                            throw;
-                        }
-                        finally
-                        {
-                            if (ifLock) channel.SL.Exit();
-                        }
-                    }
-                    else throw new Exception("event bus get SL lock fail");
-                })
-                .RetryCount(3)
-                .RetryFilter(ex =>
-                {
-                    this._logger.LogError(ex, ex.Message);
-                    return true;
-                })
-                .Failure(ex =>
-                {
-                    this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{msg}");
-                })
-                .Execute();
+                var _exec = Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
+                  {
+                      Console.WriteLine(DateTime.Now);
+                      var _m = channel.Channel;
+                      lock (_m)
+                      {
+                          _m.BasicPublish(topic, tag, true, props, msg);
+                      }
+                  });
+
+                _exec.RetryCount(3)
+                 .RetryFilter(ex =>
+                 {
+                     _exec.RetryInterval((oldInterval, invCount) => retryInterval[invCount - 1]);
+                     this._logger.LogError(ex, ex.Message);
+                     return true;
+                 })
+                 .Failure(ex =>
+                 {
+                     this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{msg}");
+                 });
+
+                _exec.Execute();
             }
         }
         /// <summary>

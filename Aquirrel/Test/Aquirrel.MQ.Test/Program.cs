@@ -38,7 +38,7 @@ namespace Aquirrel.MQ.Test
             //}, new SubscribeOptions() { BasicQos = 1 });
 
 
-            eventBus.Publish("defualt", "product", "product.create", Guid.NewGuid().ToString("N"), "message content");
+            eventBus.Publish("defualt", "product", "product.publish", Guid.NewGuid().ToString("N"), "message content");
 
 
             //var tasks = new List<Task>();

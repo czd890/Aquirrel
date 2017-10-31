@@ -34,6 +34,7 @@ namespace Aquirrel.FailureRetry
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        private int invokeCount = 0;
         internal int retryInterval = 0;
         internal Action doAction;
 
@@ -65,11 +66,21 @@ namespace Aquirrel.FailureRetry
             this.retryInterval = retryInterval;
             return this;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="retryInterval">上一次sleep时间，本次错误需要sleep时间；当前调用次数</param>
+        /// <returns></returns>
+        public FailureRetryBuilder RetryInterval(Func<int, int, int> retryInterval)
+        {
+            this.retryInterval = retryInterval(this.retryInterval, this.invokeCount);
+            return this;
+        }
 
         public void Execute()
         {
-            int i = 0;
-            while (i++ <= this.retryCount)
+
+            while (invokeCount++ <= this.retryCount)
             {
                 try
                 {
@@ -78,9 +89,9 @@ namespace Aquirrel.FailureRetry
                 }
                 catch (Exception ex)
                 {
-                    if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
+                    if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, invokeCount)))
                         return;
-                    if (i > this.retryCount)
+                    if (invokeCount > this.retryCount)
                     {
                         var _ex = new RetryFaiureException(ex, this.retryCount);
                         if (failureCallback != null) failureCallback(_ex);
@@ -130,6 +141,7 @@ namespace Aquirrel.FailureRetry.Internal
         Action<RetryFaiureException> failureCallback;
         internal Func<T, bool> hasResultFailure;
         internal int retryCount = 2;
+        private int invokeCount = 0;
         internal int retryInterval = 0;
         internal Func<T> doAction;
 
@@ -154,6 +166,12 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryInterval = retryInterval;
             return this;
         }
+        public FailureRetryBuilder<T> RetryInterval(Func<int, int, int> retryInterval)
+        {
+            this.retryInterval = retryInterval(this.retryInterval, this.invokeCount);
+            return this;
+        }
+
         public FailureRetryBuilder<T> Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
@@ -163,8 +181,7 @@ namespace Aquirrel.FailureRetry.Internal
         public T Execute()
         {
             T r;
-            int i = 0;
-            while (i++ <= this.retryCount)
+            while (invokeCount++ <= this.retryCount)
             {
                 try
                 {
@@ -174,10 +191,10 @@ namespace Aquirrel.FailureRetry.Internal
                 }
                 catch (Exception ex)
                 {
-                    if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
+                    if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, invokeCount)))
                         return default(T);
 
-                    if (i > this.retryCount)
+                    if (invokeCount > this.retryCount)
                     {
                         var _ex = new RetryFaiureException(ex, this.retryCount);
                         if (failureCallback != null) failureCallback(_ex);
@@ -190,12 +207,12 @@ namespace Aquirrel.FailureRetry.Internal
                 }
 
 
-                if (i > this.retryCount)
+                if (invokeCount > this.retryCount)
                 {
-                    var ex = new RetryFaiureException("resutl filter error", i);
+                    var ex = new RetryFaiureException("resutl filter error", invokeCount);
                     ex.Data["return result"] = r;
 
-                    if (i > this.retryCount)
+                    if (invokeCount > this.retryCount)
                     {
                         var _ex = new RetryFaiureException(ex, this.retryCount);
                         if (failureCallback != null) failureCallback(_ex);
@@ -215,6 +232,7 @@ namespace Aquirrel.FailureRetry.Internal
         internal Func<RetryFaiureException, bool> hasExceptionFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        private int invokeCount = 0;
         internal int retryInterval = 0;
         internal Func<Task> doAction;
 
@@ -234,6 +252,12 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryInterval = retryInterval;
             return this;
         }
+        public FailureRetryTaskBuilder RetryInterval(Func<int, int, int> retryInterval)
+        {
+            this.retryInterval = retryInterval(this.retryInterval, this.invokeCount);
+            return this;
+        }
+
         public FailureRetryTaskBuilder Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
@@ -244,8 +268,7 @@ namespace Aquirrel.FailureRetry.Internal
             return Task.Run(async () =>
             {
 
-                int i = 0;
-                while (i++ <= this.retryCount)
+                while (invokeCount++ <= this.retryCount)
                 {
                     try
                     {
@@ -254,9 +277,9 @@ namespace Aquirrel.FailureRetry.Internal
                     }
                     catch (Exception ex)
                     {
-                        if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
+                        if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, invokeCount)))
                             return;
-                        if (i > this.retryCount)
+                        if (invokeCount > this.retryCount)
                         {
                             var _ex = new RetryFaiureException(ex, this.retryCount);
                             if (failureCallback != null) failureCallback(_ex);
@@ -281,6 +304,7 @@ namespace Aquirrel.FailureRetry.Internal
         internal Func<T, bool> hasResultFailure;
         Action<RetryFaiureException> failureCallback;
         internal int retryCount = 2;
+        private int invokeCount = 0;
         internal int retryInterval = 0;
         internal Func<Task<T>> doAction;
 
@@ -305,6 +329,12 @@ namespace Aquirrel.FailureRetry.Internal
             this.retryInterval = retryInterval;
             return this;
         }
+        public FailureRetryTaskBuilder<T> RetryInterval(Func<int, int, int> retryInterval)
+        {
+            this.retryInterval = retryInterval(this.retryInterval, this.invokeCount);
+            return this;
+        }
+
         public FailureRetryTaskBuilder<T> Failure(Action<RetryFaiureException> failure)
         {
             failureCallback = failure;
@@ -316,8 +346,7 @@ namespace Aquirrel.FailureRetry.Internal
             return Task.Run(async () =>
             {
                 T r;
-                int i = 0;
-                while (i++ <= this.retryCount)
+                while (invokeCount++ <= this.retryCount)
                 {
                     try
                     {
@@ -326,10 +355,10 @@ namespace Aquirrel.FailureRetry.Internal
                     }
                     catch (Exception ex)
                     {
-                        if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, i)))
+                        if (this.hasExceptionFailure != null && !this.hasExceptionFailure(new RetryFaiureException(ex, invokeCount)))
                             return default(T);
 
-                        if (i > this.retryCount)
+                        if (invokeCount > this.retryCount)
                         {
                             var _ex = new RetryFaiureException(ex, this.retryCount);
                             if (failureCallback != null) failureCallback(_ex);
@@ -342,14 +371,14 @@ namespace Aquirrel.FailureRetry.Internal
                         continue;
                     }
 
-                   
 
-                    if (i > this.retryCount)
+
+                    if (invokeCount > this.retryCount)
                     {
-                        var ex = new RetryFaiureException("resutl filter error", i);
+                        var ex = new RetryFaiureException("resutl filter error", invokeCount);
                         ex.Data["return result"] = r;
 
-                        if (i > this.retryCount)
+                        if (invokeCount > this.retryCount)
                         {
                             var _ex = new RetryFaiureException(ex, this.retryCount);
                             if (failureCallback != null) failureCallback(_ex);
