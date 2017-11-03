@@ -49,8 +49,10 @@ namespace Aquirrel.ResetApi.Internal
 
             var als = await _traceClient?.BeginRequestAsync(_env.ApplicationName, pid, depth, httpContext.Connection.RemoteIpAddress.ToString());
             //als.Datas["headers"] = httpContext.Request.Headers.ToJson();
-            als.Datas["httpMethod"] = httpContext.Request.Method;
-            als.Datas["requestUrl"] = httpContext.Request.Path.Value;
+            als.Datas["method"] = httpContext.Request.Method;
+            als.Datas["path"] = httpContext.Request.Path.Value;
+            als.Datas["host"] = httpContext.Request.Host.Value;
+            als.Datas["qs"] = httpContext.Request.QueryString.Value;
 
             if (httpContext.Request.Headers.ContainsKey(RestApiConst.UserOpenId))
                 als.UserOpenId = httpContext.Request.Headers[RestApiConst.UserOpenId].FirstOrDefault();
