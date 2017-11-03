@@ -104,8 +104,9 @@ namespace Aquirrel.Logger.File.Internal
                 }
                 this.workRunning.Clear();
             }
-            catch
+            catch(Exception ex)
             {
+                Console.Error?.WriteLine(ex.ToString());
             }
         }
 
