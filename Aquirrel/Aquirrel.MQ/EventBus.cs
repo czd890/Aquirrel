@@ -15,7 +15,7 @@ namespace Aquirrel.MQ
 {
     internal class EventBus : IEventBus
     {
-        public EventBus(EventBusSettings settings, CacheManager cacheManager, ILogger<EventBus> logger)
+        public EventBus(EventBusSettings settings, CacheManager cacheManager, ILogger<IEventBus> logger)
         {
             _settings = settings;
             _CacheManager = cacheManager;
@@ -132,7 +132,8 @@ namespace Aquirrel.MQ
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"eventbus.subscribe.consumer.exception;{Environment.NewLine}{productId}-{topic}-{ea.ToJson()}");
+                    _logger.LogError(ex, $"eventbus.subscribe.consumer.exception;{Environment.NewLine}{productId}-{topic}-" +
+                        $"{{RoutingKey:{ea.RoutingKey},ConsumerTag:{ea.ConsumerTag},DeliveryTag:{ea.DeliveryTag},Exchange:{ea.Exchange}}}");
                 }
                 finally
                 {

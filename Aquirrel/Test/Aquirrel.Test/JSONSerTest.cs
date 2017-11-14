@@ -29,5 +29,12 @@ namespace Aquirrel.Test
             var s = r.ToJson();
             Console.WriteLine(s);
         }
+        [TestMethod]
+        public void timestamp()
+        {
+            var s = Aquirrel.IdBuilder.TimeStampUTC();
+            Console.WriteLine(s);
+        }
+
     }
 }
