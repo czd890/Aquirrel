@@ -98,8 +98,8 @@ namespace Aquirrel.EntityFramework.Test
                        sqlOpt.UseRowNumberForPaging(true);
                        sqlOpt.UseRelationalNulls(false);
                    });
-                   opt.ConfigureEntityMappings(typeof(LogEntity.Log).Assembly);
-                   opt.ConfigureAutoEntityAssemblys(typeof(LogEntity.Log).Assembly);
+                   opt.ConfigureEntityMappings(typeof(project.Entity.Log).Assembly);
+                   opt.ConfigureAutoEntityAssemblys(typeof(project.Entity.Log).Assembly);
                })
                .AddAquirrelDb();
             //.AddAquirrelShardingDb<MyShardingFactory>();

@@ -8,11 +8,11 @@ namespace Aquirrel
     {
         public static TDesc Map<TSource, TDesc>(this TSource source)
         {
-            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions._mapper.Map<TSource, TDesc>(source);
+            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions.GetMapper().Map<TSource, TDesc>(source);
         }
         public static TDesc Map<TSource, TDesc>(this TSource source, TDesc desc)
         {
-            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions._mapper.Map<TSource, TDesc>(source, desc);
+            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions.GetMapper().Map<TSource, TDesc>(source, desc);
         }
     }
 }

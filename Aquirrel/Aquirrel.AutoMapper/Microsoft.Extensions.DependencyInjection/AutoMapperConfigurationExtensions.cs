@@ -10,7 +10,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class AutoMapperConfigurationExtensions
     {
         static List<Type> _profile = new List<Type>();
-        public static IMapper _mapper;
+        static IMapper _mapper;
+
         public static IServiceCollection AddAutoMapperProfile<IProfile>(this IServiceCollection services)
             where IProfile : AutoMapperConfiguration, new()
         {
@@ -23,17 +24,25 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IMapper>(sp =>
             {
-                var _mapperConfiguration = new MapperConfiguration(cfg =>
-                {
-                    foreach (var item in _profile)
-                    {
-                        cfg.AddProfile(item);
-                    }
-                });
-                return _mapper = _mapperConfiguration.CreateMapper();
+                return GetMapper();
             });
-            
+
             return services;
+        }
+
+        public static IMapper GetMapper()
+        {
+            if (_mapper != null)
+                return _mapper;
+
+            var _mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                foreach (var item in _profile)
+                {
+                    cfg.AddProfile(item);
+                }
+            });
+            return _mapper = _mapperConfiguration.CreateMapper();
         }
     }
 }

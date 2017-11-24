@@ -40,6 +40,14 @@ namespace Aquirrel.EntityFramework.Test
 
     public class ShardTable : EntityBase
     {
+        public ShardTable()
+        {
+
+        }
+        public ShardTable(string id)
+        {
+            this.Id = id;
+        }
         public string MaxName { get; set; }
         [DecimalPrecision]
         public decimal DecimalSacle { get; set; }

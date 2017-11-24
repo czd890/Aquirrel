@@ -8,6 +8,7 @@ using Aquirrel.EntityFramework.Sharding;
 using Microsoft.EntityFrameworkCore;
 using Aquirrel.EntityFramework.Internal;
 using Aquirrel.EntityFramework.Repository;
+using AutoMapper;
 
 namespace Aquirrel.EntityFramework.Test
 {
@@ -33,7 +34,7 @@ namespace Aquirrel.EntityFramework.Test
             var xx2 = sp.GetService<ICoreConventionSetBuilder>();
 
             var db = sp.GetService<TestDbContext>();
-
+            var hasC = db.Database.EnsureCreated();
             var ms = db.ModelASet.ToArray();
 
             var ms2 = db.Set<ShardTable>().ToArray();
@@ -72,6 +73,68 @@ namespace Aquirrel.EntityFramework.Test
         }
 
         [TestMethod]
+        public void pagelist_map()
+        {
+            var sp = new Startup(null).ConfigureServices(new ServiceCollection());
+
+            var db = sp.GetService<TestDbContext>();
+
+            var rep = sp.GetRequiredService<Repository<TestDbContext, ShardTable>>();
+            var pl = rep.GetPagedList();
+
+            var pl2 = pl.Map(s =>
+            {
+                var r = new Exception(s.StringId);
+                Console.WriteLine("map");
+                return r;
+            });
+            Console.WriteLine("---");
+            foreach (var item in pl2.Items)
+            {
+                Console.WriteLine(item.Message);
+            }
+            var pl3 = pl2.Map(s => new ShardTable(s.Message));
+
+            Console.WriteLine("-----------");
+        }
+
+        class shardTable_map
+        {
+            public string DefaultName { get; set; }
+        }
+        class map_class : AutoMapper.AutoMapperConfiguration
+        {
+            public override void Configure()
+            {
+                this.CreateMap<shardTable_map, ShardTable>();
+            }
+        }
+        [TestMethod]
+        public void entity_map()
+        {
+
+            try
+            {
+                var sc = new ServiceCollection();
+                sc.AddAutoMapperProfile<map_class>();
+                sc.ConfigureAutoMapper();
+                var sp = sc.BuildServiceProvider();
+                var dto = new shardTable_map()
+                {
+                    DefaultName = "33333333333333333333333"
+                };
+                sp.GetService<IMapper>();
+
+                var entity = dto.Map<shardTable_map, ShardTable>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                //throw;
+            }
+        }
+
+        [TestMethod]
         public void update()
         {
             var sp = new Startup(null).ConfigureServices(new ServiceCollection());
@@ -90,7 +153,7 @@ namespace Aquirrel.EntityFramework.Test
         {
             var sp = new Startup(null).ConfigureServices(new ServiceCollection());
 
-            sp.GetRequiredService<Repository<LogDbContext, LogEntity.Log>>();
+            sp.GetRequiredService<Repository<LogDbContext, project.Entity.Log>>();
 
             sp.GetRequiredService<Repository<TestDbContext, ShardTable>>();
         }
@@ -109,7 +172,7 @@ namespace Aquirrel.EntityFramework.Test
             var shardingFactory = sp.GetService<ShardingDbFactory>();
 
             //只分库
-            var shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, LogEntity.Log>(new ShardingOptions()
+            var shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, project.Entity.Log>(new ShardingOptions()
             {
                 ShardingDbValue = "2017",
                 ShardingTableValue = "03"
@@ -119,7 +182,7 @@ namespace Aquirrel.EntityFramework.Test
 
 
             //分库又分表
-            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<project.Entity.Log>, project.Entity.Log>(new ShardingOptions()
             {
                 ShardingDbValue = "2017",
                 ShardingTableValue = "03"
@@ -129,7 +192,7 @@ namespace Aquirrel.EntityFramework.Test
 
 
             //只分表
-            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<project.Entity.Log>, project.Entity.Log>(new ShardingOptions()
             {
                 ShardingTableValue = "03"
             });
@@ -137,7 +200,7 @@ namespace Aquirrel.EntityFramework.Test
             Assert.AreEqual(xx.msg, "主库分表");
 
             //只分表
-            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<LogEntity.Log>, LogEntity.Log>(new ShardingOptions()
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext<project.Entity.Log>, project.Entity.Log>(new ShardingOptions()
             {
                 ShardingTableValue = "04"
             });
@@ -146,7 +209,7 @@ namespace Aquirrel.EntityFramework.Test
 
 
             //不分库分表
-            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, LogEntity.Log>(null);
+            shardingRepo = shardingFactory.GetShardingRepository<LogDbContext, project.Entity.Log>(null);
             xx = shardingRepo.Query().FirstOrDefault();
             Assert.AreEqual(xx.msg, "主库主表");
         }
@@ -193,7 +256,7 @@ namespace Aquirrel.EntityFramework.Test
 
             var m = db.Set<ShardTable>().Find("201709191809163785");
             m.DecimalSacle += 99;
-            
+
             ((ISaveEntityEvent)m).Before();
             db.SaveChanges();
 

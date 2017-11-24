@@ -17,7 +17,7 @@ namespace Aquirrel.EntityFramework.Test.project.Service
         {
             var order = this.orderRepo.Find(orderId);
             order.OrderStatus = 999;
-
+            //this.orderRepo.GetPagedList(p => p.OrderStatus == 1).Map<OrderDomainService>().Map<object>();
             //DistributedCommitService.Commit(this.orderRepo);
         }
     }

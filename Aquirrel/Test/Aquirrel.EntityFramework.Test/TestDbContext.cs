@@ -25,13 +25,13 @@ namespace Aquirrel.EntityFramework.Test
     }
     public class TestDbContext : AquirrelDbContext
     {
-        public TestDbContext(DbContextOptions options) : base(options)
-        {
-        }
-        //public TestDbContext(DbContextOptions<TestDbContext> options) : base(options)
+        //public TestDbContext(DbContextOptions options) : base(options)
         //{
-        //    Console.WriteLine("TestDbContext ctor(options)");
         //}
+        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options)
+        {
+            Console.WriteLine("TestDbContext ctor(options)");
+        }
 
         public DbSet<ModelA> ModelASet { get; set; }
     }

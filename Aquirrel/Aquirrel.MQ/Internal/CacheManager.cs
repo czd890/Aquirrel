@@ -45,6 +45,7 @@ namespace Aquirrel.MQ.Internal
                 factory.VirtualHost = option.VHost;
                 factory.RequestedHeartbeat = (ushort)option.Heartbeat;
                 factory.AutomaticRecoveryEnabled = option.AutoRecovery;
+                //factory.ClientProperties["customerName"] = "aaaaaaa";
                 rabittmqConn[shardingKey] = factory.CreateConnection();
             }
 

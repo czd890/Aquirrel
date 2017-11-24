@@ -27,6 +27,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Aquirrel.AutoMapper\Aquirrel.AutoMapper.csproj" />
     <ProjectReference Include="..\Aquirrel.Extensions\Aquirrel.Extensions.csproj" />
     <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />
   </ItemGroup>

@@ -18,7 +18,6 @@
     <ProjectReference Include="..\..\Aquirrel.EntityFramework\Aquirrel.EntityFramework.csproj" />
     <ProjectReference Include="..\..\Aquirrel.Logger.File\Aquirrel.Logger.File.csproj" />
     <ProjectReference Include="..\..\Aquirrel\Aquirrel.csproj" />
-    <ProjectReference Include="..\Aquirrel.EntityFramework.LogEntity\Aquirrel.EntityFramework.LogEntity.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Arch team. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,5 +48,9 @@ namespace Aquirrel.EntityFramework
         /// </summary>
         /// <value>The has next page.</value>
         bool HasNextPage { get; }
+
+        IPagedList<TDesc> Map<TDesc>();
+
+        IPagedList<TDesc> Map<TDesc>(Func<T, TDesc> converter);
     }
 }

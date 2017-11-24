@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Aquirrel;
 namespace Aquirrel.EntityFramework
 {
     /// <summary>
@@ -83,6 +83,16 @@ namespace Aquirrel.EntityFramework
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
         /// </summary>
         internal PagedList() => Items = Array.Empty<T>();
+
+        public IPagedList<TDesc> Map<TDesc>()
+        {
+            return new PagedList<T, TDesc>(this);
+        }
+
+        public IPagedList<TDesc> Map<TDesc>(Func<T, TDesc> converter)
+        {
+            return new PagedList<T, TDesc>(this, converter);
+        }
     }
 
 
@@ -145,30 +155,25 @@ namespace Aquirrel.EntityFramework
         /// <param name="pageIndex">The index of the page.</param>
         /// <param name="pageSize">The size of the page.</param>
         /// <param name="indexFrom">The index from.</param>
-        public PagedList(IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter, int pageIndex, int pageSize, int indexFrom)
-        {
-            if (indexFrom > pageIndex)
-            {
-                throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
-            }
+        //public PagedList(IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter, int pageIndex, int pageSize, int indexFrom)
+        //{
+        //    if (indexFrom > pageIndex)
+        //    {
+        //        throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
+        //    }
 
-            PageIndex = pageIndex;
-            PageSize = pageSize;
-            IndexFrom = indexFrom;
-            TotalCount = source.Count();
-            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+        //    PageIndex = pageIndex;
+        //    PageSize = pageSize;
+        //    IndexFrom = indexFrom;
+        //    TotalCount = source.Count();
+        //    TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-            var items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
+        //    var items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize).ToArray();
 
-            Items = new List<TResult>(converter(items));
-        }
+        //    Items = new List<TResult>(converter(items));
+        //}
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PagedList{TSource, TResult}" /> class.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="converter">The converter.</param>
-        public PagedList(IPagedList<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter)
+        public PagedList(IPagedList<TSource> source)
         {
             PageIndex = source.PageIndex;
             PageSize = source.PageSize;
@@ -176,7 +181,44 @@ namespace Aquirrel.EntityFramework
             TotalCount = source.TotalCount;
             TotalPages = source.TotalPages;
 
-            Items = new List<TResult>(converter(source.Items));
+            Items = Converter(source.Items);
+        }
+
+        public PagedList(IPagedList<TSource> source, Func<TSource, TResult> converter)
+        {
+            PageIndex = source.PageIndex;
+            PageSize = source.PageSize;
+            IndexFrom = source.IndexFrom;
+            TotalCount = source.TotalCount;
+            TotalPages = source.TotalPages;
+
+            Items = Converter(source.Items, converter);
+        }
+        IEnumerable<TResult> Converter(IEnumerable<TSource> _source)
+        {
+            Console.WriteLine("Converter");
+            foreach (var item in _source)
+            {
+                Console.WriteLine("Converter item");
+                yield return item.Map<TSource, TResult>();
+            }
+        }
+        IEnumerable<TResult> Converter(IEnumerable<TSource> _source, Func<TSource, TResult> converter)
+        {
+            foreach (var item in _source)
+            {
+                yield return converter(item);
+            }
+        }
+
+        public IPagedList<TDesc> Map<TDesc>()
+        {
+            return new PagedList<TResult, TDesc>(this);
+        }
+
+        public IPagedList<TDesc> Map<TDesc>(Func<TResult, TDesc> converter)
+        {
+            return new PagedList<TResult, TDesc>(this, converter);
         }
     }
 
@@ -190,7 +232,7 @@ namespace Aquirrel.EntityFramework
         /// </summary>
         /// <typeparam name="T">The type for paging </typeparam>
         /// <returns>An empty instance of <see cref="IPagedList{T}"/>.</returns>
-        public static IPagedList<T> Empty<T>() => new PagedList<T>();
+        //public static IPagedList<T> Empty<T>() => new PagedList<T>();
         /// <summary>
         /// Creates a new instance of <see cref="IPagedList{TResult}"/> from source of <see cref="IPagedList{TSource}"/> instance.
         /// </summary>
@@ -199,6 +241,6 @@ namespace Aquirrel.EntityFramework
         /// <param name="source">The source.</param>
         /// <param name="converter">The converter.</param>
         /// <returns>An instance of <see cref="IPagedList{TResult}"/>.</returns>
-        public static IPagedList<TResult> From<TResult, TSource>(IPagedList<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter) => new PagedList<TSource, TResult>(source, converter);
+        //public static IPagedList<TResult> From<TResult, TSource>(this IPagedList<TSource> source, Func<TSource, TResult> converter) => new PagedList<TSource, TResult>(source, converter);
     }
 }
