@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using System.Linq;
+using System.Text;
 
 namespace Aquirrel
 {
@@ -61,8 +64,9 @@ namespace Aquirrel
                 _ticks = now.Ticks;
             else
             {
-                if (_ticks - now.Ticks >= 10000000)
-                    Thread.SpinWait(1000);//累加差超过了1秒,则暂停一下.
+                //注释代码，防止机器时间同步导致无限暂停。
+                //if (_ticks - now.Ticks >= 10000000)
+                //    Thread.SpinWait(1000);//累加差超过了1秒,则暂停一下.
                 _ticks += FCountMultiple;
             }
 
@@ -105,9 +109,10 @@ namespace Aquirrel
             else
                 rule = _dic[type];
 
-            long idTick = rule.Next();
-            var now = new DateTime(idTick);
-            return rule.prefix + now.ToString(rule.DateFormat);
+            //long idTick = rule.Next();
+            //var now = new DateTime(idTick);
+
+            return rule.prefix + ObjectIdGenerator.NextId();
         }
         static Dictionary<Type, IdBuilderRule> _dic = new Dictionary<Type, IdBuilderRule>();
         public static void Register(Type type, string prefix, int fCount, string timeFormat)
@@ -133,6 +138,312 @@ namespace Aquirrel
         public static long TimeStampUTC(DateTime now)
         {
             return (long)(now.ToUniversalTime() - timeUtc1970).TotalMilliseconds;
+        }
+
+        public static int TimeStampUTCBySec()
+        {
+            return TimeStampUTCBySec(DateTime.UtcNow);
+        }
+        public static int TimeStampUTCBySec(DateTime now)
+        {
+            return (int)(now.ToUniversalTime() - timeUtc1970).TotalSeconds;
+        }
+
+        public static DateTime ToDateTime(long milliseconds)
+        {
+            return timeUtc1970.AddMilliseconds(milliseconds).ToLocalTime();
+        }
+        public static DateTime ToDateTime(int seconds)
+        {
+            return timeUtc1970.AddSeconds(seconds).ToLocalTime();
+        }
+    }
+
+
+    public class IdWorker
+    {
+        private long workerId;
+        private long datacenterId;
+        private long sequence = 0L;
+
+        private static long twepoch = 1288834974657L;
+
+        private static long workerIdBits = 5L;
+        private static long datacenterIdBits = 5L;
+        private static long maxWorkerId = -1L ^ (-1L << (int)workerIdBits);
+        private static long maxDatacenterId = -1L ^ (-1L << (int)datacenterIdBits);
+        private static long sequenceBits = 12L;
+
+        private long workerIdShift = sequenceBits;
+        private long datacenterIdShift = sequenceBits + workerIdBits;
+        private long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+        private long sequenceMask = -1L ^ (-1L << (int)sequenceBits);
+
+        private long lastTimestamp = -1L;
+        private static object syncRoot = new object();
+
+        public IdWorker(long workerId, long datacenterId)
+        {
+
+            // sanity check for workerId
+            if (workerId > maxWorkerId || workerId < 0)
+            {
+                throw new ArgumentException(string.Format("worker Id can't be greater than %d or less than 0", maxWorkerId));
+            }
+            if (datacenterId > maxDatacenterId || datacenterId < 0)
+            {
+                throw new ArgumentException(string.Format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+            }
+            this.workerId = workerId;
+            this.datacenterId = datacenterId;
+        }
+
+        public long nextId()
+        {
+            lock (syncRoot)
+            {
+                long timestamp = timeGen();
+
+                if (timestamp < lastTimestamp)
+                {
+                    throw new ApplicationException(string.Format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+                }
+
+                if (lastTimestamp == timestamp)
+                {
+                    sequence = (sequence + 1) & sequenceMask;
+                    if (sequence == 0)
+                    {
+                        timestamp = tilNextMillis(lastTimestamp);
+                    }
+                }
+                else
+                {
+                    sequence = 0L;
+                }
+
+                lastTimestamp = timestamp;
+
+                return ((timestamp - twepoch) << (int)timestampLeftShift) | (datacenterId << (int)datacenterIdShift) | (workerId << (int)workerIdShift) | sequence;
+            }
+        }
+
+        protected long tilNextMillis(long lastTimestamp)
+        {
+            long timestamp = timeGen();
+            while (timestamp <= lastTimestamp)
+            {
+                timestamp = timeGen();
+            }
+            return timestamp;
+        }
+
+        protected long timeGen()
+        {
+            return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+        }
+    }
+
+    public class ObjectId
+    {
+        private string _string;
+
+        public ObjectId()
+        {
+        }
+
+        public ObjectId(string value)
+          : this(DecodeHex(value))
+        {
+        }
+
+        internal ObjectId(byte[] value)
+        {
+            Value = value;
+        }
+
+        public static ObjectId Empty
+        {
+            get { return new ObjectId("000000000000000000000000"); }
+        }
+
+        public byte[] Value { get; private set; }
+
+        public static ObjectId NewObjectId()
+        {
+            return new ObjectId { Value = ObjectIdGenerator.Generate() };
+        }
+
+        public static bool TryParse(string value, out ObjectId objectId)
+        {
+            objectId = Empty;
+            if (value == null || value.Length != 24)
+            {
+                return false;
+            }
+
+            try
+            {
+                objectId = new ObjectId(value);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        protected static byte[] DecodeHex(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                throw new ArgumentNullException("value");
+
+            var chars = value.ToCharArray();
+            var numberChars = chars.Length;
+            var bytes = new byte[numberChars / 2];
+
+            for (var i = 0; i < numberChars; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(new string(chars, i, 2), 16);
+            }
+            return bytes;
+        }
+
+        public override int GetHashCode()
+        {
+            return Value != null ? ToString().GetHashCode() : 0;
+        }
+
+        public override string ToString()
+        {
+            if (_string == null && Value != null)
+            {
+                _string = BitConverter.ToString(Value)
+                  .Replace("-", string.Empty)
+                  .ToLowerInvariant();
+            }
+
+            return _string;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ObjectId;
+            return Equals(other);
+        }
+
+        public bool Equals(ObjectId other)
+        {
+            return other != null && ToString() == other.ToString();
+        }
+
+        public static implicit operator string(ObjectId objectId)
+        {
+            return objectId == null ? null : objectId.ToString();
+        }
+
+        public static implicit operator ObjectId(string value)
+        {
+            return new ObjectId(value);
+        }
+
+        public static bool operator ==(ObjectId left, ObjectId right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (((object)left == null) || ((object)right == null))
+            {
+                return false;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ObjectId left, ObjectId right)
+        {
+            return !(left == right);
+        }
+
+        public DateTime TimeStamp => getTimeStamp();
+        public int Counter => getCounter();
+        public string Ip => getIp();
+        public int Pid => getPid();
+
+        int getPid()
+        {
+            return BitConverter.ToInt32(new byte[4] { this.Value[10], this.Value[11], 0, 0 }, 0);
+        }
+        int getCounter()
+        {
+            return BitConverter.ToInt32(new byte[4] { this.Value[4], this.Value[5], 0, 0 }, 0);
+        }
+        string getIp()
+        {
+            return $"{this.Value[6]}.{this.Value[7]}.{this.Value[8]}.{this.Value[9]}";
+        }
+        DateTime getTimeStamp()
+        {
+            var sec = BitConverter.ToInt32(this.Value, 0);
+            return IdBuilder.ToDateTime(sec);
+        }
+    }
+
+    internal static class ObjectIdGenerator
+    {
+        static object _innerLock = new object();
+        static byte[] _ip = getIp() ?? new byte[4];
+        static byte[] _processId = BitConverter.GetBytes(GenerateProcessId());
+
+        public static string NextId() => BitConverter.ToString(Generate()).Replace("-", "").ToLower();
+        public static byte[] Generate()
+        {
+            //4字节时间|2字节自增|4字节ip|2字节pid
+            var oid = new byte[12];
+            var sec = IdBuilder.TimeStampUTCBySec();
+            Array.Copy(BitConverter.GetBytes(sec), 0, oid, 0, 4);
+
+            var counter = GenerateCounter(sec);
+            Array.Copy(BitConverter.GetBytes(counter), 0, oid, 4, 2);
+            Array.Copy(_ip, 0, oid, 6, 4);
+            Array.Copy(_processId, 0, oid, 10, 2);
+
+            return oid;
+        }
+
+        static int GenerateProcessId()
+        {
+            var process = Process.GetCurrentProcess();
+            return process.Id;
+        }
+
+        static byte[] getIp()
+        {
+            var hostName = System.Net.Dns.GetHostName();
+            var ipEntity = System.Net.Dns.GetHostEntry(hostName);
+            var ip = ipEntity.AddressList
+                 .Where(p => p.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                 .FirstOrDefault()?
+                 .GetAddressBytes();
+            return ip;
+        }
+
+        static long _last_sec;
+        static int _counter;
+        static int GenerateCounter(long current_sec)
+        {
+            lock (_innerLock)
+            {
+
+                if (current_sec > _last_sec)
+                    _counter = 0;
+
+                _counter++;
+                _last_sec = current_sec;
+                return _counter;
+            }
         }
     }
 }

@@ -36,5 +36,22 @@ namespace Aquirrel.Test
             Console.WriteLine(s);
         }
 
+        [TestMethod]
+        public void IdWorker()
+        {
+            var s = new IdWorker(1, 1).nextId();
+            Console.WriteLine(s);
+        }
+
+        [TestMethod]
+        public void getid()
+        {
+            var id = IdBuilder.NextStringId();
+            var id2 = IdBuilder.NextStringId();
+            var oid = new Aquirrel.ObjectId(id);
+            
+            Console.WriteLine(id);
+        }
+
     }
 }
