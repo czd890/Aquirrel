@@ -374,19 +374,19 @@ namespace Aquirrel
 
         int getPid()
         {
-            return BitConverter.ToInt32(new byte[4] { this.Value[10], this.Value[11], 0, 0 }, 0);
+            return BitConverter.ToInt32(new byte[4] { this.Value[11], this.Value[10], 0, 0 }, 0);
         }
         int getCounter()
         {
-            return BitConverter.ToInt32(new byte[4] { this.Value[4], this.Value[5], 0, 0 }, 0);
+            return BitConverter.ToInt32(new byte[4] { this.Value[5], this.Value[4], 0, 0 }, 0);
         }
         string getIp()
         {
-            return $"{this.Value[6]}.{this.Value[7]}.{this.Value[8]}.{this.Value[9]}";
+            return $"{this.Value[9]}.{this.Value[8]}.{this.Value[7]}.{this.Value[6]}";
         }
         DateTime getTimeStamp()
         {
-            var sec = BitConverter.ToInt32(this.Value, 0);
+            var sec = BitConverter.ToInt32(new byte[4] { this.Value[3], this.Value[2], this.Value[1], this.Value[0], }, 0);
             return IdBuilder.ToDateTime(sec);
         }
     }
@@ -394,8 +394,8 @@ namespace Aquirrel
     internal static class ObjectIdGenerator
     {
         static object _innerLock = new object();
-        static byte[] _ip = getIp() ?? new byte[4];
-        static byte[] _processId = BitConverter.GetBytes(GenerateProcessId());
+        static byte[] _ip = getIp().Reverse().ToArray() ?? new byte[4];
+        static byte[] _processId = BitConverter.GetBytes(GenerateProcessId()).Reverse().ToArray();
 
         public static string NextId() => BitConverter.ToString(Generate()).Replace("-", "").ToLower();
         public static byte[] Generate()
@@ -403,12 +403,12 @@ namespace Aquirrel
             //4字节时间|2字节自增|4字节ip|2字节pid
             var oid = new byte[12];
             var sec = IdBuilder.TimeStampUTCBySec();
-            Array.Copy(BitConverter.GetBytes(sec), 0, oid, 0, 4);
+            Array.Copy(BitConverter.GetBytes(sec).Reverse().ToArray(), 0, oid, 0, 4);
 
             var counter = GenerateCounter(sec);
-            Array.Copy(BitConverter.GetBytes(counter), 0, oid, 4, 2);
+            Array.Copy(BitConverter.GetBytes(counter).Reverse().ToArray(), 2, oid, 4, 2);
             Array.Copy(_ip, 0, oid, 6, 4);
-            Array.Copy(_processId, 0, oid, 10, 2);
+            Array.Copy(_processId, 2, oid, 10, 2);
 
             return oid;
         }
