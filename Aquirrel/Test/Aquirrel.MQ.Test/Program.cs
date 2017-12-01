@@ -30,15 +30,16 @@ namespace Aquirrel.MQ.Test
             //    return true;
             //}, new SubscribeOptions() { Model = MessageModel.Broadcasting });
 
-            //eventBus.Subscribe<string>("defualt", "product_user_async_product.#", str =>
-            //{
-            //    logger.LogDebug($"{DateTime.Now} 收到集群消费消息：{str}");
-            //    Console.WriteLine(str);
-            //    return true;
-            //}, new SubscribeOptions() { BasicQos = 1 });
+            eventBus.Subscribe<string>("defualt", "ua_fund_pay_paidcallback", str =>
+            {
+                logger.LogDebug($"{DateTime.Now} 收到集群消费消息：{str}");
+                Console.WriteLine(str);
+                return true;
+            }, new SubscribeOptions() { BasicQos = 1 });
 
 
-            eventBus.Publish("defualt", "product", "product.publish", Guid.NewGuid().ToString("N"), "message content");
+            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
+            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
 
 
             //var tasks = new List<Task>();

@@ -430,9 +430,9 @@ namespace Aquirrel
             return ip;
         }
 
-        static long _last_sec;
+        static int _last_sec;
         static int _counter;
-        static int GenerateCounter(long current_sec)
+        static int GenerateCounter(int current_sec)
         {
             lock (_innerLock)
             {

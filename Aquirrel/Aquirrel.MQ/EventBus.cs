@@ -50,7 +50,6 @@ namespace Aquirrel.MQ
 
             var msg = Encoding.UTF8.GetBytes(msgStr);
             var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}-{tag}", options.ShardingConn);
-
             IBasicProperties props = channel.Channel.CreateBasicProperties();
             props.ContentType = isJson ? "application/json" : "text/plain";
             props.DeliveryMode = 2;
@@ -60,11 +59,11 @@ namespace Aquirrel.MQ
             {
                 var _exec = Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
                   {
-                      Console.WriteLine(DateTime.Now);
                       var _m = channel.Channel;
                       lock (_m)
                       {
                           _m.BasicPublish(topic, tag, true, props, msg);
+                          _m.WaitForConfirmsOrDie();
                       }
                   });
 

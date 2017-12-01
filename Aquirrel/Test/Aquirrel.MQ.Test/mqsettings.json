@@ -1,34 +1,34 @@
 ﻿{
-  "Hosts": [
-    {
-      "Name": "test",
-      "UserName": "admin",
-      "UserPassword": "admin",
-      "Address": "mq.guodong.com",
-      "Port": 5672,
-      "VHost": "/",
-      "Heartbeat": 60,
-      "AutoRecovery": true
-    }
-  ],
-  "Products": [
-    {
-      "Id": "defualt",
-      "Host": "test"
-    }
-  ],
-  "Publish": [
-    {
-      "Desc": "",
-      "Topic": "exchange",
-      "Tag": "routekey"
-    }
-  ],
-  "Subscribe": [
-    {
-      "Name": "",
-      "Topic": "queueName",
-      "Qos": 1
-    }
-  ]
+    "Hosts": [
+        {
+            "Name": "test",
+            "UserName": "test",
+            "UserPassword": "test",
+            "Address": "mq.guodong.com",
+            "Port": 5672,
+            "VHost": "/",
+            "Heartbeat": 60,
+            "AutoRecovery": true
+        }
+    ],
+    "Products": [
+        {
+            "Id": "defualt",
+            "Host": "test"
+        }
+    ],
+    "Publish": [
+        {
+            "Desc": "",
+            "Topic": "exchange",
+            "Tag": "routekey"
+        }
+    ],
+    "Subscribe": [
+        {
+            "Name": "",
+            "Topic": "queueName",
+            "Qos": 1
+        }
+    ]
 }
