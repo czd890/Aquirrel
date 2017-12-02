@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aquirrel.ResetApi
@@ -13,5 +14,10 @@ namespace Aquirrel.ResetApi
 
         Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request) where IRes : class, IResponseBase<IData>;
         Task<IRes> ExecuteAsync<IRes, IData>(IRequestBase<IRes> request, CancellationToken token) where IRes : class, IResponseBase<IData>;
+
+
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage);
+
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken token);
     }
 }

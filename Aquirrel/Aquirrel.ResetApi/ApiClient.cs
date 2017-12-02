@@ -211,5 +211,39 @@ namespace Aquirrel.ResetApi
             }
             return httpClient.SendAsync(req, token);
         }
+        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage) => this.SendAsync(httpRequestMessage, CancellationToken.None);
+
+        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken token)
+        {
+            IRequestEntry nextALS = null;
+            if (this.TraceClient != null && this.TraceClient.Current != null)
+            {
+                var als = this.TraceClient.Current;
+                nextALS = als.NewChildRequest();
+            }
+
+            if (nextALS != null)
+            {
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.TraceId, nextALS.TraceId);
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.RequestDepth, nextALS.TraceDepth);
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.UserOpenId, nextALS.UserOpenId);
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.UserTraceId, nextALS.UserTraceId);
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.AccessToken, nextALS.AccessToken);
+                httpRequestMessage.Headers.TryAddWithoutValidation(RestApiConst.RealIp, nextALS.RealIp);
+            }
+            return httpClient.SendAsync(httpRequestMessage, token).ContinueWith(resTask =>
+            {
+                if (nextALS != null)
+                    nextALS.EndTime = DateTime.Now;
+
+                if (resTask.IsFaulted)
+                {
+                    if (nextALS != null)
+                        nextALS.Exception = resTask.Exception;
+                }
+                return resTask.Result;
+            });
+
+        }
     }
 }

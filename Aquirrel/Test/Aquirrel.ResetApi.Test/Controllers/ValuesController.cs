@@ -72,7 +72,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
 
             var postReq = new MyPostThirdReq() { heihei = new List<int>() { 1, 2, 3 } };
             var values = await this.ApiClient.ExecuteAsync(postReq);
-           
+
             return new ResponseBase<IEnumerable<string>>(new string[] { "value1", "value2" });
         }
 
@@ -90,5 +90,23 @@ namespace Aquirrel.ResetApi.Test.Controllers
             return new ResponseBase<IEnumerable<string>>(new string[] { "value5", "value6" });
         }
 
+        [HttpGet]
+        public async Task<ActionResult> xx2Async()
+        {
+
+            try
+            {
+                var res = await ApiClient.SendAsync(new HttpRequestMessage()
+                {
+                    RequestUri = new Uri("http://sadfasf.asga.com"),
+                    Method = HttpMethod.Get
+                });
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return this.Content("ok");
+        }
     }
 }
