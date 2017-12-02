@@ -13,7 +13,7 @@ using Aquirrel.MQ.Internal;
 
 namespace Aquirrel.MQ
 {
-    internal class EventBus : IEventBus
+    internal class EventBus : IEventBus, IMQ
     {
         public EventBus(EventBusSettings settings, CacheManager cacheManager, ILogger<IEventBus> logger)
         {
@@ -54,18 +54,21 @@ namespace Aquirrel.MQ
             props.ContentType = isJson ? "application/json" : "text/plain";
             props.DeliveryMode = 2;
             props.Headers = new Dictionary<string, object>() { { "mid", id } };
-
+            this.Publish_internal(productId, topic, tag, id, msg, props, channel.Channel);
+        }
+        void Publish_internal(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, IModel channel)
+        {
             using (this._logger.BeginScope($"event bus pub {id}"))
             {
                 var _exec = Aquirrel.FailureRetry.FailureRetryBuilder.Bind(() =>
-                  {
-                      var _m = channel.Channel;
-                      lock (_m)
-                      {
-                          _m.BasicPublish(topic, tag, true, props, msg);
-                          _m.WaitForConfirmsOrDie();
-                      }
-                  });
+                {
+                    lock (channel)
+                    {
+                        channel.ConfirmSelect();
+                        channel.BasicPublish(topic, tag, true, basicProperties, body);
+                        channel.WaitForConfirmsOrDie();
+                    }
+                });
 
                 _exec.RetryCount(3)
                  .RetryFilter(ex =>
@@ -76,12 +79,20 @@ namespace Aquirrel.MQ
                  })
                  .Failure(ex =>
                  {
-                     this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{msg}");
+                     this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{Encoding.UTF8.GetString(body)}");
                  });
 
                 _exec.Execute();
             }
         }
+        public void Publish(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, PublishOptions options = null)
+        {
+            options = options ?? PublishOptions.Default;
+            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}-{tag}", options.ShardingConn);
+
+            this.Publish_internal(productId, topic, tag, id, body, basicProperties, channel.Channel);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -91,6 +102,10 @@ namespace Aquirrel.MQ
         /// <param name="action"></param>
         /// <param name="options"></param>
         public async void Subscribe<T>(string productId, string topic, Func<T, bool> action, SubscribeOptions options = null)
+        {
+            this.Subscribe_internal<T>(productId, topic, true, (body, message) => action(body), options);
+        }
+        public async void Subscribe_internal<T>(string productId, string topic, bool hasReloveBody, Func<T, BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
         {
             options = options ?? SubscribeOptions.Default;
             var queueName = topic;
@@ -120,14 +135,23 @@ namespace Aquirrel.MQ
                 var isSuccess = false;
                 try
                 {
-                    var body = Encoding.UTF8.GetString(ea.Body);
-                    if (tx)
-                        isSuccess = action((T)((object)body));
+                    if (hasReloveBody)
+                    {
+                        var body = Encoding.UTF8.GetString(ea.Body);
+                        if (tx)
+                            isSuccess = action((T)((object)body), ea);
+                        else
+                        {
+                            var msg = body.ToJson<T>();
+                            isSuccess = action(msg, ea);
+                        }
+                    }
                     else
                     {
-                        var msg = body.ToJson<T>();
-                        isSuccess = action(msg);
+                        isSuccess = action(default(T), ea);
                     }
+
+
                 }
                 catch (Exception ex)
                 {
@@ -136,7 +160,18 @@ namespace Aquirrel.MQ
                 }
                 finally
                 {
-                    consumer.Model.BasicAck(ea.DeliveryTag, isSuccess);
+                    try
+                    {
+                        if (isSuccess)
+                        {
+                            consumer.Model.BasicAck(ea.DeliveryTag, false);
+                        }
+                        else
+                        {
+                            consumer.Model.BasicNack(ea.DeliveryTag, false, options.FailMesaageReQueue);
+                        }
+                    }
+                    catch { }
                 }
             };
             _logger.LogInformation($"eventbus.subscribe;{productId}-{queueName}");
@@ -146,6 +181,11 @@ namespace Aquirrel.MQ
         public void Exit()
         {
             ((IDisposable)_CacheManager).Dispose();
+        }
+
+        public void Subscribe(string productId, string topic, Func<BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
+        {
+            this.Subscribe_internal<object>(productId, topic, false, (body, message) => action(message), options);
         }
     }
 }

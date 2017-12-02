@@ -75,7 +75,7 @@ namespace Aquirrel.MQ.Internal
                         {
                             Channel = conn.CreateModel()
                         };
-                        rabittmqChannel[shardingKey].Channel.ConfirmSelect();
+                        //rabittmqChannel[shardingKey].Channel.ConfirmSelect();
                         rabittmqChannel[shardingKey].Channel.BasicReturn += (obj, ea) =>
                         {
                             _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");

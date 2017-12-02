@@ -30,18 +30,38 @@ namespace Aquirrel.MQ.Test
             //    return true;
             //}, new SubscribeOptions() { Model = MessageModel.Broadcasting });
 
+
+
+
+
             eventBus.Subscribe<string>("defualt", "ua_fund_pay_paidcallback", str =>
             {
-                logger.LogDebug($"{DateTime.Now} 收到集群消费消息：{str}");
-                Console.WriteLine(str);
-                return true;
-            }, new SubscribeOptions() { BasicQos = 1 });
+                Console.WriteLine($"{DateTime.Now}  {str}");
+                return false;
+            }, new SubscribeOptions() { FailMesaageReQueue = false });
 
+            //((Internal.IMQ)eventBus).Subscribe("defualt", "dead_letter_queue", message =>
+            //{
+            //    Console.WriteLine("死信队列");
+            //    var x_Death = (List<object>)message.BasicProperties.Headers["x-death"];
+            //    var death = x_Death.Last() as Dictionary<string, object>;
 
-            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
-            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
-
-
+            //    var count = (long)death["count"];
+            //    var reason = System.Text.Encoding.UTF8.GetString((byte[])death["reason"]);
+            //    var queue = System.Text.Encoding.UTF8.GetString((byte[])(death["queue"]));
+            //    var time = Aquirrel.IdBuilder.ToDateTime((int)((RabbitMQ.Client.AmqpTimestamp)death["time"]).UnixTime);
+            //    var exchange = System.Text.Encoding.UTF8.GetString((byte[])(death["exchange"]));
+            //    var routeKeys = (List<object>)death["routing-keys"];
+            //    var routing_keys = System.Text.Encoding.UTF8.GetString((byte[])(routeKeys.First()));
+            //    var id = "";
+            //    if (message.BasicProperties.Headers.ContainsKey("mid"))
+            //    {
+            //        id = System.Text.Encoding.UTF8.GetString((byte[])message.BasicProperties.Headers["mid"]);
+            //    }
+            //    ((Internal.IMQ)eventBus).Publish("defualt", "", queue, id, message.Body, message.BasicProperties);
+            //    return true;
+            //});
+            //eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
             //var tasks = new List<Task>();
 
             //for (int i = 0; i < 10; i++)

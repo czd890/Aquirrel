@@ -12,6 +12,8 @@ namespace Aquirrel.MQ
 
         public int BasicQos { get; set; } = 1;
 
+        public bool FailMesaageReQueue { get; set; } = true;
+
         public static SubscribeOptions Default { get; } = new SubscribeOptions() { };
     }
     /// <summary>
