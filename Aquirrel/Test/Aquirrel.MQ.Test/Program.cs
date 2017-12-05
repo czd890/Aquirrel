@@ -61,7 +61,20 @@ namespace Aquirrel.MQ.Test
             //    ((Internal.IMQ)eventBus).Publish("defualt", "", queue, id, message.Body, message.BasicProperties);
             //    return true;
             //});
-            //eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
+            while (true)
+            {
+                Console.WriteLine("回车发送消息，输入q则退出");
+                if (Console.ReadLine() == "q")
+                {
+                    return;
+                }
+                else
+                {
+                    var msg = Guid.NewGuid().ToString("N");
+                    eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
+
+                }
+            }
             //var tasks = new List<Task>();
 
             //for (int i = 0; i < 10; i++)

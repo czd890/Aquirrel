@@ -28,8 +28,14 @@ namespace Aquirrel.MQ.Internal
             ConfigurationBinder.Bind(_configuration.GetSection("Products"), productOptions);
             this.Products = productOptions.ToDictionary(p => p.Id, p => p);
 
+            EventBusConfigOptions configOptions = new EventBusConfigOptions();
+            ConfigurationBinder.Bind(_configuration.GetSection("Options"), configOptions);
+            this.Options = configOptions;
+
+
             _logger.LogInformation("init EventBus.Hosts：" + this.Hosts.ToJson());
             _logger.LogInformation("init EventBus.Products：" + this.Products.ToJson());
+            _logger.LogInformation("init EventBus.Options：" + this.Options.ToJson());
 
         }
 
@@ -37,8 +43,13 @@ namespace Aquirrel.MQ.Internal
         public Dictionary<string, EventBusHostOptions> Hosts { get; set; }
         public Dictionary<string, ProductOptions> Products { get; set; }
 
-    }
+        public EventBusConfigOptions Options { get; set; }
 
+    }
+    public class EventBusConfigOptions
+    {
+        public int ConnectionMaxChannelSize { get; set; } = 15;
+    }
     public class EventBusHostOptions
     {
         public string Name { get; set; } = "default";

@@ -11,109 +11,190 @@ namespace Aquirrel.MQ.Internal
 {
     internal class CacheManager : IDisposable
     {
+        class CacheItem
+        {
+            public string ProductId { get; set; }
+            public List<CacheConnItem> ConnItems { get; set; } = new List<CacheConnItem>();
+        }
+        class CacheConnItem
+        {
+            public IConnection Connection { get; set; }
+            public int ChannelSize => ChannelItems.Count;
 
+            public Dictionary<string, CacheChannelItem> ChannelItems { get; set; } = new Dictionary<string, CacheChannelItem>();
+        }
+        class CacheChannelItem
+        {
+            public IModel Channel { get; set; }
+
+            public DateTime LastGetTime { get; set; }
+        }
         public CacheManager(EventBusSettings setting, ILogger<IEventBus> logger)
         {
             _settings = setting;
             _logger = logger;
         }
-        Dictionary<string, RabbitMQ.Client.IConnection> rabittmqConn = new Dictionary<string, RabbitMQ.Client.IConnection>();
-        Dictionary<string, ChannelModel> rabittmqChannel = new Dictionary<string, ChannelModel>();
+        Dictionary<string, CacheItem> _cacheConn = new Dictionary<string, CacheItem>();
         EventBusSettings _settings;
         ILogger<IEventBus> _logger;
-
-        public IConnection GetConnection(string productId,string shardingKey)
+        DateTime _lastCleanUpTime = DateTime.Now;
+        public IConnection GetConnection(string productId)
         {
             if (this.disposedValue)
                 throw new ObjectDisposedException(nameof(CacheManager));
-            if (!rabittmqConn.ContainsKey(shardingKey))
-            {
-                if (!_settings.Products.ContainsKey(productId))
-                {
-                    throw new Exception(productId + " product setting not found");
-                }
-                var hKey = _settings.Products[productId].Host;
-                if (!_settings.Hosts.ContainsKey(hKey))
-                {
-                    throw new Exception(hKey + " host setting not found");
-                }
-                var option = _settings.Hosts[hKey];
-                var factory = new RabbitMQ.Client.ConnectionFactory();
-                factory.HostName = option.Address;
-                factory.UserName = option.UserName;
-                factory.Password = option.UserPassword;
-                factory.VirtualHost = option.VHost;
-                factory.RequestedHeartbeat = (ushort)option.Heartbeat;
-                factory.AutomaticRecoveryEnabled = option.AutoRecovery;
-                //factory.ClientProperties["customerName"] = "aaaaaaa";
-                rabittmqConn[shardingKey] = factory.CreateConnection();
-            }
 
-
-            return rabittmqConn[shardingKey];
+            //if (!_cacheConn.ContainsKey(productId))
+            //{
+            //    if (!_settings.Products.ContainsKey(productId))
+            //    {
+            //        throw new Exception(productId + " product setting not found");
+            //    }
+            //    var hKey = _settings.Products[productId].Host;
+            //    if (!_settings.Hosts.ContainsKey(hKey))
+            //    {
+            //        throw new Exception(hKey + " host setting not found");
+            //    }
+            //    _cacheConn[productId] = new CacheItem();
+            //}
+            var hKey = _settings.Products[productId].Host;
+            var option = _settings.Hosts[hKey];
+            var factory = new RabbitMQ.Client.ConnectionFactory();
+            factory.HostName = option.Address;
+            factory.UserName = option.UserName;
+            factory.Password = option.UserPassword;
+            factory.VirtualHost = option.VHost;
+            factory.RequestedHeartbeat = (ushort)option.Heartbeat;
+            factory.AutomaticRecoveryEnabled = option.AutoRecovery;
+            //factory.ClientProperties["customerName"] = "aaaaaaa";
+            return factory.CreateConnection();
         }
-
-        public struct ChannelModel
-        {
-            public IModel Channel { get; set; }
-        }
-        public ChannelModel GetChannel(string productId, string shardingKey, bool shardingConn)
+        public IModel GetChannel(string productId, string topic)
         {
 
             if (this.disposedValue)
                 throw new ObjectDisposedException(nameof(CacheManager));
-            //return GetConnection(productId).CreateModel();
-            if (!rabittmqChannel.ContainsKey(shardingKey))
+
+            var cacheKey = $"{productId}-{topic}";
+
+            if (_cacheConn.ContainsKey(productId))
             {
-                lock (rabittmqChannel)
+                foreach (var item in _cacheConn[productId].ConnItems)
                 {
-                    if (!rabittmqChannel.ContainsKey(shardingKey))
+                    if (item.ChannelItems.ContainsKey(cacheKey))
                     {
-                        var conn = GetConnection(productId, shardingKey);
+                        item.ChannelItems[cacheKey].LastGetTime = DateTime.Now;
 
-                        rabittmqChannel[shardingKey] = new ChannelModel()
-                        {
-                            Channel = conn.CreateModel()
-                        };
-                        //rabittmqChannel[shardingKey].Channel.ConfirmSelect();
-                        rabittmqChannel[shardingKey].Channel.BasicReturn += (obj, ea) =>
-                        {
-                            _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
-                        };
-                        //rabittmqChannel[productId].Channel.BasicAcks += (obj, ea) =>
-                        //{
+                        if (this._lastCleanUpTime.AddMinutes(15) < DateTime.Now)
+                            this.CleanIdleConn();
 
-                        //};
-
-                        //rabittmqChannel[productId].Channel.BasicNacks += (obj, ea) =>
-                        //{
-
-                        //};
-
-                        //rabittmqChannel[productId].Channel.BasicRecoverOk += (obj, ea) =>
-                        //{
-
-                        //};
-
-                        rabittmqChannel[shardingKey].Channel.CallbackException += (obj, ea) =>
-                        {
-                            _logger.LogError($"{productId} CallbackException.{ea.Detail?.ToJson()}{Environment.NewLine}{ea.Exception?.ToString()}");
-                        };
-
-                        rabittmqChannel[shardingKey].Channel.FlowControl += (obj, ea) =>
-                        {
-                            _logger.LogError($"{productId} FlowControl.{ea.Active}");
-                        };
-
-                        rabittmqChannel[shardingKey].Channel.ModelShutdown += (obj, ea) =>
-                        {
-                            _logger.LogError($"{productId} ModelShutdown.{ea.ToJson()}");
-                        };
+                        return item.ChannelItems[cacheKey].Channel;
                     }
                 }
-
             }
-            return rabittmqChannel[shardingKey];
+
+
+            lock (this)
+            {
+                if (!_cacheConn.ContainsKey(productId))
+                {
+                    if (!_settings.Products.ContainsKey(productId))
+                    {
+                        throw new Exception(productId + " product setting not found");
+                    }
+                    var hKey = _settings.Products[productId].Host;
+                    if (!_settings.Hosts.ContainsKey(hKey))
+                    {
+                        throw new Exception(hKey + " host setting not found");
+                    }
+                    _cacheConn[productId] = new CacheItem();
+                }
+
+                Lable_GetModel:
+                bool hasGet = false;
+                IModel _channel = null;
+                foreach (var item in _cacheConn[productId].ConnItems)
+                {
+                    if (item.ChannelSize < this._settings.Options.ConnectionMaxChannelSize)
+                    {
+                        _channel = item.Connection.CreateModel();
+                        item.ChannelItems.Add(cacheKey, new CacheChannelItem()
+                        {
+                            Channel = _channel,
+                            LastGetTime = DateTime.Now
+                        });
+                        hasGet = true;
+                    }
+                }
+                if (!hasGet)
+                {
+                    _cacheConn[productId].ConnItems.Add(new CacheConnItem()
+                    {
+                        Connection = this.GetConnection(productId)
+                    });
+                    goto Lable_GetModel;
+                }
+
+                _channel.BasicReturn += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} BasicReturn.{ea.Exchange},{ea.RoutingKey},{ea.ReplyCode},{ea.ReplyText},{Encoding.UTF8.GetString(ea.Body)}");
+                };
+                _channel.CallbackException += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} CallbackException.{ea.Detail?.ToJson()}{Environment.NewLine}{ea.Exception?.ToString()}");
+                };
+
+                _channel.FlowControl += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} FlowControl.{ea.Active}");
+                };
+
+                _channel.ModelShutdown += (obj, ea) =>
+                {
+                    _logger.LogError($"{productId} ModelShutdown.{ea.ToJson()}");
+                };
+                return _channel;
+            }
+        }
+
+        void CleanIdleConn()
+        {
+            Task.Run(() => this.CleanTask());
+        }
+        void CleanTask()
+        {
+            if (this._lastCleanUpTime.AddMinutes(15) < DateTime.Now)
+            {
+                this._lastCleanUpTime = DateTime.Now;
+
+                lock (this)
+                {
+                    foreach (var item in this._cacheConn)
+                    {
+                        List<CacheConnItem> _cleanConn = new List<CacheConnItem>();
+                        foreach (var conn in item.Value.ConnItems)
+                        {
+                            List<string> _clean = new List<string>();
+                            foreach (var channel in conn.ChannelItems)
+                            {
+                                if (channel.Value.LastGetTime.AddMinutes(30) < DateTime.Now)
+                                {
+                                    channel.Value.Channel.Close();
+                                    channel.Value.Channel.Dispose();
+                                    _clean.Add(channel.Key);
+                                }
+                            }
+                            _clean.Each(_k => conn.ChannelItems.Remove(_k));
+                            if (conn.ChannelSize == 0)
+                            {
+                                conn.Connection.Close();
+                                conn.Connection.Dispose();
+                                _cleanConn.Add(conn);
+                            }
+                        }
+                        _cleanConn.Each(_ck => item.Value.ConnItems.Remove(_ck));
+                    }
+                }
+            }
         }
 
         #region IDisposable Support
@@ -130,63 +211,38 @@ namespace Aquirrel.MQ.Internal
 
                     try
                     {
-                        foreach (var item in rabittmqChannel)
+                        foreach (var item in this._cacheConn)
                         {
-                            try
+                            foreach (var conn in item.Value.ConnItems)
                             {
-                                item.Value.Channel.Close();
-                                item.Value.Channel.Dispose();
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
+                                foreach (var channel in conn.ChannelItems)
+                                {
+                                    try
+                                    {
+                                        channel.Value.Channel.Close();
+                                        channel.Value.Channel.Dispose();
+                                    }
+                                    catch { }
+                                }
+                                try
+                                {
+                                    conn.Connection.Close();
+                                    conn.Connection.Dispose();
+                                }
+                                catch { }
                             }
                         }
-                        foreach (var item in rabittmqConn)
-                        {
-                            try
-                            {
-                                item.Value.Close();
-                                item.Value.Dispose();
-                            }
-                            catch (Exception)
-                            {
 
-                                throw;
-                            }
-                        }
                     }
-                    catch (Exception)
-                    {
-
-                        throw;
-                    }
-                    rabittmqChannel.Clear();
-                    rabittmqConn.Clear();
-
+                    catch { }
+                    this._cacheConn.Clear();
                 }
-
-                // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
-                // TODO: 将大型字段设置为 null。
-
                 disposedValue = true;
             }
         }
-
-        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-        // ~CacheManager() {
-        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-        //   Dispose(false);
-        // }
-
-        // 添加此代码以正确实现可处置模式。
         void IDisposable.Dispose()
         {
-            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
-            // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-            // GC.SuppressFinalize(this);
         }
         #endregion
     }

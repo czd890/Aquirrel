@@ -49,12 +49,12 @@ namespace Aquirrel.MQ
                 msgStr = message.ToJson<T>();
 
             var msg = Encoding.UTF8.GetBytes(msgStr);
-            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}-{tag}", options.ShardingConn);
-            IBasicProperties props = channel.Channel.CreateBasicProperties();
+            var channel = _CacheManager.GetChannel(productId, topic);
+            IBasicProperties props = channel.CreateBasicProperties();
             props.ContentType = isJson ? "application/json" : "text/plain";
             props.DeliveryMode = 2;
             props.Headers = new Dictionary<string, object>() { { "mid", id } };
-            this.Publish_internal(productId, topic, tag, id, msg, props, channel.Channel);
+            this.Publish_internal(productId, topic, tag, id, msg, props, channel);
         }
         void Publish_internal(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, IModel channel)
         {
@@ -88,9 +88,9 @@ namespace Aquirrel.MQ
         public void Publish(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, PublishOptions options = null)
         {
             options = options ?? PublishOptions.Default;
-            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}-{tag}", options.ShardingConn);
+            var channel = _CacheManager.GetChannel(productId, topic);
 
-            this.Publish_internal(productId, topic, tag, id, body, basicProperties, channel.Channel);
+            this.Publish_internal(productId, topic, tag, id, body, basicProperties, channel);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Aquirrel.MQ
         {
             options = options ?? SubscribeOptions.Default;
             var queueName = topic;
-            var channel = _CacheManager.GetChannel(productId, $"{productId}-{topic}", options.ShardingConn);
+            var channel = _CacheManager.GetChannel(productId, topic);
 
             if (options.Model == MessageModel.Broadcasting)
             {
@@ -117,18 +117,18 @@ namespace Aquirrel.MQ
                 var ipaddress = await System.Net.Dns.GetHostEntryAsync(hostName).ConfigureAwait(false);
                 var ip = ipaddress.AddressList.FirstOrDefault(p => p.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.ToString() ?? hostName;
                 var fanoutQueueName = ip + "." + productId + "." + topic + "." + DateTime.UtcNow.Ticks;
-                channel.Channel.QueueDeclare(queue: fanoutQueueName);
-                channel.Channel.QueueBind(fanoutQueueName, topic, "", null);
+                channel.QueueDeclare(queue: fanoutQueueName);
+                channel.QueueBind(fanoutQueueName, topic, "", null);
 
                 queueName = fanoutQueueName;
             }
 
-            var consumer = new EventingBasicConsumer(channel.Channel);
+            var consumer = new EventingBasicConsumer(channel);
             consumer.Shutdown += (obj, ea) =>
             {
                 _logger.LogError($"eventbus.consumer.shutdown;{Environment.NewLine}{productId}-{topic}-{ea.ToJson()}");
             };
-            channel.Channel.BasicQos(0, (ushort)options.BasicQos, false);
+            channel.BasicQos(0, (ushort)options.BasicQos, false);
             var tx = typeof(T) == typeof(string);
             consumer.Received += (obj, ea) =>
             {
@@ -175,7 +175,7 @@ namespace Aquirrel.MQ
                 }
             };
             _logger.LogInformation($"eventbus.subscribe;{productId}-{queueName}");
-            channel.Channel.BasicConsume(queueName, false, consumer);
+            channel.BasicConsume(queueName, false, consumer);
         }
 
         public void Exit()
