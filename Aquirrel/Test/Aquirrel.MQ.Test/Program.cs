@@ -61,20 +61,21 @@ namespace Aquirrel.MQ.Test
             //    ((Internal.IMQ)eventBus).Publish("defualt", "", queue, id, message.Body, message.BasicProperties);
             //    return true;
             //});
-            while (true)
-            {
-                Console.WriteLine("回车发送消息，输入q则退出");
-                if (Console.ReadLine() == "q")
-                {
-                    return;
-                }
-                else
-                {
-                    var msg = Guid.NewGuid().ToString("N");
-                    eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
 
-                }
-            }
+            //while (true)
+            //{
+            //    Console.WriteLine("回车发送消息，输入q则退出");
+            //    if (Console.ReadLine() == "q")
+            //    {
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        var msg = Guid.NewGuid().ToString("N");
+            //        eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
+
+            //    }
+            //}
             //var tasks = new List<Task>();
 
             //for (int i = 0; i < 10; i++)
@@ -90,7 +91,15 @@ namespace Aquirrel.MQ.Test
             //}
             //var t = NewMethod(eventBus, tasks);
             //tasks.Add(t);
-
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    var msg = Guid.NewGuid().ToString("N");
+                    eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
+                    Thread.Sleep(6000);
+                }
+            });
             Console.WriteLine("订阅完成");
             Console.ReadLine();
         }

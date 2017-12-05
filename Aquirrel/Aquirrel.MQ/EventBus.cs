@@ -109,7 +109,7 @@ namespace Aquirrel.MQ
         {
             options = options ?? SubscribeOptions.Default;
             var queueName = topic;
-            var channel = _CacheManager.GetChannel(productId, topic);
+            var channel = _CacheManager.GetChannel(productId, topic, hasSub: true);
 
             if (options.Model == MessageModel.Broadcasting)
             {

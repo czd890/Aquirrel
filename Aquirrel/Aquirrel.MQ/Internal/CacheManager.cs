@@ -68,7 +68,7 @@ namespace Aquirrel.MQ.Internal
             //factory.ClientProperties["customerName"] = "aaaaaaa";
             return factory.CreateConnection();
         }
-        public IModel GetChannel(string productId, string topic)
+        public IModel GetChannel(string productId, string topic, bool hasSub = false)
         {
 
             if (this.disposedValue)
@@ -120,7 +120,7 @@ namespace Aquirrel.MQ.Internal
                         item.ChannelItems.Add(cacheKey, new CacheChannelItem()
                         {
                             Channel = _channel,
-                            LastGetTime = DateTime.Now
+                            LastGetTime = hasSub ? DateTime.Now.AddYears(999) : DateTime.Now
                         });
                         hasGet = true;
                     }
