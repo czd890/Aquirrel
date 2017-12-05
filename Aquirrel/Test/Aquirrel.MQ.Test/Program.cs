@@ -40,6 +40,8 @@ namespace Aquirrel.MQ.Test
                 return false;
             }, new SubscribeOptions() { FailMesaageReQueue = false });
 
+            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", messageId, message);
+
             //((Internal.IMQ)eventBus).Subscribe("defualt", "dead_letter_queue", message =>
             //{
             //    Console.WriteLine("死信队列");
