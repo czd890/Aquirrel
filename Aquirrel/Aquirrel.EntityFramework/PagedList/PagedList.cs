@@ -1,6 +1,4 @@
-﻿// Copyright (c) Arch team. All rights reserved.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aquirrel;
@@ -31,7 +29,7 @@ namespace Aquirrel.EntityFramework
         /// Gets or sets the total pages.
         /// </summary>
         /// <value>The total pages.</value>
-        public int TotalPages { get; set; }
+        public int TotalPages => (int)Math.Ceiling(this.TotalCount / (double)this.PageSize);
         /// <summary>
         /// Gets or sets the index from.
         /// </summary>
@@ -74,7 +72,6 @@ namespace Aquirrel.EntityFramework
             PageSize = pageSize;
             IndexFrom = indexFrom;
             TotalCount = source.Count();
-            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
             Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize);
         }
