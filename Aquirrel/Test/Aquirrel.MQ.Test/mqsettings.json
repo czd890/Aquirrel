@@ -1,9 +1,9 @@
 ﻿{
     "Hosts": [
         {
-            "Name": "test",
-            "UserName": "test",
-            "UserPassword": "test",
+            "Name": "product",
+            "UserName": "product",
+            "UserPassword": "123456",
             "Address": "mq.guodong.com",
             "Port": 5672,
             "VHost": "/",
@@ -14,21 +14,7 @@
     "Products": [
         {
             "Id": "defualt",
-            "Host": "test"
-        }
-    ],
-    "Publish": [
-        {
-            "Desc": "",
-            "Topic": "exchange",
-            "Tag": "routekey"
-        }
-    ],
-    "Subscribe": [
-        {
-            "Name": "",
-            "Topic": "queueName",
-            "Qos": 1
+            "Host": "product"
         }
     ]
 }

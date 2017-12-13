@@ -31,7 +31,7 @@ namespace Aquirrel.MQ.Test
             //}, new SubscribeOptions() { Model = MessageModel.Broadcasting });
 
 
-
+            eventBus.Publish("defualt", "product", "product.paid", Guid.NewGuid().ToString("N"), "message content");
 
 
             eventBus.Subscribe<string>("defualt", "ua_fund_pay_paidcallback", str =>
@@ -40,7 +40,7 @@ namespace Aquirrel.MQ.Test
                 return false;
             }, new SubscribeOptions() { FailMesaageReQueue = false });
 
-            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", messageId, message);
+            eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", Guid.NewGuid().ToString("N"), "message content");
 
             //((Internal.IMQ)eventBus).Subscribe("defualt", "dead_letter_queue", message =>
             //{
@@ -93,15 +93,15 @@ namespace Aquirrel.MQ.Test
             //}
             //var t = NewMethod(eventBus, tasks);
             //tasks.Add(t);
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    var msg = Guid.NewGuid().ToString("N");
-                    eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
-                    Thread.Sleep(6000);
-                }
-            });
+            //Task.Run(() =>
+            //{
+            //    while (true)
+            //    {
+            //        var msg = Guid.NewGuid().ToString("N");
+            //        eventBus.Publish("defualt", "fund", "fund.pay.paidcallback", msg, msg);
+            //        Thread.Sleep(6000);
+            //    }
+            //});
             Console.WriteLine("订阅完成");
             Console.ReadLine();
         }
