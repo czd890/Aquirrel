@@ -16,8 +16,10 @@ namespace Aquirrel.Logger.File
         readonly ConcurrentDictionary<string, LoggerOptionsModel> _loggerOptionsCache = new ConcurrentDictionary<string, LoggerOptionsModel>();
         readonly ConcurrentDictionary<string, FileLogger> _loggers = new ConcurrentDictionary<string, FileLogger>();
 
-        public FileLoggerProvider(FileLoggerSettings configuration)
+        IFileFormatProvider fileFormatProvider;
+        public FileLoggerProvider(FileLoggerSettings configuration, IFileFormatProvider fileFormatProvider)
         {
+            this.fileFormatProvider = fileFormatProvider;
             _configuration = configuration;
             _configuration.ChangeToken.RegisterChangeCallback(p =>
             {
@@ -41,7 +43,7 @@ namespace Aquirrel.Logger.File
              });
             return this._loggers.GetOrAdd(categoryName, p =>
             {
-                var logger = new FileLogger(categoryName, option);
+                var logger = new FileLogger(categoryName, option, this.fileFormatProvider);
                 InitLogger(option, logger);
                 return logger;
             });

@@ -93,7 +93,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
         [HttpGet]
         public async Task<ActionResult> xx2Async()
         {
-
+            this._logger.LogError("IIIIIIIIIIIIIIIIIIIIIIII");
             try
             {
                 var res = await ApiClient.SendAsync(new HttpRequestMessage()
