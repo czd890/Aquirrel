@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Aquirrel.Tracing;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.DependencyInjection;
 namespace Aquirrel.Logger.File.Internal
 {
     public interface IFileFormatProvider
@@ -15,6 +16,19 @@ namespace Aquirrel.Logger.File.Internal
 
     public class FileFormatProvider : IFileFormatProvider
     {
+        IServiceProvider serviceProvider;
+        ITraceClient traceClient => serviceProvider.GetService<ITraceClient>();
+        //有循环依赖问题
+        //public FileFormatProvider(ITraceClient traceClient)
+        //{
+        //    this.traceClient = traceClient;
+        //}
+        public FileFormatProvider(IServiceProvider serviceProvider)
+        {
+            //traceClient = serviceProvider.GetService<ITraceClient>();
+            this.serviceProvider = serviceProvider;
+        }
+
         public string Log<TState>(LoggerOptionsModel options, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             var msg = formatter(state, exception);
@@ -45,6 +59,34 @@ namespace Aquirrel.Logger.File.Internal
             builder.Append("[");
             builder.Append(options.CategoryName);
             builder.Append("]");
+
+
+            var als = this.traceClient?.Current;
+            builder.Append("[");
+            builder.Append(als?.UserOpenId);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.UserTraceId);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.RealIp);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.ClientIp);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.LocalIp);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.TraceId);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.TraceDepth);
+            builder.Append("]");
+            builder.Append("[");
+            builder.Append(als?.Datas["host"]?.ToString() + als?.Datas["path"]?.ToString());
+            builder.Append("]");
+
             builder.AppendLine(message);
             if (ex != null)
             {
@@ -116,17 +158,27 @@ namespace Aquirrel.Logger.File.Internal
                 builder = new StringBuilder();
 
             GetScopeInformation(builder);
-
-            var info = new {
-                logLevel=logLevel.ToInt(),
-                logLevelDesc=GetLogLevelString(logLevel),
-                timestamp= DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff"),
-                threadId= Thread.CurrentThread.ManagedThreadId.ToString(),
-                eventId=eventId,
-                categoryName=options.CategoryName,
-                message=message,
-                exception=ex?.ToString(),
-                scope= builder.ToString()
+            var als = this.traceClient?.Current;
+            var info = new
+            {
+                logLevel = logLevel.ToInt(),
+                logLevelDesc = GetLogLevelString(logLevel),
+                timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff"),
+                threadId = Thread.CurrentThread.ManagedThreadId.ToString(),
+                eventId = eventId,
+                categoryName = options.CategoryName,
+                message = message,
+                exception = ex?.ToString(),
+                app = als?.Datas["host"],
+                apiName = als.Datas["path"],
+                uid = als.UserOpenId,
+                utid = als.UserTraceId,
+                clientIp = als.ClientIp,
+                realIp = als.RealIp,
+                localIp = als.LocalIp,
+                tid = als.TraceId,
+                depth = als.TraceDepth,
+                scope = builder.ToString()
             };
 
 

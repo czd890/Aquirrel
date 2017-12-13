@@ -13,13 +13,14 @@ namespace Aquirrel.Logger.File
 {
     public class FileLogger : ILogger
     {
-        public static IFileFormatProvider FileFormatProvider { get; set; } = new FileFormatProvider();
+        IFileFormatProvider fileFormatProvider;
 
 
-        public FileLogger(string categoryName, LoggerOptionsModel options)
+        public FileLogger(string categoryName, LoggerOptionsModel options, IFileFormatProvider fileFormatProvider)
         {
             this.Name = categoryName;
             this.Options = options;
+            this.fileFormatProvider = fileFormatProvider;
         }
 
         public IDisposable BeginScope<TState>(TState state)
@@ -32,12 +33,13 @@ namespace Aquirrel.Logger.File
         }
         public string Name { get; private set; }
         public LoggerOptionsModel Options { get; set; }
+        public IFileFormatProvider FileFormatProvider { get => fileFormatProvider; set => fileFormatProvider = value; }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!this.IsEnabled(logLevel))
                 return;
-            var log = FileFormatProvider.Log(this.Options, logLevel, eventId, state, exception, formatter);
+            var log = this.fileFormatProvider.Log(this.Options, logLevel, eventId, state, exception, formatter);
             FileLogWrite.AddToQueue(this.Options, log);
         }
     }
