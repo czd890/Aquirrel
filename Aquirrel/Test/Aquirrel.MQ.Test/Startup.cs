@@ -37,10 +37,14 @@ namespace Aquirrel.MQ.Test
 
             var sp = sc.BuildServiceProvider();
 
-            sp.GetService<ILoggerFactory>()
-                .AddDebug()
-                .AddConsole(appsettings.GetSection("FileLogging"))
-                .AddFile(appsettings.GetSection("FileLogging"));
+            sc.AddLogging(loggerBuilder =>
+            {
+                loggerBuilder.AddConfiguration(appsettings.GetSection("FileLogging"));
+
+                loggerBuilder.AddDebug();
+                loggerBuilder.AddConsole(consoleOptions => { consoleOptions.IncludeScopes = true; });
+                loggerBuilder.AddFile(appsettings.GetSection("FileLogging"));
+            });
 
 
             return sp;

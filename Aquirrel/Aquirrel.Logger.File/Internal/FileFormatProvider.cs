@@ -170,14 +170,14 @@ namespace Aquirrel.Logger.File.Internal
                 message = message,
                 exception = ex?.ToString(),
                 app = als?.Datas["host"],
-                apiName = als.Datas["path"],
-                uid = als.UserOpenId,
-                utid = als.UserTraceId,
-                clientIp = als.ClientIp,
-                realIp = als.RealIp,
-                localIp = als.LocalIp,
-                tid = als.TraceId,
-                depth = als.TraceDepth,
+                apiName = als?.Datas["path"],
+                uid = als?.UserOpenId,
+                utid = als?.UserTraceId,
+                clientIp = als?.ClientIp,
+                realIp = als?.RealIp,
+                localIp = als?.LocalIp,
+                tid = als?.TraceId,
+                depth = als?.TraceDepth,
                 scope = builder.ToString()
             };
 

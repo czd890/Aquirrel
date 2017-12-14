@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 namespace Aquirrel.Interceptor.Test
 {
     public class Startup
@@ -32,10 +31,14 @@ namespace Aquirrel.Interceptor.Test
             sc.AddInterceptor(appsettings.GetSection("Aquirrel.Interceptor"));
             var sp = sc.BuildServiceProvider();
 
-            sp.GetService<ILoggerFactory>()
-                .AddDebug()
-                .AddConsole(appsettings.GetSection("FileLogging"))
-                .AddFile(appsettings.GetSection("FileLogging"));
+            sc.AddLogging(loggerBuilder =>
+            {
+                loggerBuilder.AddConfiguration(appsettings.GetSection("FileLogging"));
+
+                loggerBuilder.AddDebug();
+                loggerBuilder.AddConsole(consoleOptions => { consoleOptions.IncludeScopes = true; });
+                loggerBuilder.AddFile(appsettings.GetSection("FileLogging"));
+            });
 
 
             return sp;
