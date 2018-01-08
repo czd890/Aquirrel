@@ -421,13 +421,12 @@ namespace Aquirrel
 
         static byte[] getIp()
         {
-            var hostName = System.Net.Dns.GetHostName();
-            var ipEntity = System.Net.Dns.GetHostEntry(hostName);
-            var ip = ipEntity.AddressList
-                 .Where(p => p.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                 .FirstOrDefault()?
-                 .GetAddressBytes();
-            return ip;
+
+            return System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
+                     .Select(p => p.GetIPProperties())
+                     .SelectMany(p => p.UnicastAddresses)
+                     .Where(p => p.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !System.Net.IPAddress.IsLoopback(p.Address))
+                     .FirstOrDefault()?.Address.GetAddressBytes();
         }
 
         static int _last_sec;

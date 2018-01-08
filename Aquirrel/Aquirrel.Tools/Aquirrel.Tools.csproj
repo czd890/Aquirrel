@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>aquirrel base lib. tools</Description>
     <Authors>calvin</Authors>
-    <VersionPrefix>2.2.0</VersionPrefix>
+    <VersionPrefix>2.2.1</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Aquirrel.Tools</PackageId>
     <PackageTags>Tools</PackageTags>

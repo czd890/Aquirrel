@@ -22,7 +22,7 @@ namespace Aquirrel.Tracing
         {
             RequestEntry.ALS.Value = new RequestEntry();
         }
-        public async Task<IRequestEntry> BeginRequestAsync(string app, string traceId, string traceDepth, string clientIp = "")
+        public Task<IRequestEntry> BeginRequestAsync(string app, string traceId, string traceDepth, string clientIp = "")
         {
             var als = RequestEntry.ALS.Value;
 
@@ -32,8 +32,8 @@ namespace Aquirrel.Tracing
             als.ClientIp = clientIp;
 
             als.BeginTime = DateTime.Now;
-            als.LocalIp = await LocalIp.GetLocalIPV4();
-            return als;
+            als.LocalIp = LocalIp.GetLocalIPV4();
+            return Task.FromResult(als);
         }
 
         public void CompleteRequest()

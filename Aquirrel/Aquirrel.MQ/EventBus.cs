@@ -113,9 +113,7 @@ namespace Aquirrel.MQ
 
             if (options.Model == MessageModel.Broadcasting)
             {
-                var hostName = System.Net.Dns.GetHostName();
-                var ipaddress = await System.Net.Dns.GetHostEntryAsync(hostName).ConfigureAwait(false);
-                var ip = ipaddress.AddressList.FirstOrDefault(p => p.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?.ToString() ?? hostName;
+                var ip = Aquirrel.Tools.LocalIp.GetLocalIPV4() ?? System.Net.Dns.GetHostName();
                 var fanoutQueueName = ip + "." + productId + "." + topic + "." + DateTime.UtcNow.Ticks;
                 channel.QueueDeclare(queue: fanoutQueueName);
                 channel.QueueBind(fanoutQueueName, topic, "", null);
