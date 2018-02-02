@@ -162,20 +162,20 @@ namespace Aquirrel.ResetApi
         HttpClient httpClient = new HttpClient();
         Task<HttpResponseMessage> SendAsync(IRequest request, IRequestEntry nextALS, CancellationToken token)
         {
-            var content = request.ToJson();
+            var requestUri = this.ApiResolveService.Resolve(request.App, request.ApiName);
             HttpRequestMessage req;
             if (request.Method == HttpMethod.Post || request.Method == HttpMethod.Put)
             {
                 req = new HttpRequestMessage()
                 {
                     Method = request.Method,
-                    Content = new StringContent(content, Encoding.UTF8, "application/json"),
-                    RequestUri = this.ApiResolveService.Resolve(request.App, request.ApiName)
+                    Content = new StringContent(request.ToJson(), Encoding.UTF8, "application/json"),
+                    RequestUri = requestUri
                 };
             }
             else
             {
-                var uri = this.ApiResolveService.Resolve(request.App, request.ApiName);
+                var uri = requestUri;
                 System.Text.StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append(uri.Query);
                 if (uri.Query.IsNotNullOrEmpty())
@@ -196,7 +196,6 @@ namespace Aquirrel.ResetApi
                 {
                     Method = request.Method,
                     RequestUri = u.Uri
-
                 };
             }
 
