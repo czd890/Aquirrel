@@ -36,11 +36,31 @@ namespace Aquirrel.EntityFramework
         /// <value>The index from.</value>
         public int IndexFrom { get; set; }
 
+        bool hasGetItems;
+        IEnumerable<T> orign_Items;
+        IEnumerable<T> curr_Items;
         /// <summary>
         /// Gets or sets the items.
         /// </summary>
         /// <value>The items.</value>
-        public IEnumerable<T> Items { get; set; }
+        public IEnumerable<T> Items
+        {
+            get
+            {
+                if (hasGetItems && curr_Items != null)
+                    return curr_Items;
+
+                curr_Items = orign_Items.ToArray();
+                hasGetItems = true;
+                return curr_Items;
+            }
+            set
+            {
+                curr_Items = null;
+                hasGetItems = false;
+                orign_Items = value;
+            }
+        }
 
         /// <summary>
         /// Gets the has previous page.
