@@ -44,12 +44,31 @@ namespace Aquirrel.EntityFramework.Test
             var page = repo.GetPagedList(p => p.Id != "", p => p.OrderBy(x => x.CreatedDate), 0, 20);
             var pageData = page.Items.ToArray();
 
+            for (int i = 0; i < 5; i++)
+            {
+                repo.Add(new ShardTable() { DecimalSacle = 333, MaxName = "HA", DefaultName = "DN" });
+            }
+            var sc = (repo as IPersistence).SaveChanges();
+            var all = repo.Query(disableTracking: false).ToList();
+            //repo.Delete(all.Select(p => p.Id).ToArray());
+            repo.Delete(all);
+            sc = (repo as IPersistence).SaveChanges();
 
+
+            for (int i = 0; i < 5; i++)
+            {
+                repo.Add(new ShardTable() { DecimalSacle = 333, MaxName = "HA", DefaultName = "DN" });
+            }
+            sc = (repo as IPersistence).SaveChanges();
+
+            all = repo.Query().ToList();
+            repo.Delete(all.Select(p => p.Id).ToArray());
+            sc = (repo as IPersistence).SaveChanges();
             Console.WriteLine("finish");
 
         }
 
-      
+
 
         [TestMethod]
         public void add()

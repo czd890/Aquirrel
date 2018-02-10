@@ -44,6 +44,7 @@ namespace Aquirrel.EntityFramework.Repository
     public interface IRepositoryDelete<TEntity> where TEntity : class
     {
         void Delete(object id);
+        void Delete(params object[] ids);
 
         void Delete(TEntity entity);
 
