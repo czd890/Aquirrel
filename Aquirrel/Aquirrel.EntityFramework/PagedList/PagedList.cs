@@ -67,13 +67,13 @@ namespace Aquirrel.EntityFramework
             {
                 throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
             }
-
+            var _s = source.AsQueryable();
             PageIndex = pageIndex;
             PageSize = pageSize;
             IndexFrom = indexFrom;
-            TotalCount = source.Count();
+            TotalCount = _s.Count();
 
-            Items = source.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize);
+            Items = _s.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize);
         }
 
         /// <summary>

@@ -40,10 +40,16 @@ namespace Aquirrel.EntityFramework.Test
             var ms2 = db.Set<ShardTable>().ToArray();
 
 
+            var repo = sp.GetService<project.Repository.ShardTableRepo>();
+            var page = repo.GetPagedList(p => p.Id != "", p => p.OrderBy(x => x.CreatedDate), 0, 20);
+            var pageData = page.Items.ToArray();
+
 
             Console.WriteLine("finish");
 
         }
+
+      
 
         [TestMethod]
         public void add()

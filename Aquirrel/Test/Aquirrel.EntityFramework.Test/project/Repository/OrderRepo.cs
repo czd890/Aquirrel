@@ -22,4 +22,10 @@ namespace Aquirrel.EntityFramework.Test.project.Repository
         //    this.shardingDbFactory = shardingDbFactory;
         //}
     }
+    class ShardTableRepo : Repository<TestDbContext, ShardTable>
+    {
+        public ShardTableRepo(TestDbContext dbContext) : base(dbContext)
+        {
+        }
+    }
 }

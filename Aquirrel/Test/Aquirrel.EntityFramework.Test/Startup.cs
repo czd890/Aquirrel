@@ -25,10 +25,10 @@ namespace Aquirrel.EntityFramework.Test
 
             services.AddEntityFrameworkMySql();
 
-         var   appsettings = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            var appsettings = new ConfigurationBuilder()
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json")
+                   .Build();
 
             services.AddDbContext<RVDbContext>((sp, op) =>
             {
@@ -59,6 +59,8 @@ namespace Aquirrel.EntityFramework.Test
         public static string SqlConnectionString = "server=.;database=test_ef_core;uid=sa;pwd=sasa;";
 
         public static string SqlConnectionString_Log = "server=.;database=log_ef_core;uid=sa;pwd=sasa;";
+
+        public static string mysql = "Data Source=localhost;Port=3306;Database=test;User ID=root;Password=123456;CharSet=utf8;Allow User Variables=True";
         IConfiguration appsettings;
         public Startup(IHostingEnvironment env)
         {
@@ -71,40 +73,56 @@ namespace Aquirrel.EntityFramework.Test
         {
             Console.WriteLine("Startup   ConfigureServices");
 
-            serviceCollection.AddEntityFrameworkSqlServer()
+            //serviceCollection.AddEntityFrameworkSqlServer();
+            serviceCollection.AddEntityFrameworkMySql();
+
+            serviceCollection.AddLogging(op =>
+                {
+                    op.AddConfiguration(this.appsettings.GetSection("FileLogging"));
+                    op.AddDebug();
+                    op.AddConsole(op2 => { op2.IncludeScopes = true; });
+                    op.AddFile(this.appsettings.GetSection("FileLogging"));
+                })
+
                .AddDbContext<TestDbContext>((sp, opt) =>
                {
                    opt.UseInternalServiceProvider(sp);
 
-                   opt.UseSqlServer(Startup.SqlConnectionString, sqlOpt =>
+                   //opt.UseSqlServer(Startup.SqlConnectionString, sqlOpt =>
+                   //{
+                   //    sqlOpt.CommandTimeout(10);
+                   //    sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
+                   //    sqlOpt.UseRowNumberForPaging(true);
+                   //    sqlOpt.UseRelationalNulls(false);
+                   //});
+
+                   opt.UseMySql(Startup.mysql, mysqlOption =>
                    {
-                       sqlOpt.CommandTimeout(10);
-                       sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
-                       sqlOpt.UseRowNumberForPaging(true);
-                       sqlOpt.UseRelationalNulls(false);
+                       mysqlOption.CommandTimeout(10);
+                       mysqlOption.UseRelationalNulls(false);
                    });
 
                    opt.ConfigureEntityMappings(this.GetType().Assembly);
                    opt.ConfigureAutoEntityAssemblys(this.GetType().Assembly);
 
                })
-               .AddDbContext<LogDbContext>((sp, opt) =>
-               {
-                   opt.UseInternalServiceProvider(sp);
-                   opt.UseSqlServer(Startup.SqlConnectionString_Log, sqlOpt =>
-                   {
-                       sqlOpt.CommandTimeout(10);
-                       sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
-                       sqlOpt.UseRowNumberForPaging(true);
-                       sqlOpt.UseRelationalNulls(false);
-                   });
-                   opt.ConfigureEntityMappings(typeof(project.Entity.Log).Assembly);
-                   opt.ConfigureAutoEntityAssemblys(typeof(project.Entity.Log).Assembly);
-               })
+               //.AddDbContext<LogDbContext>((sp, opt) =>
+               //{
+               //    opt.UseInternalServiceProvider(sp);
+               //    opt.UseSqlServer(Startup.SqlConnectionString_Log, sqlOpt =>
+               //    {
+               //        sqlOpt.CommandTimeout(10);
+               //        sqlOpt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(10), null);
+               //        sqlOpt.UseRowNumberForPaging(true);
+               //        sqlOpt.UseRelationalNulls(false);
+               //    });
+               //    opt.ConfigureEntityMappings(typeof(project.Entity.Log).Assembly);
+               //    opt.ConfigureAutoEntityAssemblys(typeof(project.Entity.Log).Assembly);
+               //})
                .AddAquirrelDb();
             //.AddAquirrelShardingDb<MyShardingFactory>();
 
-
+            serviceCollection.AddScoped<project.Repository.ShardTableRepo>();
 
 
             return serviceCollection.BuildServiceProvider();

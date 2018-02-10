@@ -53,7 +53,7 @@ namespace Aquirrel.EntityFramework.Test
         //public LogDbContext(DbContextOptions<LogDbContext> options) : base(options) { }
     }
 
-    public class testDbIDesignTimeDbContextFactory : IDesignTimeDbContextFactory<LogDbContext>
+    public class logDbIDesignTimeDbContextFactory : IDesignTimeDbContextFactory<LogDbContext>
     {
         public LogDbContext CreateDbContext(string[] args)
         {
@@ -63,7 +63,7 @@ namespace Aquirrel.EntityFramework.Test
             return db;
         }
     }
-    public class logDbIDesignTimeDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
+    public class testDbIDesignTimeDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
     {
         public TestDbContext CreateDbContext(string[] args)
         {
