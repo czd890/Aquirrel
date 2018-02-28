@@ -109,7 +109,7 @@ namespace Aquirrel.MQ.Internal
                     _cacheConn[productId] = new CacheItem();
                 }
 
-                Lable_GetModel:
+            Lable_GetModel:
                 bool hasGet = false;
                 IModel _channel = null;
                 foreach (var item in _cacheConn[productId].ConnItems)
@@ -206,9 +206,6 @@ namespace Aquirrel.MQ.Internal
             {
                 if (disposing)
                 {
-                    // TODO: 释放托管状态(托管对象)。
-
-
                     try
                     {
                         foreach (var item in this._cacheConn)

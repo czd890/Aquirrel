@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +32,12 @@ namespace Aquirrel
             DisplayAttribute[] attributes = (DisplayAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayAttribute), false);
             if (attributes != null && attributes.Length > 0)
             {
-                description = attributes[0].Name ?? attributes[0].Description;
+                return attributes[0].Name ?? attributes[0].Description;
+            }
+            DisplayNameAttribute[] attributes2 = (DisplayNameAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+            if (attributes2 != null && attributes2.Length > 0)
+            {
+                return attributes2[0].DisplayName ?? description;
             }
             return description;
         }
