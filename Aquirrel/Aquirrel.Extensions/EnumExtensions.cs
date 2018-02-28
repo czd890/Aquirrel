@@ -29,16 +29,24 @@ namespace Aquirrel
             FieldInfo fieldInfo = source.GetType().GetTypeInfo().GetField(description);
             if (fieldInfo == null)
                 return null;
+
+            DescriptionAttribute[] attributes2 = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (attributes2 != null && attributes2.Length > 0)
+            {
+                return attributes2[0].Description ?? description;
+            }
+
             DisplayAttribute[] attributes = (DisplayAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayAttribute), false);
             if (attributes != null && attributes.Length > 0)
             {
                 return attributes[0].Name ?? attributes[0].Description;
             }
-            DisplayNameAttribute[] attributes2 = (DisplayNameAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false);
-            if (attributes2 != null && attributes2.Length > 0)
+            DisplayNameAttribute[] attributes3 = (DisplayNameAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+            if (attributes3 != null && attributes3.Length > 0)
             {
-                return attributes2[0].DisplayName ?? description;
+                return attributes3[0].DisplayName ?? description;
             }
+
             return description;
         }
     }
