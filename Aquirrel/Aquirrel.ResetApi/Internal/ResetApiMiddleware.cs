@@ -62,6 +62,8 @@ namespace Aquirrel.ResetApi.Internal
                 als.AccessToken = httpContext.Request.Headers[RestApiConst.AccessToken].FirstOrDefault();
             if (httpContext.Request.Headers.ContainsKey(RestApiConst.RealIp))
                 als.RealIp = httpContext.Request.Headers[RestApiConst.RealIp].FirstOrDefault();
+            else
+                als.RealIp = httpContext.Connection.RemoteIpAddress.ToString();
 
             httpContext.Items["__ResetApiMiddleware_als"] = als;
             try
