@@ -5,6 +5,7 @@ namespace Aquirrel.Tracing.Internal
 {
     public interface IRequestEntry
     {
+        string Id { get; }
         string App { get; set; }
         DateTime BeginTime { get; set; }
         DateTime EndTime { get; set; }

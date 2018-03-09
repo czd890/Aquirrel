@@ -21,6 +21,7 @@ namespace Aquirrel.Tracing.Internal
         {
             this.ChildRequest = new Dictionary<string, IRequestEntry>();
             this.Datas = new Dictionary<string, object>();
+            this.Id = Guid.NewGuid().ToString("N");
         }
         /// <summary>
         /// 当前应用名字
@@ -47,6 +48,9 @@ namespace Aquirrel.Tracing.Internal
         public string RealIp { get; set; }
 
         private int _currentDepth;
+
+        public string Id { get; }
+
 
         public RequestEntry Clone()
         {

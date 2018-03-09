@@ -103,7 +103,15 @@ namespace Aquirrel.Logger.File.Internal
 
             return msg;
         }
-        protected static string GetLogLevelString(LogLevel logLevel)
+        protected static string GetLogLevelString(LogLevel logLevel, bool isJson = false)
+        {
+            var s = GetLogLevelString(logLevel);
+            if (isJson) s = s.Trim('[', ']');
+            return s;
+
+        }
+
+        private static string GetLogLevelString(LogLevel logLevel)
         {
             switch (logLevel)
             {
@@ -123,6 +131,7 @@ namespace Aquirrel.Logger.File.Internal
                     throw new ArgumentOutOfRangeException(nameof(logLevel));
             }
         }
+
         protected void GetScopeInformation(StringBuilder builder)
         {
             var current = FileLogScope.Current;
@@ -177,6 +186,7 @@ namespace Aquirrel.Logger.File.Internal
                 realIp = als?.RealIp,
                 localIp = als?.LocalIp,
                 tid = als?.TraceId,
+                stid = als?.Id,
                 depth = als?.TraceDepth,
                 scope = builder.ToString()
             };
