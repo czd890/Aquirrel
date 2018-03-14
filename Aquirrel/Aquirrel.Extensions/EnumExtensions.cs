@@ -16,13 +16,11 @@ namespace Aquirrel
             return ((IConvertible)source).ToInt32(null);
         }
 
-        public static T ToEnum<T>(this int source)
-        {
-            return (T)Enum.ToObject(typeof(T), source);
-        }
+        public static T ToEnum<T>(this int source) => (T)Enum.ToObject(typeof(T), source);
 
         public static string DisplayName(this Enum source)
         {
+
             if (source == null)
                 return null;
             string description = source.ToString();
@@ -49,5 +47,7 @@ namespace Aquirrel
 
             return description;
         }
+
+        public static bool IsDefined(this Enum source) => Enum.IsDefined(source.GetType(), source);
     }
 }

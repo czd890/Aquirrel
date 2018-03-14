@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>aquirrel base lib. Extensions</Description>
     <Authors>calvin</Authors>
-    <VersionPrefix>2.2.2</VersionPrefix>
+    <VersionPrefix>2.2.5</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Aquirrel.Extensions</PackageId>
     <PackageTags>Extensions</PackageTags>
