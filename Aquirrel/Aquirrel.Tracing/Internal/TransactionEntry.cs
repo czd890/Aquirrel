@@ -39,7 +39,7 @@ namespace Aquirrel.Tracing.Internal
 
         public Dictionary<string, object> Datas { get; private set; }
 
-        public TimeSpan Duration => this.EndTime > this.BeginTime ? this.EndTime - this.BeginTime : TimeSpan.Zero;
+        public int Duration => this.EndTime > this.BeginTime ? ((int)(this.EndTime - this.BeginTime).TotalMilliseconds) : 0;
 
         public Exception Exception { get; set; }
         public string UserOpenId { get; set; }

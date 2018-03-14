@@ -172,7 +172,7 @@ namespace Aquirrel.Logger.File.Internal
             {
                 logLevel = logLevel.ToInt(),
                 logLevelDesc = GetLogLevelString(logLevel),
-                timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.ffff"),
+                timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff"),
                 threadId = Thread.CurrentThread.ManagedThreadId.ToString(),
                 eventId = eventId,
                 categoryName = options.CategoryName,

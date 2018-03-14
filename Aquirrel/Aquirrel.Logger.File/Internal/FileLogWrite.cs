@@ -104,7 +104,7 @@ namespace Aquirrel.Logger.File.Internal
                 }
                 this.workRunning.Clear();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.Error?.WriteLine(ex.ToString());
             }
@@ -126,6 +126,7 @@ namespace Aquirrel.Logger.File.Internal
                 return true;
             return false;
         }
+        Encoding utf8 = new UTF8Encoding(false);
         void InitFile()
         {
             if (!Directory.Exists(_options.FileDiretoryPath))
@@ -142,7 +143,7 @@ namespace Aquirrel.Logger.File.Internal
                 i++;
             } while (System.IO.File.Exists(path));
             var oldsw = _sw;
-            _sw = new StreamWriter(new FileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read), Encoding.UTF8);
+            _sw = new StreamWriter(new FileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read), utf8);
             _sw.AutoFlush = true;
             if (oldsw != null)
             {
