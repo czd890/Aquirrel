@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. entityframework</Description>
-    <VersionPrefix>2.2.8</VersionPrefix>
+    <VersionPrefix>2.2.16</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.EntityFramework</AssemblyName>
     <PackageId>Aquirrel.EntityFramework</PackageId>
     <PackageTags>entityframework core;entityframework</PackageTags>
-    <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
+    <PackageReleaseNotes>提供高性能的map集合对象</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
     <RootNamespace>Aquirrel.EntityFramework</RootNamespace>
   </PropertyGroup>
