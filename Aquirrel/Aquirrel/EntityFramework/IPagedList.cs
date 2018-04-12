@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Aquirrel.EntityFramework
+namespace Aquirrel
 {
     /// <summary>
     /// Provides the interface(s) for paged list of any type.
