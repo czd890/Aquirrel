@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. entityframework</Description>
-    <VersionPrefix>2.2.17</VersionPrefix>
+    <VersionPrefix>2.2.18</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.EntityFramework</AssemblyName>
@@ -12,6 +12,7 @@
     <RootNamespace>Aquirrel.EntityFramework</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="PagedList\PagedList.cs" />
     <Compile Remove="Repository\BaseRepository.cs" />
     <Compile Remove="Repository\IBaseRepository.cs" />
     <Compile Remove="Repository\RepositoryBase.cs" />

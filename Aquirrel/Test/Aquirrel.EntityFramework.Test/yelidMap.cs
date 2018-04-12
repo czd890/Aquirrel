@@ -34,9 +34,11 @@ namespace Aquirrel.Test
                 Console.WriteLine("each");
                 item.Pro += "each";
             }
+            int i = 0;
             foreach (var item in mr.Items)
             {
-                Console.WriteLine(item.Pro);
+                i++;
+                Assert.AreEqual(item.Pro, $"MAP:{i}each");
             }
         }
     }

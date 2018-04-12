@@ -13,11 +13,6 @@ namespace Aquirrel
     public interface IPagedList<T>
     {
         /// <summary>
-        /// Gets the index start value.
-        /// </summary>
-        /// <value>The index start value.</value>
-        int IndexFrom { get; }
-        /// <summary>
         /// Gets the page index (current).
         /// </summary>
         int PageIndex { get; }
@@ -48,8 +43,6 @@ namespace Aquirrel
         /// </summary>
         /// <value>The has next page.</value>
         bool HasNextPage { get; }
-
-        IPagedList<TDesc> Map<TDesc>();
 
         IPagedList<TDesc> Map<TDesc>(Func<T, TDesc> converter);
     }

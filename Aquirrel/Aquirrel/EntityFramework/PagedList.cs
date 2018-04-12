@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Aquirrel;
-namespace Aquirrel.EntityFramework
+namespace Aquirrel
 {
     /// <summary>
     /// Represents the default implementation of the <see cref="IPagedList{T}"/> interface.
     /// </summary>
     /// <typeparam name="T">The type of the data to page</typeparam>
-    public class PagedList<T> : IPagedList<T>
+    internal class PagedList<T> : IPagedList<T>
     {
         /// <summary>
         /// Gets or sets the index of the page.
@@ -62,13 +62,13 @@ namespace Aquirrel.EntityFramework
         /// Gets the has previous page.
         /// </summary>
         /// <value>The has previous page.</value>
-        public bool HasPreviousPage => PageIndex - IndexFrom > 0;
+        public bool HasPreviousPage => PageIndex > 0;
 
         /// <summary>
         /// Gets the has next page.
         /// </summary>
         /// <value>The has next page.</value>
-        public bool HasNextPage => PageIndex - IndexFrom + 1 < TotalPages;
+        public bool HasNextPage => PageIndex + 1 < TotalPages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.
@@ -77,19 +77,21 @@ namespace Aquirrel.EntityFramework
         /// <param name="pageIndex">The index of the page.</param>
         /// <param name="pageSize">The size of the page.</param>
         /// <param name="indexFrom">The index from.</param>
-        internal PagedList(IEnumerable<T> source, int pageIndex, int pageSize, int indexFrom)
+        internal PagedList(IEnumerable<T> source, int pageIndex, int pageSize)
         {
-            if (indexFrom > pageIndex)
-            {
-                throw new ArgumentException($"indexFrom: {indexFrom} > pageIndex: {pageIndex}, must indexFrom <= pageIndex");
-            }
             var _s = source.AsQueryable();
             PageIndex = pageIndex;
             PageSize = pageSize;
-            IndexFrom = indexFrom;
             TotalCount = _s.Count();
 
-            Items = _s.Skip((PageIndex - IndexFrom) * PageSize).Take(PageSize);
+            Items = _s.Skip(PageIndex * PageSize).Take(PageSize);
+        }
+        internal PagedList(IEnumerable<T> items, int pageIndex, int pageSize, int totalCount)
+        {
+            this.Items = items;
+            this.PageIndex = pageIndex;
+            this.PageSize = PageSize;
+            this.TotalCount = totalCount;
         }
 
         /// <summary>
@@ -97,10 +99,10 @@ namespace Aquirrel.EntityFramework
         /// </summary>
         internal PagedList() => Items = Array.Empty<T>();
 
-        public IPagedList<TDesc> Map<TDesc>()
-        {
-            return new PagedList<T, TDesc>(this);
-        }
+        //public IPagedList<TDesc> Map<TDesc>()
+        //{
+        //    return new PagedList<T, TDesc>(this);
+        //}
 
         public IPagedList<TDesc> Map<TDesc>(Func<T, TDesc> converter)
         {
@@ -137,12 +139,6 @@ namespace Aquirrel.EntityFramework
         /// <value>The total pages.</value>
         public int TotalPages { get; }
         /// <summary>
-        /// Gets the index from.
-        /// </summary>
-        /// <value>The index from.</value>
-        public int IndexFrom { get; }
-
-        /// <summary>
         /// Gets the items.
         /// </summary>
         /// <value>The items.</value>
@@ -152,39 +148,22 @@ namespace Aquirrel.EntityFramework
         /// Gets the has previous page.
         /// </summary>
         /// <value>The has previous page.</value>
-        public bool HasPreviousPage => PageIndex - IndexFrom > 0;
+        public bool HasPreviousPage => PageIndex > 0;
 
         /// <summary>
         /// Gets the has next page.
         /// </summary>
         /// <value>The has next page.</value>
-        public bool HasNextPage => PageIndex - IndexFrom + 1 < TotalPages;
-
-        public PagedList(IPagedList<TSource> source)
-        {
-            PageIndex = source.PageIndex;
-            PageSize = source.PageSize;
-            IndexFrom = source.IndexFrom;
-            TotalCount = source.TotalCount;
-            TotalPages = source.TotalPages;
-
-            Items = new CachedMapEnumerable<TSource, TResult>(source.Items, _source => _source.Map<TSource, TResult>());
-        }
+        public bool HasNextPage => PageIndex + 1 < TotalPages;
 
         public PagedList(IPagedList<TSource> source, Func<TSource, TResult> converter)
         {
             PageIndex = source.PageIndex;
             PageSize = source.PageSize;
-            IndexFrom = source.IndexFrom;
             TotalCount = source.TotalCount;
             TotalPages = source.TotalPages;
 
             Items = new CachedMapEnumerable<TSource, TResult>(source.Items, converter);
-        }
-
-        public IPagedList<TDesc> Map<TDesc>()
-        {
-            return new PagedList<TResult, TDesc>(this);
         }
 
         public IPagedList<TDesc> Map<TDesc>(Func<TResult, TDesc> converter)
@@ -193,25 +172,16 @@ namespace Aquirrel.EntityFramework
         }
     }
 
-    /// <summary>
-    /// Provides some help methods for <see cref="IPagedList{T}"/> interface.
-    /// </summary>
     public static class PagedList
     {
-        /// <summary>
-        /// Creates an empty of <see cref="IPagedList{T}"/>.
-        /// </summary>
-        /// <typeparam name="T">The type for paging </typeparam>
-        /// <returns>An empty instance of <see cref="IPagedList{T}"/>.</returns>
-        //public static IPagedList<T> Empty<T>() => new PagedList<T>();
-        /// <summary>
-        /// Creates a new instance of <see cref="IPagedList{TResult}"/> from source of <see cref="IPagedList{TSource}"/> instance.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <typeparam name="TSource">The type of the source.</typeparam>
-        /// <param name="source">The source.</param>
-        /// <param name="converter">The converter.</param>
-        /// <returns>An instance of <see cref="IPagedList{TResult}"/>.</returns>
-        //public static IPagedList<TResult> From<TResult, TSource>(this IPagedList<TSource> source, Func<TSource, TResult> converter) => new PagedList<TSource, TResult>(source, converter);
+        public static IPagedList<T> From<T>(IEnumerable<T> items, int pageIndex, int pageSize, int totalCount)
+        {
+            return new PagedList<T>(items, pageIndex, pageSize, totalCount);
+        }
+
+        public static IPagedList<T> From<T>(IEnumerable<T> source, int pageIndex, int pageSize)
+        {
+            return new PagedList<T>(source, pageIndex, pageSize);
+        }
     }
 }

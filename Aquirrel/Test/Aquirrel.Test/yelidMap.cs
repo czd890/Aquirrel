@@ -26,8 +26,6 @@ namespace Aquirrel.Test
             arr.Add(new A() { Pro = "8" });
             arr.Add(new A() { Pro = "9" });
             arr.Add(new A() { Pro = "10" });
-
-            
         }
     }
 }

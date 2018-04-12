@@ -99,11 +99,11 @@ namespace Aquirrel.EntityFramework.Repository
 
             if (orderBy != null)
             {
-                return orderBy(query).ToPagedListAsync(pageIndex, pageSize, 0, cancellationToken);
+                return orderBy(query).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
             }
             else
             {
-                return query.ToPagedListAsync(pageIndex, pageSize, 0, cancellationToken);
+                return query.ToPagedListAsync(pageIndex, pageSize, cancellationToken);
             }
         }
 
