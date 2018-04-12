@@ -14,5 +14,16 @@ namespace Aquirrel
         {
             return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions.GetMapper().Map<TSource, TDesc>(source, desc);
         }
+
+        public static IEnumerable<TDesc> Map<TSource, TDesc>(this IEnumerable<TSource> sources)
+        {
+            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions.GetMapper()
+                  .Map<IEnumerable<TSource>, IEnumerable<TDesc>>(sources);
+        }
+        public static IEnumerable<TDesc> Map<TSource, TDesc>(this IEnumerable<TSource> sources, IEnumerable<TDesc> desc)
+        {
+            return Microsoft.Extensions.DependencyInjection.AutoMapperConfigurationExtensions.GetMapper()
+                  .Map<IEnumerable<TSource>, IEnumerable<TDesc>>(sources, desc);
+        }
     }
 }
