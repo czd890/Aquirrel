@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. cat tracing trace</Description>
     <VersionPrefix>2.2.5</VersionPrefix>
@@ -10,11 +10,6 @@
     <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel.Extensions\Aquirrel.Extensions.csproj" />
     <ProjectReference Include="..\Aquirrel.ResetApi\Aquirrel.ResetApi.csproj" />

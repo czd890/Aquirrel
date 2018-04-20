@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib.</Description>
     <VersionPrefix>2.2.22</VersionPrefix>
@@ -13,10 +13,5 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <Pack>true</Pack>
-    </None>
   </ItemGroup>
 </Project>

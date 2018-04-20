@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. rabbitmq</Description>
     <VersionPrefix>2.2.6</VersionPrefix>
@@ -10,12 +10,6 @@
     <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="mqsettings.json">
-      <Pack>true</Pack>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel.Extensions\Aquirrel.Extensions.csproj" />
     <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />
