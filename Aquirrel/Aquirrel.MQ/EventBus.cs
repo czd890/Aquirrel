@@ -56,6 +56,14 @@ namespace Aquirrel.MQ
             props.Headers = new Dictionary<string, object>() { { "mid", id } };
             this.Publish_internal(productId, topic, tag, id, msg, props, channel);
         }
+        public void Publish(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, PublishOptions options = null)
+        {
+            options = options ?? PublishOptions.Default;
+            var channel = _CacheManager.GetChannel(productId, topic);
+
+            this.Publish_internal(productId, topic, tag, id, body, basicProperties, channel);
+        }
+
         void Publish_internal(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, IModel channel)
         {
             using (this._logger.BeginScope($"event bus pub {id}"))
@@ -85,13 +93,7 @@ namespace Aquirrel.MQ
                 _exec.Execute();
             }
         }
-        public void Publish(string productId, string topic, string tag, string id, byte[] body, IBasicProperties basicProperties, PublishOptions options = null)
-        {
-            options = options ?? PublishOptions.Default;
-            var channel = _CacheManager.GetChannel(productId, topic);
 
-            this.Publish_internal(productId, topic, tag, id, body, basicProperties, channel);
-        }
 
         /// <summary>
         /// 
@@ -153,8 +155,10 @@ namespace Aquirrel.MQ
                 }
                 catch (Exception ex)
                 {
+                    object mid = null;
+                    ea.BasicProperties?.Headers.TryGetValue("mid", out mid);
                     _logger.LogError(ex, $"eventbus.subscribe.consumer.exception;{Environment.NewLine}{productId}-{topic}-" +
-                        $"{{RoutingKey:{ea.RoutingKey},ConsumerTag:{ea.ConsumerTag},DeliveryTag:{ea.DeliveryTag},Exchange:{ea.Exchange}}}");
+                        $"{{mid:{mid},RoutingKey:{ea.RoutingKey},ConsumerTag:{ea.ConsumerTag},DeliveryTag:{ea.DeliveryTag},Exchange:{ea.Exchange}}}");
                 }
                 finally
                 {
