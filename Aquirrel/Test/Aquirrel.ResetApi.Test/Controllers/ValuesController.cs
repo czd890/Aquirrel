@@ -22,7 +22,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
         }
         public class MyPostReq : RequestBase<ResponseBase<IEnumerable<string>>>
         {
-            public MyPostReq() : base(HttpMethod.Post, "http://localhost:6367", "api/values/postreq")
+            public MyPostReq() : base(HttpMethod.Post, "http://localhost:6367", "api/values/postreqggs")
             {
 
             }

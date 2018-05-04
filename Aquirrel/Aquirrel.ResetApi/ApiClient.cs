@@ -16,9 +16,11 @@ namespace Aquirrel.ResetApi
 {
     public class ApiClient : IApiClient
     {
+        HttpClient httpClient = new HttpClient();
         ILogger<ApiClient> Logger;
         IRestApiResolveApiUrl ApiResolveService;
         ITraceClient TraceClient;
+
         public ApiClient(ILogger<ApiClient> logger, IRestApiResolveApiUrl apiResolveService, ITraceClient traceClient)
         {
             this.Logger = logger;
@@ -93,7 +95,7 @@ namespace Aquirrel.ResetApi
                 if (res.isSuccess)
                     return (true, res.body);
                 else
-                    nextALS.Exception = new BusinessException(resObj.msg, resObj.resCode);
+                    nextALS.Exception = new BusinessException(this.ApiResolveService.Resolve(request.App, request.ApiName).ToString() + resObj.msg, resObj.resCode);
             }
             catch (Exception ex)
             {
@@ -108,7 +110,7 @@ namespace Aquirrel.ResetApi
             return (false, null);
         }
 
-        private async Task<(bool isSuccess, string body, HttpResponseMessage response)> ReadInternalAsync(IRequest request, IRequestEntry nextALS, IResponseBase resObj, CancellationToken token)
+        async Task<(bool isSuccess, string body, HttpResponseMessage response)> ReadInternalAsync(IRequest request, IRequestEntry nextALS, IResponseBase resObj, CancellationToken token)
         {
             var resTask = await this.SendAsync(request, nextALS, token).ContinueWith(p => p);
 
@@ -123,7 +125,7 @@ namespace Aquirrel.ResetApi
             if (resTask.IsFaulted)
             {
                 resObj.resCode = ResponseErrorCode.TaskFail;
-                resObj.msg = resTask.Exception.GetBaseException().Message;
+                resObj.msg = resTask.Exception.GetBaseException().GetBaseException().Message;
                 this.Logger.LogError(0, resTask.Exception, "req rpc api error.{0}", request.ToJson());
                 return (false, null, null);
             }
@@ -144,7 +146,7 @@ namespace Aquirrel.ResetApi
             if (readTask.IsFaulted)
             {
                 resObj.resCode = ResponseErrorCode.ReadRpcContentError;
-                resObj.msg = readTask.Exception.GetBaseException().Message;
+                resObj.msg = readTask.Exception.GetBaseException().GetBaseException().Message;
                 return (false, null, null);
             }
             if (readTask.IsCanceled)
@@ -158,8 +160,6 @@ namespace Aquirrel.ResetApi
 
             return (true, resultStr, res);
         }
-
-        HttpClient httpClient = new HttpClient();
         Task<HttpResponseMessage> SendAsync(IRequest request, IRequestEntry nextALS, CancellationToken token)
         {
             var requestUri = this.ApiResolveService.Resolve(request.App, request.ApiName);
@@ -210,8 +210,9 @@ namespace Aquirrel.ResetApi
             }
             return httpClient.SendAsync(req, token);
         }
-        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage) => this.SendAsync(httpRequestMessage, CancellationToken.None);
 
+
+        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage) => this.SendAsync(httpRequestMessage, CancellationToken.None);
         public Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken token)
         {
             IRequestEntry nextALS = null;
