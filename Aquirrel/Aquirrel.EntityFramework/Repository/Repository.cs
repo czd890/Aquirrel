@@ -168,6 +168,10 @@ namespace Aquirrel.EntityFramework.Repository
 
         public virtual void Delete(TEntity entity) => this.DbContext.Entry(entity).State = EntityState.Deleted;
 
+
+        public virtual void Reload(TEntity entity) => this.DbContext.Entry(entity).Reload();
+        public virtual Task ReloadAsync(TEntity entity) => this.DbContext.Entry(entity).ReloadAsync();
+
         int IPersistence.SaveChanges()
         {
             this.Before();

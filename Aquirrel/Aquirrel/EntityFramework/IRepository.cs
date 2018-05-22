@@ -23,6 +23,9 @@ namespace Aquirrel.EntityFramework.Repository
 
         Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken);
 
+        void Reload(TEntity entity);
+        Task ReloadAsync(TEntity entity);
+
         void Add(TEntity entity);
 
         void Add(params TEntity[] entities);

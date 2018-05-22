@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. entityframework</Description>
-    <VersionPrefix>2.2.18</VersionPrefix>
+    <VersionPrefix>2.2.23</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.EntityFramework</AssemblyName>

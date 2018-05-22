@@ -19,6 +19,10 @@ namespace Aquirrel.Tracing.Internal
         /// </summary>
         string LocalIp { get; set; }
         /// <summary>
+        /// 当前请求用户的真实ip
+        /// </summary>
+        string RealIp { get; set; }
+        /// <summary>
         /// 请求序号
         /// </summary>
         string TraceDepth { get; set; }
@@ -35,11 +39,6 @@ namespace Aquirrel.Tracing.Internal
         /// </summary>
         string UserTraceId { get; set; }
         string AccessToken { get; set; }
-        /// <summary>
-        /// 当前请求用户的真实ip
-        /// </summary>
-        string RealIp { get; set; }
-
         Dictionary<string, IRequestEntry> ChildRequest { get; }
         Dictionary<string, object> Datas { get; }
         Exception Exception { get; set; }

@@ -16,7 +16,7 @@ namespace Aquirrel.ResetApi
 {
     public class ApiClient : IApiClient
     {
-        HttpClient httpClient = new HttpClient();
+        static HttpClient httpClient = new HttpClient();
         ILogger<ApiClient> Logger;
         IRestApiResolveApiUrl ApiResolveService;
         ITraceClient TraceClient;
