@@ -44,7 +44,7 @@ namespace Aquirrel
         }
         int FCountMultiple;
         long _ticks;
-        SpinLock spinglock = new SpinLock();
+        SpinLock spinglock = new SpinLock(false);
         public long Next()
         {
             bool islock = false;
@@ -70,7 +70,7 @@ namespace Aquirrel
                 _ticks += FCountMultiple;
             }
 
-            spinglock.Exit();
+            spinglock.Exit(false);
             return _ticks;
         }
     }
@@ -433,6 +433,7 @@ namespace Aquirrel
         static int _counter;
         static int GenerateCounter(int current_sec)
         {
+            //Interlocked.Increment(ref _counter);
             lock (_innerLock)
             {
 

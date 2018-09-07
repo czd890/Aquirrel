@@ -49,7 +49,7 @@ namespace Aquirrel.ResetApi.Test.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<string>> beginreq()
+        public async Task<IEnumerable<string>> beginreq(string aa)
         {
             //var req = /*(IRequestBase<IResponseBase>)*/new RequestBase<ResponseBase>(HttpMethod.Post, "http://localhost:5000/", "api/values");
             var postReq = new MyPostReq() { heihei = new List<int>() { 1, 2, 3 } };
