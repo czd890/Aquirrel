@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.Tools
 {
+    /// <summary>
+    /// 获取当前机器的本机ipv4
+    /// </summary>
     public class LocalIp
     {
         static string ipv4 = null;

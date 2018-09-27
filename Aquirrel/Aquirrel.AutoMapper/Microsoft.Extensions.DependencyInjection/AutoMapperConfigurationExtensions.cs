@@ -12,6 +12,12 @@ namespace Microsoft.Extensions.DependencyInjection
         static List<Type> _profile = new List<Type>();
         static IMapper _mapper;
 
+        /// <summary>
+        /// 添加map配置对象
+        /// </summary>
+        /// <typeparam name="IProfile">配置对象</typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddAutoMapperProfile<IProfile>(this IServiceCollection services)
             where IProfile : AutoMapperConfiguration, new()
         {
@@ -19,6 +25,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+        /// <summary>
+        /// 完成map对象的配置操作
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
         {
 

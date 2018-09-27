@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Aquirrel.EntityFramework
 {
+    /// <summary>
+    /// ef上下文对象
+    /// </summary>
     public class AquirrelDbContext : DbContext
     {
         protected static DbContextOptions<TContext> CTORConvert<TContext>(DbContextOptions options)

@@ -10,6 +10,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
 {
+    /// <summary>
+    /// 解析<see cref="DecimalPrecisionAttribute"/>标记的字段
+    /// </summary>
     public class DecimalPrecisionAttributeConvention : PropertyAttributeConvention<DecimalPrecisionAttribute>
     {
         public override InternalPropertyBuilder Apply(InternalPropertyBuilder propertyBuilder, DecimalPrecisionAttribute attribute, MemberInfo clrMember)

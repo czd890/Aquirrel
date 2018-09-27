@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
 {
+    /// <summary>
+    /// 字符串默认长度32
+    /// </summary>
     public class StringDefaultLengthConvention : IPropertyAddedConvention
     {
         public InternalPropertyBuilder Apply(InternalPropertyBuilder propertyBuilder)

@@ -10,6 +10,18 @@
     <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\Aquirrel.MQ.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Aquirrel.MQ.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel.Extensions\Aquirrel.Extensions.csproj" />
     <ProjectReference Include="..\Aquirrel\Aquirrel.csproj" />

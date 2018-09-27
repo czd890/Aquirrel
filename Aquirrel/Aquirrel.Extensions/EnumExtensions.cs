@@ -11,13 +11,27 @@ namespace Aquirrel
 {
     public static class EnumExtensions
     {
+        /// <summary>
+        /// 枚举转int类型
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static int ToInt(this Enum source)
         {
             return ((IConvertible)source).ToInt32(null);
         }
-
+        /// <summary>
+        /// int类型转枚举
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static T ToEnum<T>(this int source) => (T)Enum.ToObject(typeof(T), source);
-
+        /// <summary>
+        /// 获得枚举使用<see cref="DescriptionAttribute"/>或<see cref="DisplayAttribute"/>或<see cref="DisplayNameAttribute"/>修饰的显示名称
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string DisplayName(this Enum source)
         {
 
@@ -47,7 +61,11 @@ namespace Aquirrel
 
             return description;
         }
-
+        /// <summary>
+        /// 当前枚举值是否在枚举中被定义
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static bool IsDefined(this Enum source) => Enum.IsDefined(source.GetType(), source);
     }
 }

@@ -9,14 +9,17 @@ using System.ComponentModel;
 
 namespace Aquirrel.EntityFramework.Mapping
 {
-
+    /// <summary>
+    /// 实体配置接口
+    /// </summary>
     interface IEntityMapping
     {
         void Mapping(ModelBuilder modelBuilder);
     }
     /// <summary>
     /// mapping实体配置。加载dbconext自动调用。
-    /// <para>如果TKey是guid。建立唯一非聚集索引。否则建立唯一聚集索引 可重写<see cref="Mapping(ModelBuilder)"/>方法覆盖</para>
+    /// <para>实体继承自<see cref="IEntityBase"/>的情况下，如果TKey是guid，则id建立唯一非聚集索引，CreatedDate建立不唯一聚集索引。否则建立唯一聚集索引 可重写<see cref="Mapping(ModelBuilder)"/>方法覆盖</para>
+    /// <para>非继承自<see cref="IEntityBase"/>的情况下，没有默认配置</para>
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TKey"></typeparam>
@@ -24,6 +27,10 @@ namespace Aquirrel.EntityFramework.Mapping
     {
         public Type EntityType { get; set; } = typeof(TEntity);
 
+        /// <summary>
+        /// 配置实体
+        /// </summary>
+        /// <param name="entityTypeBuilder"></param>
         public virtual void Mapping(EntityTypeBuilder<TEntity> entityTypeBuilder)
         {
             var entityTypeInfo = this.EntityType.GetTypeInfo();
@@ -41,7 +48,10 @@ namespace Aquirrel.EntityFramework.Mapping
                 entityTypeBuilder.Property("RowVersion").IsConcurrencyToken();
             }
         }
-
+        /// <summary>
+        /// 配置实体
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void Mapping(ModelBuilder modelBuilder)
         {

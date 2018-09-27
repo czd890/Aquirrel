@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Infrastructure
 {
+    /// <summary>
+    /// 替换ef初始化定制扩展服务实现接口，将自定义配置<see cref="CoreOptionsExtension"/>由此配置到ef的<see cref="ModelBuilder"/>
+    /// </summary>
     public class MyRelationalModelCustomizer : RelationalModelCustomizer
     {
         public MyRelationalModelCustomizer(ModelCustomizerDependencies dependencies)

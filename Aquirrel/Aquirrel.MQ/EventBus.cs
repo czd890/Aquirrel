@@ -13,7 +13,7 @@ using Aquirrel.MQ.Internal;
 
 namespace Aquirrel.MQ
 {
-    internal class EventBus : IEventBus, IMQ
+    internal class EventBus : IEventBus, IEventBusInternal
     {
         public EventBus(EventBusSettings settings, CacheManager cacheManager, ILogger<IEventBus> logger)
         {
@@ -88,6 +88,7 @@ namespace Aquirrel.MQ
                  .Failure(ex =>
                  {
                      this._logger.LogError($"event bus publish retry error {ex.RetryCount}.{Environment.NewLine}{productId}-{topic}-{tag};{Encoding.UTF8.GetString(body)}");
+                     return true;
                  });
 
                 _exec.Execute();
@@ -96,18 +97,22 @@ namespace Aquirrel.MQ
 
 
         /// <summary>
-        /// 
+        /// 消费者订阅
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="productId"></param>
         /// <param name="topic">集群消费：queuename;广播消费:exchange</param>
         /// <param name="action"></param>
         /// <param name="options"></param>
-        public async void Subscribe<T>(string productId, string topic, Func<T, bool> action, SubscribeOptions options = null)
+        public void Subscribe<T>(string productId, string topic, Func<T, bool> action, SubscribeOptions options = null)
         {
             this.Subscribe_internal<T>(productId, topic, true, (body, message) => action(body), options);
         }
-        public async void Subscribe_internal<T>(string productId, string topic, bool hasReloveBody, Func<T, BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
+        public void Subscribe(string productId, string topic, Func<BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
+        {
+            this.Subscribe_internal<object>(productId, topic, false, (body, message) => action(message), options);
+        }
+        void Subscribe_internal<T>(string productId, string topic, bool hasReloveBody, Func<T, BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
         {
             options = options ?? SubscribeOptions.Default;
             var queueName = topic;
@@ -185,9 +190,6 @@ namespace Aquirrel.MQ
             ((IDisposable)_CacheManager).Dispose();
         }
 
-        public void Subscribe(string productId, string topic, Func<BasicDeliverEventArgs, bool> action, SubscribeOptions options = null)
-        {
-            this.Subscribe_internal<object>(productId, topic, false, (body, message) => action(message), options);
-        }
+
     }
 }

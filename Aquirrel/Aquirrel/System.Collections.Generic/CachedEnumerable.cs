@@ -4,6 +4,10 @@ using System.Text;
 
 namespace System.Collections.Generic
 {
+    /// <summary>
+    /// 缓存IEnumerable对象。支持多次foreach等操作，不在重新触发原对象的load操作
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CachedEnumerable<T> : IEnumerable<T>
     {
         IEnumerator<T> _enumerator;
@@ -39,7 +43,11 @@ namespace System.Collections.Generic
             }
         }
     }
-
+    /// <summary>
+    /// 缓存IEnumerable对象，并提供转换支持。支持多次foreach等操作，不在重新触发原对象的load操作
+    /// </summary>
+    /// <typeparam name="TSource">原数据类型</typeparam>
+    /// <typeparam name="TDesc">转换后数据类型</typeparam>
     public class CachedMapEnumerable<TSource, TDesc> : IEnumerable<TDesc>
     {
         IEnumerator<TSource> _enumerator;

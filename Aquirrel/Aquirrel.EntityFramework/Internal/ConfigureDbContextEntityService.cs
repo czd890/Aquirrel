@@ -12,14 +12,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Aquirrel.EntityFramework.Internal
 {
 
-
+    /// <summary>
+    /// ef初始化配置服务
+    /// </summary>
     public class ConfigureDbContextEntityService
     {
+        /// <summary>
+        /// 当前ef配置是否包含<see cref="CoreOptionAquirrelExtension"/>对象
+        /// </summary>
+        /// <param name="dbContextOptions"></param>
+        /// <returns></returns>
         public static bool CanConfigure(DbContextOptions dbContextOptions)
         {
             return dbContextOptions.FindExtension<CoreOptionAquirrelExtension>() != null;
         }
-
+        /// <summary>
+        /// 完成ef的扩展配置服务
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /// <param name="dbContextOptions"></param>
+        /// <param name="dbContext"></param>
         public static void Configure(ModelBuilder modelBuilder, DbContextOptions dbContextOptions, DbContext dbContext)
         {
             if (!CanConfigure(dbContextOptions)) return;
@@ -27,7 +39,7 @@ namespace Aquirrel.EntityFramework.Internal
             Configure_Mapping(modelBuilder, dbContextOptions, dbContext);
 
         }
-        public static void Configure_Mapping(ModelBuilder modelBuilder, DbContextOptions dbContextOptions, DbContext dbContext)
+        static void Configure_Mapping(ModelBuilder modelBuilder, DbContextOptions dbContextOptions, DbContext dbContext)
         {
             if (!CanConfigure(dbContextOptions)) return;
 

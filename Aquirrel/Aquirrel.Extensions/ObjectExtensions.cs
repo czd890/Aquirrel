@@ -13,7 +13,7 @@ namespace Aquirrel
     public static class ObjectExtensions
     {
         /// <summary>
-        /// 
+        /// 对象转xml格式数据
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="encoding">编码格式</param>
@@ -57,19 +57,42 @@ namespace Aquirrel
         }
 
         static JsonSerializerSettings DefaultJsonSetting = new JsonSerializerSettings() { };
+        /// <summary>
+        /// 对象转json格式数据
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ToJson(this object obj)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, DefaultJsonSetting);
         }
+        /// <summary>
+        /// 对象转json格式数据
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
         public static string ToJson(this object obj, JsonSerializerSettings setting)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, setting);
         }
-
+        /// <summary>
+        /// 对象转json格式数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ToJson<T>(this object obj)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, typeof(T), DefaultJsonSetting);
         }
+        /// <summary>
+        /// 对象转json格式数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
         public static string ToJson<T>(this object obj, JsonSerializerSettings setting)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, typeof(T), setting);

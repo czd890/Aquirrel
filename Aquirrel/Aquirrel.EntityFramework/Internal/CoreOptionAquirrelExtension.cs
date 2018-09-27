@@ -8,12 +8,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aquirrel.EntityFramework.Internal
 {
+    /// <summary>
+    /// ef扩展配置对象
+    /// </summary>
     public class CoreOptionAquirrelExtension : IDbContextOptionsExtension
     {
         public CoreOptionAquirrelExtension()
         {
 
         }
+        /// <summary>
+        /// 创建clone一个<see cref="CoreOptionAquirrelExtension"/>对象
+        /// </summary>
+        /// <param name="copyFrom"></param>
         public CoreOptionAquirrelExtension(CoreOptionAquirrelExtension copyFrom)
         {
             this.EntityAssebmlys = copyFrom.EntityAssebmlys?.ToArray();

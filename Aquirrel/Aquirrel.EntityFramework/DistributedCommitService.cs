@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.EntityFramework
 {
-
+    /// <summary>
+    /// client程序端分布式2阶段提交方案实现服务
+    /// </summary>
     public interface IDistributedCommitService
     {
         int SaveChanges(params IPersistence[] persistence);

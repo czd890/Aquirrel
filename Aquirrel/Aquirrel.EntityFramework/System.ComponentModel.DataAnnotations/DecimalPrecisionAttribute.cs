@@ -4,6 +4,9 @@ using System.Text;
 
 namespace System.ComponentModel.DataAnnotations
 {
+    /// <summary>
+    /// 配置<see cref="decimal"/>字段精度
+    /// </summary>
     public class DecimalPrecisionAttribute : Attribute
     {
         /// <summary>

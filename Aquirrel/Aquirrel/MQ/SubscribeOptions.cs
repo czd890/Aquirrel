@@ -5,15 +5,27 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.MQ
 {
+    /// <summary>
+    /// 订阅消息选项
+    /// </summary>
     public class SubscribeOptions
     {
+        /// <summary>
+        /// 消息消费方式
+        /// </summary>
         public MessageModel Model { get; set; } = MessageModel.Clustering;
-        public bool ShardingConn { get; set; } = true;
-
+        /// <summary>
+        /// 并发消费数量
+        /// </summary>
         public int BasicQos { get; set; } = 1;
 
+        /// <summary>
+        /// 消费失败的消息是否重新进入队列，false：不放入，true：放入。默认true
+        /// </summary>
         public bool FailMesaageReQueue { get; set; } = true;
-
+        /// <summary>
+        /// 默认选项
+        /// </summary>
         public static SubscribeOptions Default { get; } = new SubscribeOptions() { };
     }
     /// <summary>

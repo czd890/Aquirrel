@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Aquirrel
 {
+    /// <summary>
+    /// id生成规则
+    /// </summary>
     public class IdBuilderRule
     {
         /// <summary>
@@ -74,6 +77,9 @@ namespace Aquirrel
             return _ticks;
         }
     }
+    /// <summary>
+    /// id生成器
+    /// </summary>
     public static class IdBuilder
     {
         static IdBuilder()
@@ -244,6 +250,9 @@ namespace Aquirrel
         }
     }
 
+    /// <summary>
+    /// id对象
+    /// </summary>
     public class ObjectId
     {
         private string _string;
@@ -261,19 +270,31 @@ namespace Aquirrel
         {
             Value = value;
         }
-
+        /// <summary>
+        /// 空id
+        /// </summary>
         public static ObjectId Empty
         {
             get { return new ObjectId("000000000000000000000000"); }
         }
-
+        /// <summary>
+        /// id数据
+        /// </summary>
         public byte[] Value { get; private set; }
-
+        /// <summary>
+        /// 创建一个新id
+        /// </summary>
+        /// <returns></returns>
         public static ObjectId NewObjectId()
         {
             return new ObjectId { Value = ObjectIdGenerator.Generate() };
         }
-
+        /// <summary>
+        /// 尝试转换一个id对象，转换失败返回<see cref="Empty"/>
+        /// </summary>
+        /// <param name="value">字符串id</param>
+        /// <param name="objectId">id对象</param>
+        /// <returns>转换成功返回true，否则返回false</returns>
         public static bool TryParse(string value, out ObjectId objectId)
         {
             objectId = Empty;
@@ -313,7 +334,10 @@ namespace Aquirrel
         {
             return Value != null ? ToString().GetHashCode() : 0;
         }
-
+        /// <summary>
+        /// 返回id对象的字符串表现形式
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             if (_string == null && Value != null)
@@ -366,10 +390,21 @@ namespace Aquirrel
         {
             return !(left == right);
         }
-
+        /// <summary>
+        /// 生成id时的时间戳
+        /// </summary>
         public DateTime TimeStamp => getTimeStamp();
+        /// <summary>
+        /// 生成id时的计数值
+        /// </summary>
         public int Counter => getCounter();
+        /// <summary>
+        /// 生成id时的机器ip
+        /// </summary>
         public string Ip => getIp();
+        /// <summary>
+        /// 生成id时的进程id
+        /// </summary>
         public int Pid => getPid();
 
         int getPid()

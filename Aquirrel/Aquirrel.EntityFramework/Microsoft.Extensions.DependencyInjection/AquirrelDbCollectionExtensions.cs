@@ -14,6 +14,9 @@ using Aquirrel.EntityFramework.Repository;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// 服务注册
+    /// </summary>
     public static class AquirrelDbCollectionExtensions
     {
         public static IServiceCollection AddAquirrelDb(this IServiceCollection services)

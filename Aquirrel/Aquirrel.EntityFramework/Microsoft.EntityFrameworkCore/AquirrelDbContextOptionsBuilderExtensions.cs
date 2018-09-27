@@ -10,6 +10,9 @@ using Aquirrel.EntityFramework.Mapping;
 using Aquirrel.EntityFramework.Internal;
 namespace Microsoft.EntityFrameworkCore
 {
+    /// <summary>
+    /// 配置自定义扩展ef配置
+    /// </summary>
     public static class AquirrelDbContextOptionsBuilderExtensions
     {
         /// <summary>

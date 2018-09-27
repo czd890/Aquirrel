@@ -45,22 +45,44 @@ namespace Aquirrel
         {
             return !String.IsNullOrEmpty(source);
         }
-
+        /// <summary>
+        /// json格式数据转对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static T ToJson<T>(this string source)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(source);
         }
+        /// <summary>
+        /// json格式数据转对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="sourceType"></param>
+        /// <returns></returns>
         public static T ToJson<T>(this string source, Type sourceType)
         {
             return (T)Newtonsoft.Json.JsonConvert.DeserializeObject(source, sourceType);
         }
 
+        /// <summary>
+        /// 转<see cref="DateTime"/>对象
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static DateTime ToDateTime(this string source)
         {
             DateTime date;
             DateTime.TryParse(source, out date);
             return date;
         }
+        /// <summary>
+        /// 转<see cref="DateTime"/>对象，如果时间小于1970/1/1则返回null
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static DateTime? ToDBDateTime(this string source)
         {
             DateTime date;
@@ -69,12 +91,23 @@ namespace Aquirrel
                 return null;
             return date;
         }
-
+        /// <summary>
+        /// 转枚举对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static T ToEnum<T>(this string source)
         {
             return (T)Enum.Parse(typeof(T), source);
         }
-
+        /// <summary>
+        /// xml格式数据转对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="xml"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
         public static T ToXml<T>(this string xml, Encoding encoding = null)
         {
             if (xml.IsNullOrEmpty())
@@ -132,7 +165,12 @@ namespace Aquirrel
             }
             return new string(c);
         }
-
+        /// <summary>
+        /// 转base64格式数据
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
         public static string ToBase64(this string source, Encoding encoding = null)
         {
             if (encoding == null)
