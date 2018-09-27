@@ -11,6 +11,14 @@
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
     <RootNamespace>Aquirrel.EntityFramework</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin</OutputPath>
+    <DocumentationFile>bin\Aquirrel.EntityFramework.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin</OutputPath>
+    <DocumentationFile>bin\Aquirrel.EntityFramework.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="PagedList\PagedList.cs" />
     <Compile Remove="Repository\BaseRepository.cs" />

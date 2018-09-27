@@ -9,6 +9,14 @@
     <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\Aquirrel.ResetApi.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\Aquirrel.ResetApi.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <None Update="appsettings.json">
       <Pack>true</Pack>
