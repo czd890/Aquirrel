@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 namespace Aquirrel.ResetApi.Internal
 {
     /// <summary>
-    /// 使用app，apiname 解析出来真正的服务器地址。
-    /// 可以做服务自动发现
+    /// 使用app，apiname 解析出来真正的服务器地址。可以做服务自动发现
+    /// <para>默认实现</para>
     /// </summary>
     public class RestApiResolveApiUrl : IRestApiResolveApiUrl
     {

@@ -11,7 +11,7 @@ namespace Aquirrel.Tracing
     {
         IRequestEntry Current { get; }
         /// <summary>
-        /// 创建一个埋点
+        /// 请求开始
         /// </summary>
         /// <param name="app"></param>
         /// <param name="name"></param>

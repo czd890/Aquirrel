@@ -9,11 +9,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 namespace Aquirrel.Logger.File.Internal
 {
+    /// <summary>
+    /// 日志格式化接口
+    /// </summary>
     public interface IFileFormatProvider
     {
         string Log<TState>(LoggerOptionsModel options, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter);
     }
-
+    /// <summary>
+    /// 默认的日志格式化实现
+    /// </summary>
     public class FileFormatProvider : IFileFormatProvider
     {
         IServiceProvider serviceProvider;

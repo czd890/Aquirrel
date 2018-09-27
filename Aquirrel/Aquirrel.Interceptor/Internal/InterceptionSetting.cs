@@ -7,6 +7,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Aquirrel.Interceptor.Internal
 {
+    /// <summary>
+    /// aop拦截配置
+    /// </summary>
     public class InterceptionSetting
     {
         IConfiguration configuration;

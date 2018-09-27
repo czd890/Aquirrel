@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// aop配置服务
+    /// </summary>
     public static class InterceptorServiceCollectionExtensions
     {
         public static void AddInterceptor<TProxyFactory>(this IServiceCollection services, Func<IServiceProvider, TProxyFactory> setup, IConfiguration configuration)

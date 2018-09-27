@@ -8,6 +8,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Aquirrel.Logger.File
 {
+    /// <summary>
+    /// 文件日志配置
+    /// </summary>
     public class FileLoggerSettings
     {
         IConfiguration _configuration;

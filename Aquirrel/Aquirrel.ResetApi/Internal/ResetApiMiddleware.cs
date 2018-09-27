@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 namespace Aquirrel.ResetApi.Internal
 {
+    /// <summary>
+    /// 中间件
+    /// </summary>
     public class ResetApiMiddleware
     {
         private readonly RequestDelegate _next;

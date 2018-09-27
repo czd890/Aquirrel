@@ -2,7 +2,7 @@
 param($projectDir)
 $orgDir = $MyInvocation.MyCommand.Definition|Split-Path -Parent
 $projectRootDire = $orgDir |Split-Path -Parent
-$nugetdownloadUrl = "https://nuget.org/nuget.exe"
+$nugetdownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 $publishdir = $projectRootDire + "\.publish"
 $nugetDir = $publishdir + "\.nuget"
 $nuget = $nugetDir + "\nuget.exe"
@@ -66,8 +66,9 @@ cd $nugetDir
 $fileList = Get-ChildItem  -Path $outputdir -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "^((?!symbols).)*$" } | % {$_.FullName}
 foreach ($f in $fileList) {
     write-Host "publish:::$f" 
-    .\nuget.exe  push $f -ApiKey "25951454-f86d-475b-a314-9be39ed810d6"
+    .\nuget.exe  push $f -ApiKey "oy2piiabxsyzdv3766eqgxn342l2ahpurjw3rmby55xg5i" -Source "https://api.nuget.org/v3/index.json"
+
 }
 cd $orgDir
-write-Host "finsh"
+write-Host "finish"
 

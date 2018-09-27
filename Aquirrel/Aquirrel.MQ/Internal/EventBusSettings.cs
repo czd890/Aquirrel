@@ -8,6 +8,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Aquirrel.MQ.Internal
 {
+    /// <summary>
+    /// 消息总线配置
+    /// </summary>
     public class EventBusSettings
     {
         IConfiguration _configuration;

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.Logger.File.Internal
 {
+    /// <summary>
+    /// 日志记录scope层级支持
+    /// </summary>
     public class FileLogScope
     {
         private readonly string _name;

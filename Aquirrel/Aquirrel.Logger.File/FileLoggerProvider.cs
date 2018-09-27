@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 namespace Aquirrel.Logger.File
 {
+    /// <summary>
+    /// 文件日志提供程序
+    /// </summary>
     [ProviderAlias("File")]
     public class FileLoggerProvider : ILoggerProvider, IDisposable
     {

@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Aquirrel.Logger.File.Internal
 {
+    /// <summary>
+    /// 日志配置
+    /// </summary>
     public class LoggerOptionsModel
     {
         static Regex regex = new Regex("\\[.+\\]");

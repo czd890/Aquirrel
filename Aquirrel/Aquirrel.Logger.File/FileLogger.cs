@@ -11,10 +11,12 @@ using System.Net.Http;
 
 namespace Aquirrel.Logger.File
 {
+    /// <summary>
+    /// 文件日志logger
+    /// </summary>
     public class FileLogger : ILogger
     {
         IFileFormatProvider fileFormatProvider;
-
 
         public FileLogger(string categoryName, LoggerOptionsModel options, IFileFormatProvider fileFormatProvider)
         {

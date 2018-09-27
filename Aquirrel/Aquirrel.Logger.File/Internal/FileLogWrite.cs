@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.Logger.File.Internal
 {
+    /// <summary>
+    /// 日志持久化接口
+    /// </summary>
     public interface IFileLogWrite
     {
         void Write(params string[] logs);
     }
-
+    /// <summary>
+    /// 默认的日志持久化实现
+    /// </summary>
     public class FileLogWrite : IFileLogWrite, IDisposable
     {
         public static void AddWriteProvider(LoggerOptionsModel options, Func<LoggerOptionsModel, IFileLogWrite> factory)
@@ -26,7 +31,11 @@ namespace Aquirrel.Logger.File.Internal
         {
             _options = options;
         }
-
+        /// <summary>
+        /// 加入待写队列
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="messages"></param>
         internal static void AddToQueue(LoggerOptionsModel options, params string[] messages)
         {
             string key = AddProvider(options, op => new FileLogWrite(op));

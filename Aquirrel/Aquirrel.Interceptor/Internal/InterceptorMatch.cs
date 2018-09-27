@@ -8,6 +8,9 @@ using Microsoft.Extensions.Primitives;
 
 namespace Aquirrel.Interceptor.Internal
 {
+    /// <summary>
+    /// aop拦截匹配接口
+    /// </summary>
     public interface IInterceptorMatch
     {
         IChangeToken ChangeToken { get; }
@@ -16,7 +19,9 @@ namespace Aquirrel.Interceptor.Internal
         bool IsMatchMethod(MethodInfo methodInfo);
         IEnumerable<Type> GetMatchedInterceptor(Type impType);
     }
-
+    /// <summary>
+    /// aop拦截匹配默认实现
+    /// </summary>
     public class DefaultInterceptorMatch : IInterceptorMatch
     {
         public InterceptionSetting Setting { get; }

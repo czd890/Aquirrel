@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Aquirrel.ResetApi.Internal
 {
+    /// <summary>
+    /// 常量定义
+    /// </summary>
     public static class RestApiConst
     {
         public static string TraceId = "X-Request-Id";
