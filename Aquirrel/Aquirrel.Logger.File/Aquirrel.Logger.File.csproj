@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. local file log provider</Description>
-    <VersionPrefix>2.2.6</VersionPrefix>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.Logger.File</AssemblyName>
     <PackageId>Aquirrel.Logger.File</PackageId>
     <PackageTags>log;file log</PackageTags>
-    <PackageReleaseNotes>ef and tracing and automapper</PackageReleaseNotes>
+    <PackageReleaseNotes>升级dotnet基础组件到2.1.x</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
