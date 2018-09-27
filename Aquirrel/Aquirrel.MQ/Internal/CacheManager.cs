@@ -36,7 +36,7 @@ namespace Aquirrel.MQ.Internal
         }
         Dictionary<string, CacheItem> _cacheConn = new Dictionary<string, CacheItem>();
         EventBusSettings _settings;
-        ILogger<IEventBusInternal> _logger;
+        ILogger _logger;
         DateTime _lastCleanUpTime = DateTime.Now;
         public IConnection GetConnection(string productId)
         {
@@ -109,7 +109,7 @@ namespace Aquirrel.MQ.Internal
                     _cacheConn[productId] = new CacheItem();
                 }
 
-            Lable_GetModel:
+                Lable_GetModel:
                 bool hasGet = false;
                 IModel _channel = null;
                 foreach (var item in _cacheConn[productId].ConnItems)
