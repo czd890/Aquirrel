@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aquirrel.Tracing;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 namespace Aquirrel.Logger.File.Internal
 {
     /// <summary>
@@ -21,8 +21,9 @@ namespace Aquirrel.Logger.File.Internal
     /// </summary>
     public class FileFormatProvider : IFileFormatProvider
     {
-        IServiceProvider serviceProvider;
-        ITraceClient traceClient => serviceProvider.GetService<ITraceClient>();
+        private IServiceProvider serviceProvider;
+
+        private ITraceClient traceClient => serviceProvider.GetService<ITraceClient>();
         //有循环依赖问题
         //public FileFormatProvider(ITraceClient traceClient)
         //{
@@ -183,8 +184,8 @@ namespace Aquirrel.Logger.File.Internal
                 categoryName = options.CategoryName,
                 message = message,
                 exception = ex?.ToString(),
-                app = als?.Datas["host"],
-                apiName = als?.Datas["path"],
+                app = als != null && als.Datas.ContainsKey("host") ? als.Datas["host"] : null,
+                apiName = als != null && als.Datas.ContainsKey("path") ? als.Datas["path"] : null,
                 uid = als?.UserOpenId,
                 utid = als?.UserTraceId,
                 clientIp = als?.ClientIp,
