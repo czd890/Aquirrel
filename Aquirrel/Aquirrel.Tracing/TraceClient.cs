@@ -1,23 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Aquirrel.Tracing.Internal;
-using Microsoft.Extensions.Logging;
-using Aquirrel.Tools;
 using System.Threading;
+using System.Threading.Tasks;
+using Aquirrel.Tools;
+using Aquirrel.Tracing.Internal;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Aquirrel.Tracing
 {
     public class TraceClient : ITraceClient
     {
-        ILogger _logger;
-        public TraceClient(ILogger<TraceClient> logger)
+        private readonly ILogger _logger;
+        private readonly IHostingEnvironment env;
+        public TraceClient(ILogger<TraceClient> logger, IHostingEnvironment env)
         {
             this._logger = logger;
+            this.env = env;
         }
 
-        public IRequestEntry Current => RequestEntry.ALS.Value;
+        public IRequestEntry Current
+        {
+            get
+            {
+                if (RequestEntry.ALS.Value == null)
+                {
+                    this.Init();
+                    this.BeginRequestAsync(this.env.ApplicationName, ResetApi.Internal.RestApiConst.NewTraceId(),
+                        ResetApi.Internal.RestApiConst.NewDepth().ToString()).ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+                return RequestEntry.ALS.Value;
+            }
+        }
         public void Init()
         {
             RequestEntry.ALS.Value = new RequestEntry();
