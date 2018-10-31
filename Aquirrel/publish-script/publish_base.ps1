@@ -66,7 +66,8 @@ Set-Location $nugetDir
 $fileList = Get-ChildItem  -Path $outputdir -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "^((?!symbols).)*$" } | % {$_.FullName}
 foreach ($f in $fileList) {
     write-Host "publish:::$f" 
-    .\nuget.exe push $f -ApiKey "oy2piiabxsyzdv3766eqgxn342l2ahpurjw3rmby55xg5i" -Source "https://api.nuget.org/v3/index.json"
+    #.\nuget.exe push $f -ApiKey "oy2piiabxsyzdv3766eqgxn342l2ahpurjw3rmby55xg5i" -Source "https://api.nuget.org/v3/index.json"
+	.\nuget.exe push $f -ApiKey "014B34AB-4D68-4147-91FE-A2094B6A8ECB"           -Source "http://nuget.guodong.cn/api/v2/package" 
 }
 Set-Location $orgDir
 write-Host "finish"
