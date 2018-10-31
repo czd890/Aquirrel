@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using MySql.Data.EntityFrameworkCore.Extensions;
 
 namespace Aquirrel.EntityFramework.Test
 {
@@ -59,7 +60,7 @@ namespace Aquirrel.EntityFramework.Test
         }
     }
 
-    class ShardTableMapping : Mapping.EntityMapping<ShardTable>
+    internal class ShardTableMapping : Mapping.EntityMapping<ShardTable>
     {
         public override void Mapping(EntityTypeBuilder<ShardTable> entityTypeBuilder)
         {
@@ -67,6 +68,8 @@ namespace Aquirrel.EntityFramework.Test
 
             base.Mapping(entityTypeBuilder);
 
+
+            entityTypeBuilder.Property(p => p.MaxName).ForMySQLHasCharset("utf8mb4");
             //entityTypeBuilder.HasKey(p => p.Id);
 
             //entityTypeBuilder.Property(p => p.MaxName).HasMaxLength(true);

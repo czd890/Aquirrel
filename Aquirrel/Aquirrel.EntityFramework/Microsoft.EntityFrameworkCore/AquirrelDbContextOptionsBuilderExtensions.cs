@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Aquirrel.EntityFramework;
+using Aquirrel.EntityFramework.Internal;
+using Aquirrel.EntityFramework.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Aquirrel.EntityFramework;
-using Aquirrel.EntityFramework.Mapping;
-using Aquirrel.EntityFramework.Internal;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
+
 namespace Microsoft.EntityFrameworkCore
 {
     /// <summary>
@@ -57,6 +60,18 @@ namespace Microsoft.EntityFrameworkCore
             return builder;
         }
 
-
+        /// <summary>
+        /// 替换ef基础服务，实现自动绑定发现mapping实体、默认约束等支持功能
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static DbContextOptionsBuilder UseAquirrelDb(this DbContextOptionsBuilder builder)
+        {
+            Console.WriteLine("replace entity framework infrastructure service impl(IModelCustomizer,ICoreConventionSetBuilder,IModelSource)");
+            builder.ReplaceService<IModelCustomizer, MyRelationalModelCustomizer>();
+            builder.ReplaceService<ICoreConventionSetBuilder, MyCoreConventionSetBuilder>();
+            builder.ReplaceService<IModelSource, MyRelationalModelSource>();
+            return builder;
+        }
     }
 }

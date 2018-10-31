@@ -3,14 +3,16 @@ using System;
 using Aquirrel.EntityFramework.Test;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aquirrel.EntityFramework.Test.Migrations.rv
 {
     [DbContext(typeof(RVDbContext))]
-    partial class RVDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181031095646_init001")]
+    partial class init001
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

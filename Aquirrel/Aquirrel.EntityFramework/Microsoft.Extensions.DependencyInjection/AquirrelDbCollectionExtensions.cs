@@ -26,10 +26,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped(typeof(Repository<,>));
             services.AddScoped<InternalScopeServiceContainer>();
             services.AddSingleton<RepositoryFactory>();
-
-            services.AddSingleton<IModelCustomizer, MyRelationalModelCustomizer>();
-            services.AddSingleton<ICoreConventionSetBuilder, MyCoreConventionSetBuilder>();
-            services.AddSingleton<IModelSource, MyRelationalModelSource>();
             //services.AddScoped<IDistributedCommitService, DistributedCommitService>();
             return services;
         }
@@ -40,7 +36,5 @@ namespace Microsoft.Extensions.DependencyInjection
         //    services.AddSingleton<ShardingDbFactory, IShardingDbFactory>();
         //    return services;
         //}
-
-
     }
 }
