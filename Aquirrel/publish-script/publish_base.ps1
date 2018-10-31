@@ -56,20 +56,18 @@ if (!(Test-Path $outputdir)) {
 $rem = $outputdir + "\*"
 Remove-Item $rem -recurse
 
-cd $projectRootDire
-cd $projectDir
+Set-Location $projectRootDire
+Set-Location $projectDir
 
 dotnet pack -o $outputdir -c Release 
 Write-Host "cd current dir:::$nugetDir"
-cd $nugetDir
+Set-Location $nugetDir
 
 $fileList = Get-ChildItem  -Path $outputdir -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "^((?!symbols).)*$" } | % {$_.FullName}
 foreach ($f in $fileList) {
     write-Host "publish:::$f" 
-    #.\nuget.exe  push $f -ApiKey "oy2piiabxsyzdv3766eqgxn342l2ahpurjw3rmby55xg5i" -Source "https://api.nuget.org/v3/index.json"
-	 .\nuget push $f -Source "http://nuget.guodong.cn/api/v2/package" -ApiKey "014B34AB-4D68-4147-91FE-A2094B6A8ECB"
-
+    .\nuget.exe push $f -ApiKey "oy2piiabxsyzdv3766eqgxn342l2ahpurjw3rmby55xg5i" -Source "https://api.nuget.org/v3/index.json"
 }
-cd $orgDir
+Set-Location $orgDir
 write-Host "finish"
 

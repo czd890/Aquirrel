@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>aquirrel base lib. entityframework</Description>
-    <VersionPrefix>2.3.0</VersionPrefix>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>calvin</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aquirrel.EntityFramework</AssemblyName>
     <PackageId>Aquirrel.EntityFramework</PackageId>
     <PackageTags>entityframework core;entityframework</PackageTags>
-    <PackageReleaseNotes>添加文档注释</PackageReleaseNotes>
+    <PackageReleaseNotes>升级dotnet基础组件到2.1.x</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
     <RootNamespace>Aquirrel.EntityFramework</RootNamespace>
   </PropertyGroup>
@@ -32,8 +32,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aquirrel.AutoMapper\Aquirrel.AutoMapper.csproj" />

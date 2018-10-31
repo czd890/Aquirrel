@@ -2,11 +2,11 @@
   <PropertyGroup>
     <Description>aquirrel base lib. Extensions</Description>
     <Authors>calvin</Authors>
-    <VersionPrefix>2.3.0</VersionPrefix>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Aquirrel.Extensions</PackageId>
     <PackageTags>Extensions</PackageTags>
-    <PackageReleaseNotes>添加文档注释</PackageReleaseNotes>
+    <PackageReleaseNotes>升级dotnet基础组件到2.1.x</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/czd890/Aquirrel</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -18,7 +18,7 @@
     <DocumentationFile>bin\Aquirrel.Extensions.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>
 </Project>

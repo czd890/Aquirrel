@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Framework.DependencyInjection;
 
 namespace Aquirrel.ResetApi.Test.Controllers
 {

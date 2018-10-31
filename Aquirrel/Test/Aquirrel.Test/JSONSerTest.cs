@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Aquirrel.ResetApi;
 using System.Threading;
+using Aquirrel;
 
 namespace Aquirrel.Test
 {
