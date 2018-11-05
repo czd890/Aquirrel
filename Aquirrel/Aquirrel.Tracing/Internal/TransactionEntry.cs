@@ -1,7 +1,7 @@
-﻿using Aquirrel.ResetApi.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Aquirrel.ResetApi.Internal;
 
 namespace Aquirrel.Tracing.Internal
 {
@@ -35,11 +35,11 @@ namespace Aquirrel.Tracing.Internal
         public DateTime BeginTime { get; set; }
 
         public Dictionary<string, IRequestEntry> ChildRequest { get; private set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public Dictionary<string, object> Datas { get; private set; }
 
-        public int Duration => this.EndTime > this.BeginTime ? ((int)(this.EndTime - this.BeginTime).TotalMilliseconds) : 0;
+        public int Duration => this.EndTime.HasValue ? (this.EndTime > this.BeginTime ? ((int)(this.EndTime.Value - this.BeginTime).TotalMilliseconds) : 0) : 0;
 
         public Exception Exception { get; set; }
         public string UserOpenId { get; set; }

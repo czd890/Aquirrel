@@ -23,7 +23,7 @@ namespace Aquirrel.Tracing.Internal
         /// <summary>
         /// 结束时间
         /// </summary>
-        DateTime EndTime { get; set; }
+        DateTime? EndTime { get; set; }
         /// <summary>
         /// 耗时
         /// </summary>

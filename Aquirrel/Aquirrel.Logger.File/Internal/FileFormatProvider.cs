@@ -194,7 +194,7 @@ namespace Aquirrel.Logger.File.Internal
                 uid = als?.UserOpenId,
                 utid = als?.UserTraceId,
                 beginTime = als.BeginTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
-                endTime = als.EndTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
+                endTime = als.EndTime.HasValue ? als.EndTime.Value.ToString("yyyy/MM/dd HH:mm:ss.fff") : null,
                 duration = als == null ? 0 : (DateTime.Now - als.BeginTime).TotalMilliseconds.ToInt(),
                 depth = als?.TraceDepth,
                 scope = builder.ToString()
