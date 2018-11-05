@@ -24,6 +24,9 @@ namespace Aquirrel.Tracing.Internal
         /// 结束时间
         /// </summary>
         DateTime EndTime { get; set; }
+        /// <summary>
+        /// 耗时
+        /// </summary>
         int Duration { get; }
         /// <summary>
         /// 当前请求的ip
